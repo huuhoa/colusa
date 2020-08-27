@@ -337,6 +337,7 @@ def download_content(url_path):
         transformer.transform()
         renderer = UntoolsRenderer()
         renderer.render_tags(a_out, extracter.get_content())
+    return output_path
 
 
 def main():
@@ -360,8 +361,16 @@ def main():
     os.makedirs(".cached", exist_ok=True)
     os.makedirs("images", exist_ok=True)
 
-    for url_path in paths:
-        download_content(url_path)
+    files = []
+    for url_path in sorted(paths):
+        output_path = download_content(url_path)
+        files.append(output_path)
+
+    with open('template.asciidoc', 'rt') as template_file:
+        template_content = template_file.read()
+    content = template_content.replace('[[__to_be_replaced__]]', '\n'.join(['include::%s[]' % x for x in files]))
+    with open('index.asciidoc', 'w') as index_file:
+        index_file.write(content)
 
 
 if __name__ == '__main__':
