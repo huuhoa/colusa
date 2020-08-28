@@ -7,6 +7,8 @@ import hashlib
 from urllib.parse import urlparse
 import re
 import shutil
+import json
+import argparse
 
 
 def compute_image_path(url_path, root):
@@ -148,8 +150,8 @@ class UntoolsRenderer(Renderer):
 
 
 class Transformer(object):
-    def __init__(self, doc, site, root):
-        self.root_path = root
+    def __init__(self, config, doc, site):
+        self.config = config
         self.doc = doc
         self.site = site
 
@@ -191,7 +193,8 @@ class Transformer(object):
                     width = largest.replace('w', '')
                 if 'h' in largest:
                     height = largest.replace('h', '')
-            image_name = download_image(src, self.root_path)
+            url_path = requests.compat.urljoin(self.config['src_url'], src)
+            image_name = download_image(url_path, self.config['output_dir'])
             repl = 'image:%s[%s,%s,%s]' % (image_name, alt, width, height)
             print(repl)
             img.replace_with(repl)
@@ -358,13 +361,17 @@ def create_extractor(url_path, bs):
 
 
 def create_transformer(url_path, bs, content, root):
+    config = {
+        "src_url": url_path,
+        "output_dir": root
+    }
     if 'untools.co' in url_path:
-        return UntoolsTransformer(bs, content, root)
+        return UntoolsTransformer(config, bs, content)
     if 'unintendedsequences' in url_path:
-        return Transformer(bs, content, root)
+        return Transformer(config, bs, content)
     if 'blog.acolyer.org' in url_path:
-        return Transformer(bs, content, root)
-    return Transformer(bs, content, root)
+        return Transformer(config, bs, content)
+    return Transformer(config, bs, content)
 
 
 def create_renderer(url_path):
@@ -405,16 +412,40 @@ def download_content(url_path, root):
     return output_path
 
 
-def main():
-    paths = [
-        'https://blog.acolyer.org/2020/03/18/scalable-persistent-memory/',
-        'https://blog.acolyer.org/2020/03/16/omega-gen/',
-        'https://blog.acolyer.org/2020/03/11/rocks-db-at-facebook/',
-        'https://blog.acolyer.org/2020/03/04/millions-of-tiny-databases/',
-        'https://blog.acolyer.org/2019/12/02/efficient-lock-free-durable-sets/',
-    ]
+def read_configuration(file_path):
+    with open(file_path, 'r') as file_in:
+        data = json.load(file_in)
+        return data
 
-    root = 'the-morning-paper'
+
+def generate_new_configuration(file_path):
+    template = {
+            "title": "__fill the title__",
+            "author": "__fill the author__",
+            "version": "v1.0",
+            "homepage": "__fill url to home page__",
+            "output_dir": "__fill output dir__",
+            "urls": [
+            ]
+        }
+    with open(file_path, 'w') as file_out:
+        json.dump(template, file_out, indent=4)
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--new', '-n', type=bool, default=False,
+                        help='Generate new configuration file. '
+                             'File name will be specified in the --input parameter')
+    parser.add_argument('--input', '-i', type=str, help='Configuration file')
+    args = parser.parse_args()
+    if args.new:
+        generate_new_configuration(args.input)
+        exit(0)
+
+    config = read_configuration(args.input)
+    paths = config['urls']
+    root = config['output_dir']
     os.makedirs(os.path.join(root, ".cached"), exist_ok=True)
     os.makedirs(os.path.join(root, "images"), exist_ok=True)
 
@@ -424,9 +455,16 @@ def main():
         output_path = re.sub('^%s/' % root, '', output_path)
         files.append(output_path)
 
-    with open(os.path.join(root, 'template.asciidoc'), 'rt') as template_file:
-        template_content = template_file.read()
-    content = template_content.replace('[[__to_be_replaced__]]', '\n'.join(['include::%s[]' % x for x in files]))
+    included_files = '\n'.join(['include::%s[]' % x for x in files])
+    content = f'''= {config["title"]}
+{config["author"]}
+{config["version"]}
+:toc:
+:imagesdir: images
+:homepage: {config["homepage"]}
+
+{included_files}
+'''
     with open(os.path.join(root, 'index.asciidoc'), 'w') as index_file:
         index_file.write(content)
 
