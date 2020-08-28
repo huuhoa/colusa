@@ -19,7 +19,7 @@ def compute_image_path(url_path, root):
     u_path = urlparse(url_path)
     output_path = u_path.path
     output_path = os.path.splitext(output_path)
-    image_name = "%s%s" % (m.hexdigest(), output_path[1])
+    image_name = f'{m.hexdigest()}{output_path[1]}'
     file_path = os.path.join(root, "images", image_name)
     return file_path, image_name
 
@@ -35,7 +35,7 @@ def download_image(url_path, root):
         }
         req = requests.get(url_path, headers=headers, stream=True)
         if req.status_code != 200:
-            print("Cannot make request. Result: %d" % (req.status_code))
+            print(f'Cannot make request. Result: {req.status_code:d}')
             exit(1)
 
         with open(image_path, 'wb') as file_out:
@@ -56,7 +56,7 @@ def load_file_content(url_path, file_path):
         }
         req = requests.get(url_path, headers=headers)
         if req.status_code != 200:
-            print("Cannot make request. Result: %d" % (req.status_code))
+            print(f'Cannot make request. Result: {req.status_code:d}')
             exit(1)
 
         with open(file_path, 'wt') as file_out:
@@ -78,29 +78,29 @@ class Renderer(object):
         file_out.write('\n\n')
 
     def render_tag_h1(self, file_out, tag):
-        file_out.write('== %s\n\n' % tag.string)
+        file_out.write(f'== {tag.string}\n\n')
 
     def render_tag_h2(self, file_out, tag):
-        file_out.write('=== %s\n\n' % tag.string)
+        file_out.write(f'=== {tag.string}\n\n')
 
     def render_tag_h3(self, file_out, tag):
-        file_out.write('==== %s\n\n' % tag.string)
+        file_out.write(f'==== {tag.string}\n\n')
 
     def render_tag_h4(self, file_out, tag):
-        file_out.write('===== %s\n\n' % tag.string)
+        file_out.write(f'===== {tag.string}\n\n')
 
     def render_tag_ul(self, file_out, tag):
         for li in tag:
             if li.name != 'li':
                 continue
-            file_out.write('- %s\n' % li.text)
+            file_out.write(f'- {li.text}\n')
         file_out.write('\n\n')
 
     def render_tag_ol(self, file_out, tag):
         for li in tag:
             if li.name != 'li':
                 continue
-            file_out.write('* %s\n' % li.text)
+            file_out.write(f'* {li.text}\n')
         file_out.write('\n\n')
 
     def render_tag_div(self, file_out, div):
@@ -177,21 +177,18 @@ class Transformer(object):
     def transform_strong(self):
         for a in self.site.find_all(['strong', 'b']):
             text = a.text
-            repl = '**%s**' % text
-            a.replace_with(repl)
+            a.replace_with(f'**{text}**')
 
     def transform_italic(self):
         for a in self.site.find_all(['italic', 'i']):
             text = a.text
-            repl = '__%s__' % text
-            a.replace_with(repl)
+            a.replace_with(f'__{text}__')
 
     def transform_a(self):
         for a in self.site.find_all('a'):
             href = a['href']
             text = a.text
-            repl = 'link:%s[%s]' % (href, text)
-            a.replace_with(repl)
+            a.replace_with(f'link:{href}[{text}]')
 
     def transform_img(self):
         for img in self.site.find_all('img'):
@@ -214,7 +211,7 @@ class Transformer(object):
                     height = largest.replace('h', '')
             url_path = requests.compat.urljoin(self.config['src_url'], src)
             image_name = download_image(url_path, self.config['output_dir'])
-            repl = 'image:%s[%s,%s,%s]' % (image_name, alt, width, height)
+            repl = f'image:{image_name}[{alt},{width},{height}]'
             img.replace_with(repl)
 
     def transform(self):
@@ -228,7 +225,7 @@ class UntoolsTransformer(Transformer):
     def transform_h2(self):
         for a in self.site.find_all('h2'):
             text = a.text
-            repl = '=== %s\n\n' % text
+            repl = f'=== {text}\n\n'
             p = self.doc.new_tag('p')
             p.string = repl
             a.replace_with(p)
@@ -236,7 +233,7 @@ class UntoolsTransformer(Transformer):
     def transform_h3(self):
         for a in self.site.find_all('h3'):
             text = a.text
-            repl = '==== %s\n\n' % text
+            repl = f'==== {text}\n\n'
             p = self.doc.new_tag('p')
             p.string = repl
             a.replace_with(p)
@@ -282,7 +279,7 @@ class Untools(Extractor):
         tag = header.find('span', class_=re.compile('tag-module--tag--')).text
         usage = header.find('div', class_=re.compile('article-module--when-useful--')).text
 
-        return '%s\n\n.%s\n****\n%s\n****\n' % (title, tag, usage)
+        return f'{title}\n\n.{tag}\n****\n{usage}\n****\n'
 
     def get_published(self):
         time_published = self.bs.find('time', attrs={'class': 'entry-date published'})
@@ -336,14 +333,8 @@ class UnintendedSequences(Extractor):
 
 class TheMorningPaperExtractor(Extractor):
     def get_title(self):
-        import re
         header = self.bs.find('h1', class_='entry-title')
         return header.text
-        title = header.find('h2').text
-        tag = header.find('span', class_=re.compile('tag-module--tag--')).text
-        usage = header.find('div', class_=re.compile('article-module--when-useful--')).text
-
-        return '%s\n\n.%s\n****\n%s\n****\n' % (title, tag, usage)
 
     def get_published(self):
         time_published = self.bs.find('time', attrs={'class': 'entry-date published'})
@@ -421,7 +412,7 @@ def download_content(url_path, root):
         a_out.write("== %s\n\n" % extractor.get_title())
         time_published = extractor.get_published()
         if time_published is not None:
-            a_out.write('**published**: %s\n\n' % time_published)
+            a_out.write(f'**published**: {time_published}\n\n')
         extractor.cleanup()
         transformer = create_transformer(url_path, bs, extractor.get_content(), root)
         transformer.transform()
@@ -484,7 +475,7 @@ def main():
     files = []
     for url_path in paths:
         output_path = download_content(url_path, root)
-        output_path = re.sub('^%s/' % root, '', output_path)
+        output_path = re.sub(f'^{root}/', '', output_path)
         files.append(output_path)
 
     included_files = '\n'.join(['include::%s[]' % x for x in files])
