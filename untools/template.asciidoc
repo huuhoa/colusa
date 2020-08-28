@@ -1,8 +1,0 @@
-= Untools - Tools for better thinking
-https://untools.co/
-v1.0
-:toc:
-:imagesdir: images
-:homepage: https://untools.co/
-
-[[__to_be_replaced__]]
