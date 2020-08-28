@@ -78,7 +78,7 @@ class Renderer(object):
         file_out.write('\n\n')
 
     def render_tag_h1(self, file_out, tag):
-        file_out.write(f'== {tag.string}\n\n')
+        file_out.write(f'=== {tag.string}\n\n')
 
     def render_tag_h2(self, file_out, tag):
         file_out.write(f'=== {tag.string}\n\n')
@@ -180,7 +180,7 @@ class Transformer(object):
             a.replace_with(f'**{text}**')
 
     def transform_italic(self):
-        for a in self.site.find_all(['italic', 'i']):
+        for a in self.site.find_all(['italic', 'i', 'em']):
             text = a.text
             a.replace_with(f'__{text}__')
 
@@ -262,26 +262,6 @@ class Extractor(object):
         pass
 
     def get_published(self):
-        pass
-
-    def cleanup(self):
-        pass
-
-    def get_content(self):
-        pass
-
-
-class Untools(Extractor):
-    def get_title(self):
-        import re
-        header = self.bs.find('div', class_=re.compile('article-module--top--'))
-        title = header.find('h2').text
-        tag = header.find('span', class_=re.compile('tag-module--tag--')).text
-        usage = header.find('div', class_=re.compile('article-module--when-useful--')).text
-
-        return f'{title}\n\n.{tag}\n****\n{usage}\n****\n'
-
-    def get_published(self):
         time_published = self.bs.find('time', attrs={'class': 'entry-date published'})
         if time_published is not None:
             published = time_published.text
@@ -289,8 +269,10 @@ class Untools(Extractor):
         else:
             return None
 
+    def get_metadata(self):
+        return ''
+
     def cleanup(self):
-        self.site = self.bs.find(class_=re.compile('article-module--content--'))
         remove_tag(self.site, 'div', attrs={'class': 'site-branding'})
         remove_tag(self.site, 'div', attrs={'class': 'navigation-top'})
         remove_tag(self.site, 'footer', attrs={'class': 'site-footer'})
@@ -304,28 +286,33 @@ class Untools(Extractor):
         return self.site
 
 
-class UnintendedSequences(Extractor):
+class Untools(Extractor):
+    def get_title(self):
+        import re
+        header = self.bs.find('div', class_=re.compile('article-module--top--'))
+        title = header.find('h2').text
+        return title
+
+    def get_metadata(self):
+        import re
+        header = self.bs.find('div', class_=re.compile('article-module--top--'))
+        tag = header.find('span', class_=re.compile('tag-module--tag--')).text
+        usage = header.find('div', class_=re.compile('article-module--when-useful--')).text
+
+        return f'.{tag}\n****\n{usage}\n****\n\n'
+
+    def cleanup(self):
+        self.site = self.bs.find(class_=re.compile('article-module--content--'))
+        super(Untools, self).cleanup()
+
+
+class UnintendedConsequences(Extractor):
     def get_title(self):
         return self.bs.find('h1').text
 
-    def get_published(self):
-        time_published = self.bs.find('time', attrs={'class': 'entry-date published'})
-        if time_published is not None:
-            published = time_published.text
-            return published
-        else:
-            return None
-
     def cleanup(self):
         self.site = self.bs.find(id='page')
-        remove_tag(self.site, 'div', attrs={'class': 'site-branding'})
-        remove_tag(self.site, 'div', attrs={'class': 'navigation-top'})
-        remove_tag(self.site, 'footer', attrs={'class': 'site-footer'})
-        remove_tag(self.site, 'div', attrs={'class': 'searchsettings'})
-        remove_tag(self.site, 'section', attrs={'id': 'ajaxsearchlitewidget-2'})
-        remove_tag(self.site, 'aside', attrs={'id': 'secondary'})
-        remove_tag(self.site, 'nav', attrs={'class': 'post-navigation'})
-        remove_tag(self.site, 'header', attrs={'id': 'masthead'})
+        super(UnintendedConsequences, self).cleanup()
 
     def get_content(self):
         return self.site.find(attrs={'class': 'entry-content'})
@@ -336,34 +323,16 @@ class TheMorningPaperExtractor(Extractor):
         header = self.bs.find('h1', class_='entry-title')
         return header.text
 
-    def get_published(self):
-        time_published = self.bs.find('time', attrs={'class': 'entry-date published'})
-        if time_published is not None:
-            published = time_published.text
-            return published
-        else:
-            return None
-
     def cleanup(self):
         self.site = self.bs.find('div', class_='entry-content')
-        remove_tag(self.site, 'div', attrs={'class': 'site-branding'})
-        remove_tag(self.site, 'div', attrs={'class': 'navigation-top'})
-        remove_tag(self.site, 'footer', attrs={'class': 'site-footer'})
-        remove_tag(self.site, 'div', attrs={'class': 'searchsettings'})
-        remove_tag(self.site, 'section', attrs={'id': 'ajaxsearchlitewidget-2'})
-        remove_tag(self.site, 'aside', attrs={'id': 'secondary'})
-        remove_tag(self.site, 'nav', attrs={'class': 'post-navigation'})
-        remove_tag(self.site, 'header', attrs={'id': 'masthead'})
-
-    def get_content(self):
-        return self.site
+        super(TheMorningPaperExtractor, self).cleanup()
 
 
 def create_extractor(url_path, bs):
     if 'untools.co' in url_path:
         return Untools(bs)
     if 'unintendedconsequenc' in url_path:
-        return UnintendedSequences(bs)
+        return UnintendedConsequences(bs)
     if 'blog.acolyer.org' in url_path:
         return TheMorningPaperExtractor(bs)
     return Extractor(bs)
@@ -409,10 +378,16 @@ def download_content(url_path, root):
 
     with open(output_path, 'w') as a_out:
         extractor = create_extractor(url_path, bs)
-        a_out.write("== %s\n\n" % extractor.get_title())
+        a_out.write(f'== {extractor.get_title()}\n\n')
+
         time_published = extractor.get_published()
         if time_published is not None:
-            a_out.write(f'**published**: {time_published}\n\n')
+            published_info = f'published on {time_published}'
+        else:
+            published_info = ''
+        article_metadata = f'link:{url_path}[original article] {published_info}\n\n{extractor.get_metadata()}'
+        a_out.write(article_metadata)
+
         extractor.cleanup()
         transformer = create_transformer(url_path, bs, extractor.get_content(), root)
         transformer.transform()
