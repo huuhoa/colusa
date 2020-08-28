@@ -55,7 +55,5 @@ class Untools(Extractor):
 
         return f'.{tag}\n****\n{usage}\n****\n\n'
 
-    def cleanup(self):
+    def internal_init(self):
         self.site = self.bs.find(class_=re.compile('article-module--content--'))
-        super(Untools, self).cleanup()
-

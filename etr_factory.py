@@ -2,6 +2,7 @@ from etr import Extractor, Transformer, Renderer
 from etr_untools import Untools, UntoolsTransformer, UntoolsRenderer
 from etr_unintendedconsequences import UnintendedConsequencesExtractor
 from etr_morning import TheMorningPaperExtractor
+from etr_fsblog import FsblogExtractor
 
 
 def create_extractor(url_path, bs):
@@ -11,6 +12,8 @@ def create_extractor(url_path, bs):
         return UnintendedConsequencesExtractor(bs)
     if 'blog.acolyer.org' in url_path:
         return TheMorningPaperExtractor(bs)
+    if 'https://fs.blog' in url_path:
+        return FsblogExtractor(bs)
     return Extractor(bs)
 
 

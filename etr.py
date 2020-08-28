@@ -13,6 +13,7 @@ class Extractor(object):
         self.bs = bs
         self.site = None
         self.content = None
+        self.internal_init()
 
     def get_title(self):
         pass
@@ -46,6 +47,9 @@ class Extractor(object):
 
     def get_content(self):
         return self.site
+
+    def internal_init(self):
+        self.site = self.bs.find('div', class_='entry-content')
 
 
 class Transformer(object):
@@ -100,7 +104,7 @@ class Transformer(object):
             a.replace_with(f'__{text}__')
 
     def transform_a(self):
-        for a in self.site.find_all('a'):
+        for a in self.site.find_all('a', attrs={'href': re.compile("^http[s]://")}):
             href = a['href']
             text = a.text
             a.replace_with(f'link:{href}[{text}]')
@@ -216,6 +220,7 @@ class Renderer(object):
             'figure': self.render_tag_p,
             'table': self.render_tag_table,
             'pre': self.render_tag_pre,
+            'span': self.render_tag_p,
         }
         for tag in site:
             if tag.name is None:
