@@ -194,7 +194,7 @@ class Transformer(object):
             a.replace_with(repl)
 
     def transform_img(self):
-        for img in self.site.findAll('img'):
+        for img in self.site.find_all('img'):
             alt = img['alt']
             height = img.get('height', '')
             width = img.get('width', '')
@@ -371,7 +371,7 @@ class TheMorningPaperExtractor(Extractor):
 def create_extractor(url_path, bs):
     if 'untools.co' in url_path:
         return Untools(bs)
-    if 'unintendedsequences' in url_path:
+    if 'unintendedconsequenc' in url_path:
         return UnintendedSequences(bs)
     if 'blog.acolyer.org' in url_path:
         return TheMorningPaperExtractor(bs)
@@ -385,7 +385,7 @@ def create_transformer(url_path, bs, content, root):
     }
     if 'untools.co' in url_path:
         return UntoolsTransformer(config, bs, content)
-    if 'unintendedsequences' in url_path:
+    if 'unintendedconsequenc' in url_path:
         return Transformer(config, bs, content)
     if 'blog.acolyer.org' in url_path:
         return Transformer(config, bs, content)
@@ -395,7 +395,7 @@ def create_transformer(url_path, bs, content, root):
 def create_renderer(url_path):
     if 'untools.co' in url_path:
         return UntoolsRenderer()
-    if 'unintendedsequences' in url_path:
+    if 'unintendedconsequenc' in url_path:
         return Renderer()
     if 'blog.acolyer.org' in url_path:
         return Renderer()
