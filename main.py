@@ -25,9 +25,7 @@ def compute_image_path(url_path, root):
 
 
 def download_image(url_path, root):
-    print('img src: %s' % url_path)
     image_path, image_name = compute_image_path(url_path, root)
-    print(image_path)
     if os.path.exists(image_path):
         return image_name
     else:
@@ -119,6 +117,26 @@ class Renderer(object):
         file_out.write(tag.prettify())
         file_out.write('++++\n')
 
+    def render_tag_pre(self, file_out, tag):
+        code_pattern = r"^\[code\s+lang=(?P<lang>.*)\](?P<content>.*)\[\/code\]$"
+        matches = re.finditer(code_pattern, tag.text, re.MULTILINE | re.DOTALL)
+
+        for matchNum, match in enumerate(matches, start=1):
+            ascii_content = f'''[source, {match.group('lang')}]
+----
+{match.group('content')}
+----
+'''
+            file_out.write(ascii_content)
+
+        if matches is None:
+            file_out.write(f'''[listing]
+....
+{tag.text}
+....
+
+''')
+
     def render_tags(self, file_out, site):
         handlers = {
             'p': self.render_tag_p,
@@ -132,6 +150,7 @@ class Renderer(object):
             'blockquote': self.render_tag_blockquote,
             'figure': self.render_tag_p,
             'table': self.render_tag_table,
+            'pre': self.render_tag_pre,
         }
         for tag in site:
             if tag.name is None:
@@ -196,7 +215,6 @@ class Transformer(object):
             url_path = requests.compat.urljoin(self.config['src_url'], src)
             image_name = download_image(url_path, self.config['output_dir'])
             repl = 'image:%s[%s,%s,%s]' % (image_name, alt, width, height)
-            print(repl)
             img.replace_with(repl)
 
     def transform(self):
