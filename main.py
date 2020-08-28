@@ -450,6 +450,19 @@ def generate_new_configuration(file_path):
         json.dump(template, file_out, indent=4)
 
 
+def generate_makefile(output_dir):
+    template = '''html:
+\tasciidoctor index.asciidoc -d book -b html5 -D output
+\tcp -r images output/
+
+epub:
+\tasciidoctor-epub3 index.asciidoc -d book -D output
+'''
+    file_path = os.path.join(output_dir, 'Makefile')
+    with open(file_path, 'w') as out_file:
+        out_file.write(template)
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--new', '-n', type=bool, default=False,
@@ -466,6 +479,7 @@ def main():
     root = config['output_dir']
     os.makedirs(os.path.join(root, ".cached"), exist_ok=True)
     os.makedirs(os.path.join(root, "images"), exist_ok=True)
+    generate_makefile(root)
 
     files = []
     for url_path in paths:
