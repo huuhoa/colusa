@@ -94,4 +94,17 @@ drwxr-xr-x  10 320B images
 -rw-r--r--@  1 694K index.pdf
 ```
 
+## List of Supported Website
+
+Currently `symphony` supports only limited number of websites. The following list all support websites:
+
+* https://untools.co
+* https://unintendedconsequenc.es
+* https://blog.acolyer.org
+* https://fs.blog
+
+## Contribution
+
+Contribution is welcome. You can open issues to request for supporting more websites, open PR to help with those issues, or anything else like documentation, code contribution.
+
 
