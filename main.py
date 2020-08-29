@@ -95,6 +95,9 @@ def generate_makefile(output_dir):
 
 epub:
 \tasciidoctor-epub3 index.asciidoc -d book -D output
+
+pdf:
+\tasciidoctor-pdf index.asciidoc -d book -D output
 '''
     file_path = os.path.join(output_dir, 'Makefile')
     with open(file_path, 'w') as out_file:
