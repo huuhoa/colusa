@@ -72,6 +72,7 @@ class Transformer(object):
             'p': self.tag_wrapper_p,
             'div': self.tag_wrapper_p,
             'span': self.tag_wrapper_span,
+            'article': self.tag_wrapper_span,
             'ul': self.tag_wrapper_ul,
             'ol': self.tag_wrapper_ol,
             'li': self.tag_wrapper_li,
@@ -79,6 +80,7 @@ class Transformer(object):
             'blockquote': self.tag_wrapper_quote,
             'figure': self.tag_wrapper_figure,
             'figcaption': self.tag_wrapper_figurecaption,
+            'code': self.tag_wrapper_inline_code,
         }
 
         self.config = config
@@ -93,7 +95,7 @@ class Transformer(object):
         return text
 
     @classmethod
-    def tag_wrapper_a(cls, tag: Tag, text: str, ident: int):
+    def tag_wrapper_a(cls, tag: Tag, text: str, indent: int):
         href = tag.get("href", "")
         m = re.match(r'https?://', href)
         if m is None:
@@ -102,73 +104,73 @@ class Transformer(object):
             return f'link:{href}[{text}]'
 
     @classmethod
-    def tag_wrapper_italic(cls, tag: Tag, text: str, ident: int):
+    def tag_wrapper_italic(cls, tag: Tag, text: str, indent: int):
         return f'__{text}__'
 
     @classmethod
-    def tag_wrapper_strong(cls, tag: Tag, text: str, ident: int):
+    def tag_wrapper_strong(cls, tag: Tag, text: str, indent: int):
         return f'**{text}**'
 
     @classmethod
-    def tag_wrapper_h1(cls, tag: Tag, text: str, ident: int):
+    def tag_wrapper_h1(cls, tag: Tag, text: str, indent: int):
         return f'=== {cls.tag_wrapper_cleanup(text)}\n\n'
 
     @classmethod
-    def tag_wrapper_h2(cls, tag: Tag, text: str, ident: int):
+    def tag_wrapper_h2(cls, tag: Tag, text: str, indent: int):
         return f'=== {cls.tag_wrapper_cleanup(text)}\n\n'
 
     @classmethod
-    def tag_wrapper_h3(cls, tag: Tag, text: str, ident: int):
+    def tag_wrapper_h3(cls, tag: Tag, text: str, indent: int):
         return f'==== {cls.tag_wrapper_cleanup(text)}\n\n'
 
     @classmethod
-    def tag_wrapper_h4(cls, tag: Tag, text: str, ident: int):
+    def tag_wrapper_h4(cls, tag: Tag, text: str, indent: int):
         return f'===== {cls.tag_wrapper_cleanup(text)}\n\n'
 
     @classmethod
-    def tag_wrapper_h5(cls, tag: Tag, text: str, ident: int):
+    def tag_wrapper_h5(cls, tag: Tag, text: str, indent: int):
         return f'====== {cls.tag_wrapper_cleanup(text)}\n\n'
 
     @classmethod
-    def tag_wrapper_h6(cls, tag: Tag, text: str, ident: int):
+    def tag_wrapper_h6(cls, tag: Tag, text: str, indent: int):
         return f'======= {cls.tag_wrapper_cleanup(text)}\n\n'
 
     @classmethod
-    def tag_wrapper_p(cls, tag: Tag, text: str, ident: int):
+    def tag_wrapper_p(cls, tag: Tag, text: str, indent: int):
         return f'{text}\n\n'
 
     @classmethod
-    def tag_wrapper_span(cls, tag: Tag, text: str, ident: int):
+    def tag_wrapper_span(cls, tag: Tag, text: str, indent: int):
         return text
 
     @classmethod
-    def tag_wrapper_ul(cls, tag: Tag, text: str, ident: int):
+    def tag_wrapper_ul(cls, tag: Tag, text: str, indent: int):
         return f'{text}\n'
 
     @classmethod
-    def tag_wrapper_ol(cls, tag: Tag, text: str, ident: int):
+    def tag_wrapper_ol(cls, tag: Tag, text: str, indent: int):
         return f'{text}\n'
 
     @classmethod
-    def tag_wrapper_li(cls, tag: Tag, text: str, ident: int):
+    def tag_wrapper_li(cls, tag: Tag, text: str, indent: int):
         if tag.parent.name == 'ol':
-            return f'{"." * ident} {text}\n'
+            return f'{"." * indent} {text}\n'
         else:
-            return f'{"*" * ident} {text}\n'
+            return f'{"*" * indent} {text}\n'
 
     @classmethod
-    def tag_wrapper_quote(cls, tag: Tag, text: str, ident: int):
+    def tag_wrapper_quote(cls, tag: Tag, text: str, indent: int):
         return f'[quote]\n____\n{text}\n____\n\n'
 
     @classmethod
-    def tag_wrapper_figure(cls, tag: Tag, text: str, ident: int):
+    def tag_wrapper_figure(cls, tag: Tag, text: str, indent: int):
         return f'{text}\n'
 
     @classmethod
-    def tag_wrapper_figurecaption(cls, tag: Tag, text: str, ident: int):
+    def tag_wrapper_figurecaption(cls, tag: Tag, text: str, indent: int):
         return f'\n{text}\n'
 
-    def tag_wrapper_img(self, img: Tag, text: str, ident: int):
+    def tag_wrapper_img(self, img: Tag, text: str, indent: int):
         alt = img['alt']
         height = img.get('height', '')
         width = img.get('width', '')
@@ -191,8 +193,36 @@ class Transformer(object):
         return f'image:{image_name}[{alt},{width},{height}]'
 
     @classmethod
-    def tag_wrapper_default(cls, tag: Tag, text: str, ident: int):
+    def tag_wrapper_pre(cls, tag: Tag, text: str, indent: int):
+        code_pattern = r"^\[code\s+lang=(?P<lang>.*)\](?P<content>.*)\[\/code\]$"
+        matches = re.finditer(code_pattern, tag.text, re.MULTILINE | re.DOTALL)
+
+        content = []
+        for matchNum, match in enumerate(matches, start=1):
+            ascii_content = f'''[source, {match.group('lang')}]
+----
+{match.group('content')}
+----
+'''
+            content.append(ascii_content)
+
+        if matches is None:
+            content.append(f'''[listing]
+....
+{text}
+....
+
+''')
+        return ''.join(content)
+
+    @classmethod
+    def tag_wrapper_inline_code(cls, tag: Tag, text: str, indent: int):
+        return f'`{text}`'
+
+    @classmethod
+    def tag_wrapper_default(cls, tag: Tag, text: str, indent: int):
         print(f'===UNSUPPORTED===: {tag.name}')
+        # print(tag)
         return text
 
     @classmethod
@@ -229,8 +259,11 @@ class Transformer(object):
 
             return image_name
 
-    def transform_tag(self, tag: Tag, ident_level=0) -> str:
+    def transform_tag(self, tag: Tag, indent_level=0) -> str:
         text = []
+        if tag.name == 'table':
+            return f'++++\n{tag.prettify()}\n++++\n\n'
+
         for t in tag.contents:
             if type(t) is NavigableString:
                 if tag.name in ['ol', 'ul']:
@@ -243,12 +276,12 @@ class Transformer(object):
 
             elif type(t) is Tag:
                 if tag.name in ['ol', 'ul']:
-                    text.append(self.transform_tag(t, ident_level+1))
+                    text.append(self.transform_tag(t, indent_level+1))
                 else:
-                    text.append(self.transform_tag(t, ident_level))
+                    text.append(self.transform_tag(t, indent_level))
 
         wrapper_fmt = self.wrappers.get(tag.name, self.tag_wrapper_default)
-        return wrapper_fmt(tag, ''.join(text), ident_level)
+        return wrapper_fmt(tag, ''.join(text), indent_level)
 
     def transform_strong(self):
         for a in self.site.find_all(['strong', 'b']):
