@@ -147,16 +147,34 @@ class Renderer(object):
         file_out.write('\n\n')
 
     def render_tag_h1(self, file_out, tag):
-        file_out.write(f'=== {tag.string}\n\n')
+        text = tag.text.strip()
+        rex = re.compile(r'\n\s*')
+        text = re.sub(rex, ' ', text)
+        file_out.write(f'=== {text}\n\n')
 
     def render_tag_h2(self, file_out, tag):
-        file_out.write(f'=== {tag.string}\n\n')
+        text = tag.text.strip()
+        rex = re.compile(r'\n\s*')
+        text = re.sub(rex, ' ', text)
+        file_out.write(f'=== {text}\n\n')
 
     def render_tag_h3(self, file_out, tag):
-        file_out.write(f'==== {tag.string}\n\n')
+        text = tag.text.strip()
+        rex = re.compile(r'\n\s*')
+        text = re.sub(rex, ' ', text)
+        file_out.write(f'==== {text}\n\n')
 
     def render_tag_h4(self, file_out, tag):
-        file_out.write(f'===== {tag.string}\n\n')
+        text = tag.text.strip()
+        rex = re.compile(r'\n\s*')
+        text = re.sub(rex, ' ', text)
+        file_out.write(f'===== {text}\n\n')
+
+    def render_tag_h5(self, file_out, tag):
+        text = tag.text.strip()
+        rex = re.compile(r'\n\s*')
+        text = re.sub(rex, ' ', text)
+        file_out.write(f'====== {text}\n\n')
 
     def render_tag_ul(self, file_out, tag):
         for li in tag:
@@ -213,6 +231,7 @@ class Renderer(object):
             'h2': self.render_tag_h2,
             'h3': self.render_tag_h3,
             'h4': self.render_tag_h4,
+            'h5': self.render_tag_h5,
             'ul': self.render_tag_ul,
             'ol': self.render_tag_ol,
             'div': self.render_tag_div,
