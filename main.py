@@ -12,10 +12,7 @@ from bs4 import BeautifulSoup
 
 
 def load_file_content(url_path, file_path):
-    if os.path.exists(file_path):
-        with open(file_path, 'rt') as file_in:
-            content = file_in.read()
-    else:
+    if not os.path.exists(file_path):
         headers = {
             'Accept': '*/*',
             'User-Agent': 'curl/7.64.1',
@@ -25,10 +22,11 @@ def load_file_content(url_path, file_path):
             print(f'Cannot make request. Result: {req.status_code:d}')
             exit(1)
 
-        with open(file_path, 'wt') as file_out:
-            file_out.write(req.text)
+        with open(file_path, 'wb') as file_out:
+            file_out.write(req.content)
 
-        content = req.text
+    with open(file_path, 'rt', encoding='utf-8') as file_in:
+        content = file_in.read()
     return content
 
 
@@ -48,7 +46,7 @@ def download_content(url_path, root):
     content = load_file_content(url_path, file_path)
     bs = BeautifulSoup(content, 'html.parser')
 
-    with open(output_path, 'w') as a_out:
+    with open(output_path, 'w', encoding='utf-8') as a_out:
         extractor = create_extractor(url_path, bs)
         a_out.write(f'== {extractor.get_title()}\n\n')
 
@@ -57,7 +55,9 @@ def download_content(url_path, root):
             published_info = f'published on {time_published}'
         else:
             published_info = ''
-        article_metadata = f'link:{url_path}[original article] {published_info}\n\n{extractor.get_metadata()}'
+        article_metadata = f"'''\n" \
+                           f"source: {url_path} {published_info}\n\n{extractor.get_metadata()}\n" \
+                           f"'''\n"
         a_out.write(article_metadata)
 
         extractor.cleanup()
