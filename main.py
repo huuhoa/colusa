@@ -32,7 +32,7 @@ def load_file_content(url_path, file_path):
     return content
 
 
-def download_content(url_path, root):
+def download_content(url_path, root, **kwargs):
     from etr_factory import create_extractor, create_transformer, create_renderer
 
     m = hashlib.sha256()
@@ -49,7 +49,7 @@ def download_content(url_path, root):
     bs = BeautifulSoup(content, 'html.parser')
 
     with open(output_path, 'w') as a_out:
-        extractor = create_extractor(url_path, bs)
+        extractor = create_extractor(url_path, bs, **kwargs)
         a_out.write(f'== {extractor.get_title()}\n\n')
 
         time_published = extractor.get_published()
@@ -104,12 +104,21 @@ pdf:
         out_file.write(template)
 
 
+def create_experiment_config(config):
+    return {
+        'experiment': True,
+        'config': config.get('etr'),
+    }
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--new', '-n', type=bool, default=False,
                         help='Generate new configuration file. '
                              'File name will be specified in the --input parameter')
     parser.add_argument('--input', '-i', type=str, help='Configuration file')
+    parser.add_argument('--experiment', '-e', type=bool, default=False,
+                        help='Experiment mode. When True, symphony will work in experiment/unstable mode')
     args = parser.parse_args()
     if args.new:
         generate_new_configuration(args.input)
@@ -123,8 +132,13 @@ def main():
     generate_makefile(root)
 
     files = []
+    if args.experiment:
+        params = create_experiment_config(config)
+    else:
+        params = {}
+
     for url_path in paths:
-        output_path = download_content(url_path, root)
+        output_path = download_content(url_path, root, **params)
         output_path = re.sub(f'^{root}/', '', output_path)
         files.append(output_path)
 

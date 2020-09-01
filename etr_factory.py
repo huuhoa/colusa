@@ -1,11 +1,12 @@
 from etr import Extractor, Transformer, Renderer
+from etr_config import JsonConfigExtractor
 from etr_untools import Untools, UntoolsTransformer, UntoolsRenderer
 from etr_unintendedconsequences import UnintendedConsequencesExtractor
 from etr_morning import TheMorningPaperExtractor
 from etr_fsblog import FsblogExtractor
 
 
-def create_extractor(url_path, bs):
+def create_extractor(url_path, bs, **kwargs):
     if 'untools.co' in url_path:
         return Untools(bs)
     if 'unintendedconsequenc' in url_path:
@@ -14,6 +15,8 @@ def create_extractor(url_path, bs):
         return TheMorningPaperExtractor(bs)
     if 'https://fs.blog' in url_path:
         return FsblogExtractor(bs)
+    if kwargs.get('experiment', False):
+        return JsonConfigExtractor(kwargs.get('config', {}), bs)
     return Extractor(bs)
 
 
