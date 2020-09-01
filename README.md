@@ -12,15 +12,15 @@ pip install -r requirements.txt
 
 ### Start from scratch
 
-First of all, we need to generate a configuration file for symphony to work on.
-Symphony has builtin command to generate a template configuration as starter.
+First of all, we need to generate a configuration file for `symphony` to work on.
+`Symphony` has builtin command to generate a template configuration as starter.
 Run following command to generate configuration file:
 
 ```bash
 $ python3 main.py -i new_ebook.json --new True
 ```
 
-Symphony will generate a configuration file as below:
+`Symphony` will generate a configuration file as below:
 
 ```json
 {
@@ -37,7 +37,7 @@ We have to modify the configuration file to fill up valid information.
 
 ### Add content to ebook
 
-After generating the configurartion file, all we need to do is adding (blog posts, articles, webs)' urls to `urls` field in the configuration file.
+After generating the configuration file, all we need to do is adding (blog posts, articles, webs)' urls to `urls` field in the configuration file.
 
 Example for final configuration:
 
@@ -106,6 +106,9 @@ Currently `symphony` supports only limited number of websites. The following lis
 * https://unintendedconsequenc.es
 * https://blog.acolyer.org
 * https://fs.blog
+* https://increment.com
+* https://slack.engineering
+* https://medium.com
 
 ## Contribution
 
