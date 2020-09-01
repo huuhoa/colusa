@@ -177,13 +177,15 @@ class Transformer(object):
         src = img['src']
         srcset = img.get('srcset', None)
         if srcset is not None:
-            srcs = srcset.split(',')
+            srcs = srcset.split(', ')
             imgs = {}
             for s in srcs:
-                ss = s.strip().split(' ')
-                imgs[ss[1]] = ss[0]
-            largest = sorted(imgs.keys())[0]
-            src = imgs[largest]
+                s = s.strip()
+                ss = s.split(' ')
+                if len(ss) > 1:
+                    imgs[ss[1]] = ss[0]
+            largest = sorted(imgs.keys(), key=lambda x: int(x.replace('w', '').replace('h', '')))
+            src = imgs[largest[-1]]
             if 'w' in largest:
                 width = largest.replace('w', '')
             if 'h' in largest:
