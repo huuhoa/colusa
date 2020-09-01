@@ -217,7 +217,20 @@ class Transformer(object):
 
     @classmethod
     def tag_wrapper_inline_code(cls, tag: Tag, text: str, indent: int):
-        return f'`{text}`'
+        if '\n' in text:
+            # multiline code
+            lang = tag.get('class', ['text'])
+            lang = lang[0]
+            lang = lang.replace('language-', '')
+            ascii_content = f'''[source, {lang}]
+----
+{text}
+----
+'''
+            return ascii_content
+        else:
+            # inline
+            return f'`{text}`'
 
     @classmethod
     def tag_wrapper_default(cls, tag: Tag, text: str, indent: int):
