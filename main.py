@@ -63,8 +63,9 @@ def download_content(url_path, root):
         extractor.cleanup()
         transformer = create_transformer(url_path, bs, extractor.get_content(), root)
         value = transformer.transform()
-        renderer = create_renderer(url_path)
-        renderer.render_tags(a_out, value)
+        a_out.write(value)
+        # renderer = create_renderer(url_path)
+        # renderer.render_tags(a_out, value)
     return output_path
 
 
