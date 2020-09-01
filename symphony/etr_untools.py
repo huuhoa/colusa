@@ -1,6 +1,6 @@
 import re
 
-from etr import Renderer, Transformer, Extractor
+from symphony.etr import Renderer, Transformer, Extractor
 
 
 class UntoolsRenderer(Renderer):

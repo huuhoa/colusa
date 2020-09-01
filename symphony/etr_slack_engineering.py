@@ -1,4 +1,4 @@
-from etr import Extractor
+from symphony.etr import Extractor
 
 
 class SlackEngineeringExtractor(Extractor):

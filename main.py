@@ -31,7 +31,7 @@ def load_file_content(url_path, file_path):
 
 
 def download_content(url_path, root):
-    from etr_factory import create_extractor, create_transformer, create_renderer
+    from symphony.etr_factory import create_extractor, create_transformer
 
     m = hashlib.sha256()
     m.update(url_path.encode('utf-8'))

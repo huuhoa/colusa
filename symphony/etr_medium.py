@@ -1,6 +1,6 @@
 from bs4 import Tag
 
-from etr import Extractor, Transformer
+from symphony.etr import Extractor, Transformer
 
 
 class MediumExtractor(Extractor):
