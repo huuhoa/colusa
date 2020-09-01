@@ -184,15 +184,18 @@ class Transformer(object):
                 ss = s.split(' ')
                 if len(ss) > 1:
                     imgs[ss[1]] = ss[0]
-            largest = sorted(imgs.keys(), key=lambda x: int(x.replace('w', '').replace('h', '')))
-            src = imgs[largest[-1]]
+            dim_list = sorted(imgs.keys(), key=lambda x: int(x.replace('w', '').replace('h', '')))
+            largest = dim_list[-1]
+            src = imgs[largest]
             if 'w' in largest:
-                width = largest.replace('w', '')
+                dim = f"{largest.replace('w', '')},"
             if 'h' in largest:
-                height = largest.replace('h', '')
+                dim = f",{largest.replace('w', '')}"
+        else:
+            dim = f'{width}, {height}'
         url_path = requests.compat.urljoin(self.config['src_url'], src)
         image_name = self.download_image(url_path, self.config['output_dir'])
-        return f'image:{image_name}[{alt},{width},{height}]'
+        return f'image:{image_name}[{alt},{dim}]'
 
     @classmethod
     def tag_wrapper_pre(cls, tag: Tag, text: str, indent: int):
