@@ -1,4 +1,5 @@
 from etr import Extractor, Transformer, Renderer
+from etr_medium import MediumExtractor, MediumTransformer
 from etr_slack_engineering import SlackEngineeringExtractor
 from etr_untools import Untools, UntoolsTransformer, UntoolsRenderer
 from etr_unintendedconsequences import UnintendedConsequencesExtractor
@@ -20,6 +21,8 @@ def create_extractor(url_path, bs):
         return IncrementDotComExtractor(bs)
     if '//slack.engineering' in url_path:
         return SlackEngineeringExtractor(bs)
+    if '//medium.com' in url_path:
+        return MediumExtractor(bs)
     return Extractor(bs)
 
 
@@ -34,6 +37,8 @@ def create_transformer(url_path, bs, content, root):
         return Transformer(config, bs, content)
     if 'blog.acolyer.org' in url_path:
         return Transformer(config, bs, content)
+    if '//medium.com' in url_path:
+        return MediumTransformer(config, bs, content)
     return Transformer(config, bs, content)
 
 
