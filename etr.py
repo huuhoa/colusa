@@ -5,6 +5,7 @@ import shutil
 from urllib.parse import urlparse
 
 import requests
+from bs4 import NavigableString, Tag, PageElement
 
 
 class Extractor(object):
@@ -55,9 +56,144 @@ class Extractor(object):
 class Transformer(object):
     """Transformer transform some html tags into asciidoc syntax"""
     def __init__(self, config, doc, site):
+        self.wrappers = {
+            'a': self.tag_wrapper_a,
+            'italic': self.tag_wrapper_italic,
+            'em': self.tag_wrapper_italic,
+            'i': self.tag_wrapper_italic,
+            'b': self.tag_wrapper_strong,
+            'strong': self.tag_wrapper_strong,
+            'h1': self.tag_wrapper_h1,
+            'h2': self.tag_wrapper_h2,
+            'h3': self.tag_wrapper_h3,
+            'h4': self.tag_wrapper_h4,
+            'h5': self.tag_wrapper_h5,
+            'h6': self.tag_wrapper_h6,
+            'p': self.tag_wrapper_p,
+            'div': self.tag_wrapper_p,
+            'span': self.tag_wrapper_span,
+            'ul': self.tag_wrapper_ul,
+            'ol': self.tag_wrapper_ol,
+            'li': self.tag_wrapper_li,
+            'img': self.tag_wrapper_img,
+            'blockquote': self.tag_wrapper_quote,
+            'figure': self.tag_wrapper_figure,
+            'figcaption': self.tag_wrapper_figurecaption,
+        }
+
         self.config = config
         self.doc = doc
         self.site = site
+
+    @classmethod
+    def tag_wrapper_cleanup(cls, text: str) -> str:
+        text = text.strip()
+        rex = re.compile(r'\n\s*')
+        text = re.sub(rex, ' ', text)
+        return text
+
+    @classmethod
+    def tag_wrapper_a(cls, tag: Tag, text: str, ident: int):
+        href = tag.get("href", "")
+        m = re.match(r'https?://', href)
+        if m is None:
+            return text
+        else:
+            return f'link:{href}[{text}]'
+
+    @classmethod
+    def tag_wrapper_italic(cls, tag: Tag, text: str, ident: int):
+        return f'__{text}__'
+
+    @classmethod
+    def tag_wrapper_strong(cls, tag: Tag, text: str, ident: int):
+        return f'**{text}**'
+
+    @classmethod
+    def tag_wrapper_h1(cls, tag: Tag, text: str, ident: int):
+        return f'=== {cls.tag_wrapper_cleanup(text)}\n\n'
+
+    @classmethod
+    def tag_wrapper_h2(cls, tag: Tag, text: str, ident: int):
+        return f'=== {cls.tag_wrapper_cleanup(text)}\n\n'
+
+    @classmethod
+    def tag_wrapper_h3(cls, tag: Tag, text: str, ident: int):
+        return f'==== {cls.tag_wrapper_cleanup(text)}\n\n'
+
+    @classmethod
+    def tag_wrapper_h4(cls, tag: Tag, text: str, ident: int):
+        return f'===== {cls.tag_wrapper_cleanup(text)}\n\n'
+
+    @classmethod
+    def tag_wrapper_h5(cls, tag: Tag, text: str, ident: int):
+        return f'====== {cls.tag_wrapper_cleanup(text)}\n\n'
+
+    @classmethod
+    def tag_wrapper_h6(cls, tag: Tag, text: str, ident: int):
+        return f'======= {cls.tag_wrapper_cleanup(text)}\n\n'
+
+    @classmethod
+    def tag_wrapper_p(cls, tag: Tag, text: str, ident: int):
+        return f'{text}\n\n'
+
+    @classmethod
+    def tag_wrapper_span(cls, tag: Tag, text: str, ident: int):
+        return text
+
+    @classmethod
+    def tag_wrapper_ul(cls, tag: Tag, text: str, ident: int):
+        return f'{text}\n'
+
+    @classmethod
+    def tag_wrapper_ol(cls, tag: Tag, text: str, ident: int):
+        return f'{text}\n'
+
+    @classmethod
+    def tag_wrapper_li(cls, tag: Tag, text: str, ident: int):
+        if tag.parent.name == 'ol':
+            return f'{"." * ident} {text}\n'
+        else:
+            return f'{"*" * ident} {text}\n'
+
+    @classmethod
+    def tag_wrapper_quote(cls, tag: Tag, text: str, ident: int):
+        return f'[quote]\n____\n{text}\n____\n\n'
+
+    @classmethod
+    def tag_wrapper_figure(cls, tag: Tag, text: str, ident: int):
+        return f'{text}\n'
+
+    @classmethod
+    def tag_wrapper_figurecaption(cls, tag: Tag, text: str, ident: int):
+        return f'\n{text}\n'
+
+    def tag_wrapper_img(self, img: Tag, text: str, ident: int):
+        alt = img['alt']
+        height = img.get('height', '')
+        width = img.get('width', '')
+        src = img['src']
+        srcset = img.get('srcset', None)
+        if srcset is not None:
+            srcs = srcset.split(',')
+            imgs = {}
+            for s in srcs:
+                ss = s.strip().split(' ')
+                imgs[ss[1]] = ss[0]
+            largest = sorted(imgs.keys())[0]
+            src = imgs[largest]
+            if 'w' in largest:
+                width = largest.replace('w', '')
+            if 'h' in largest:
+                height = largest.replace('h', '')
+        url_path = requests.compat.urljoin(self.config['src_url'], src)
+        image_name = self.download_image(url_path, self.config['output_dir'])
+        return f'image:{image_name}[{alt},{width},{height}]'
+
+    @classmethod
+    def tag_wrapper_default(cls, tag: Tag, text: str, ident: int):
+        print(f'===UNSUPPORTED===: {tag.name}')
+        return text
 
     @classmethod
     def compute_image_path(cls, url_path, root):
@@ -93,6 +229,27 @@ class Transformer(object):
 
             return image_name
 
+    def transform_tag(self, tag: Tag, ident_level=0) -> str:
+        text = []
+        for t in tag.contents:
+            if type(t) is NavigableString:
+                if tag.name in ['ol', 'ul']:
+                    continue
+                m = re.match(r'^\n\s*$', str(t))
+                if m is None:
+                    text.append(str(t))
+                # else:
+                #     print('ONLY NEW LINE')
+
+            elif type(t) is Tag:
+                if tag.name in ['ol', 'ul']:
+                    text.append(self.transform_tag(t, ident_level+1))
+                else:
+                    text.append(self.transform_tag(t, ident_level))
+
+        wrapper_fmt = self.wrappers.get(tag.name, self.tag_wrapper_default)
+        return wrapper_fmt(tag, ''.join(text), ident_level)
+
     def transform_strong(self):
         for a in self.site.find_all(['strong', 'b']):
             text = a.text
@@ -100,11 +257,11 @@ class Transformer(object):
 
     def transform_italic(self):
         for a in self.site.find_all(['italic', 'i', 'em']):
-            text = a.text
-            a.replace_with(f'__{text}__')
+            value = self.transform_tag(a)
+            a.replace_with(value)
 
     def transform_a(self):
-        for a in self.site.find_all('a', attrs={'href': re.compile("^http[s]://")}):
+        for a in self.site.find_all('a', attrs={'href': re.compile("^https?://")}):
             href = a['href']
             text = a.text
             a.replace_with(f'link:{href}[{text}]')
@@ -134,10 +291,13 @@ class Transformer(object):
             img.replace_with(repl)
 
     def transform(self):
-        self.transform_strong()
-        self.transform_italic()
-        self.transform_img()
-        self.transform_a()
+        value = self.transform_tag(self.site)
+        self.site.replace_with(value)
+        return value
+        # self.transform_strong()
+        # self.transform_italic()
+        # self.transform_img()
+        # self.transform_a()
 
 
 class Renderer(object):
@@ -241,6 +401,8 @@ class Renderer(object):
             'pre': self.render_tag_pre,
             'span': self.render_tag_p,
         }
+        file_out.write(site)
+        return
         for tag in site:
             if tag.name is None:
                 continue
