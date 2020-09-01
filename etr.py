@@ -283,54 +283,11 @@ class Transformer(object):
         wrapper_fmt = self.wrappers.get(tag.name, self.tag_wrapper_default)
         return wrapper_fmt(tag, ''.join(text), indent_level)
 
-    def transform_strong(self):
-        for a in self.site.find_all(['strong', 'b']):
-            text = a.text
-            a.replace_with(f'**{text}**')
-
-    def transform_italic(self):
-        for a in self.site.find_all(['italic', 'i', 'em']):
-            value = self.transform_tag(a)
-            a.replace_with(value)
-
-    def transform_a(self):
-        for a in self.site.find_all('a', attrs={'href': re.compile("^https?://")}):
-            href = a['href']
-            text = a.text
-            a.replace_with(f'link:{href}[{text}]')
-
-    def transform_img(self):
-        for img in self.site.find_all('img'):
-            alt = img['alt']
-            height = img.get('height', '')
-            width = img.get('width', '')
-            src = img['src']
-            srcset = img.get('srcset', None)
-            if srcset is not None:
-                srcs = srcset.split(',')
-                imgs = {}
-                for s in srcs:
-                    ss = s.strip().split(' ')
-                    imgs[ss[1]] = ss[0]
-                largest = sorted(imgs.keys())[0]
-                src = imgs[largest]
-                if 'w' in largest:
-                    width = largest.replace('w', '')
-                if 'h' in largest:
-                    height = largest.replace('h', '')
-            url_path = requests.compat.urljoin(self.config['src_url'], src)
-            image_name = self.download_image(url_path, self.config['output_dir'])
-            repl = f'image:{image_name}[{alt},{width},{height}]'
-            img.replace_with(repl)
-
     def transform(self):
         value = self.transform_tag(self.site)
         self.site.replace_with(value)
+        value = re.sub(r'\n{3,}', '\n\n', value)
         return value
-        # self.transform_strong()
-        # self.transform_italic()
-        # self.transform_img()
-        # self.transform_a()
 
 
 class Renderer(object):
@@ -434,8 +391,6 @@ class Renderer(object):
             'pre': self.render_tag_pre,
             'span': self.render_tag_p,
         }
-        file_out.write(site)
-        return
         for tag in site:
             if tag.name is None:
                 continue
