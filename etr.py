@@ -197,12 +197,12 @@ class Renderer(object):
         file_out.write('[quote]\n')
         file_out.write('____\n')
         self.render_tags(file_out, tag)
-        file_out.write('____\n')
+        file_out.write('____\n\n')
 
     def render_tag_table(self, file_out, tag):
         file_out.write('++++\n')
         file_out.write(tag.prettify())
-        file_out.write('++++\n')
+        file_out.write('\n++++\n\n')
 
     def render_tag_pre(self, file_out, tag):
         code_pattern = r"^\[code\s+lang=(?P<lang>.*)\](?P<content>.*)\[\/code\]$"
