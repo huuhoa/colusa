@@ -174,7 +174,9 @@ class Transformer(object):
         alt = img['alt']
         height = img.get('height', '')
         width = img.get('width', '')
-        src = img['src']
+        src = img.get('src', None)
+        if src is None:
+            return ''
         srcset = img.get('srcset', None)
         if srcset is not None:
             srcs = srcset.split(', ')
