@@ -26,7 +26,7 @@ def create_transformer(url_path, bs, content, root):
         "output_dir": root
     }
     if 'untools.co' in url_path:
-        return UntoolsTransformer(config, bs, content)
+        return Transformer(config, bs, content)
     if 'unintendedconsequenc' in url_path:
         return Transformer(config, bs, content)
     if 'blog.acolyer.org' in url_path:
