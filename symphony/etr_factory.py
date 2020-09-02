@@ -1,16 +1,16 @@
-from symphony.etr import Extractor, Transformer, Renderer
-from symphony.etr_medium import MediumExtractor, MediumTransformer
-from symphony.etr_slack_engineering import SlackEngineeringExtractor
-from symphony.etr_untools import Untools, UntoolsRenderer
-from symphony.etr_unintendedconsequences import UnintendedConsequencesExtractor
-from symphony.etr_morning import TheMorningPaperExtractor
-from symphony.etr_fsblog import FsblogExtractor
-from symphony.etr_increment import IncrementDotComExtractor
+from .etr import Extractor, Transformer
+from .etr_fsblog import FsblogExtractor
+from .etr_increment import IncrementDotComExtractor
+from .etr_medium import MediumExtractor, MediumTransformer
+from .etr_morning import TheMorningPaperExtractor
+from .etr_slack_engineering import SlackEngineeringExtractor
+from .etr_unintendedconsequences import UnintendedConsequencesExtractor
+from .etr_untools import UntoolsExtractor
 
 
 def create_extractor(url_path, bs):
     if 'untools.co' in url_path:
-        return Untools(bs)
+        return UntoolsExtractor(bs)
     if 'unintendedconsequenc' in url_path:
         return UnintendedConsequencesExtractor(bs)
     if 'blog.acolyer.org' in url_path:
@@ -40,13 +40,3 @@ def create_transformer(url_path, bs, content, root):
     if '//medium.com' in url_path:
         return MediumTransformer(config, bs, content)
     return Transformer(config, bs, content)
-
-
-def create_renderer(url_path):
-    if 'untools.co' in url_path:
-        return UntoolsRenderer()
-    if 'unintendedconsequenc' in url_path:
-        return Renderer()
-    if 'blog.acolyer.org' in url_path:
-        return Renderer()
-    return Renderer()
