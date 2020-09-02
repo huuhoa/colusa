@@ -77,7 +77,7 @@ By invoking above command, `symphony` will download webpages (specified in `urls
 ### Prerequisites
 Before generating ebook, we need to install asciidoctor tools. Follow install guideline on following websites:
 
-* generating html: https://asciidoctor.org 
+* for generating html: https://asciidoctor.org 
 * for generating epub: https://asciidoctor.org/docs/asciidoctor-epub3/
 * for generating pdf: https://asciidoctor.org/docs/asciidoctor-pdf/
 
