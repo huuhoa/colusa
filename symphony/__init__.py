@@ -6,12 +6,10 @@ __license__ = "MIT"
 
 
 import argparse
-import hashlib
 import json
 import os
-from urllib.parse import urlparse
+import pathlib
 
-import requests
 from bs4 import BeautifulSoup
 
 
@@ -21,35 +19,22 @@ class Symphony(object):
         self.output_dir = configuration['output_dir']
 
     def download_content(self, url_path):
-        m = hashlib.sha256()
-        m.update(url_path.encode('utf-8'))
-        cached_file_path = os.path.join(self.output_dir, ".cached", "%s.html" % m.hexdigest())
+        from .utils import download_url, get_hexdigest
 
-        p = urlparse(url_path).path.rstrip('/')
-        path_name = os.path.basename(p)
-        output_path = os.path.join(self.output_dir, path_name)
-        os.makedirs(output_path, exist_ok=True)
-        relative_file_path = os.path.join(path_name, 'index.asciidoc')
-        output_file_path = os.path.join(output_path, 'index.asciidoc')
+        output_path = pathlib.Path(self.output_dir)
+        cached_file_path = output_path.joinpath('.cached', f'{get_hexdigest(url_path)}.html')
+        p = pathlib.PurePath(url_path)
+        output_file_name = f'{p.name}.asciidoc'
+        output_file_path = output_path.joinpath(output_file_name)
         print(output_file_path)
 
-        if not os.path.exists(cached_file_path):
+        if not cached_file_path.exists():
             # download file from url_path
-            headers = {
-                'Accept': '*/*',
-                'User-Agent': 'curl/7.64.1',
-            }
-            req = requests.get(url_path, headers=headers)
-            if req.status_code != 200:
-                print(f'Cannot make request. Result: {req.status_code:d}')
-                exit(1)
-
-            with open(cached_file_path, 'wb') as file_out:
-                file_out.write(req.content)
+            download_url(url_path, str(cached_file_path))
 
         with open(cached_file_path, 'rt', encoding='utf-8') as file_in:
             content = file_in.read()
-        return content, output_file_path, relative_file_path
+        return content, output_file_path, output_file_name
 
     def ebook_generate_content(self, url_path, content, output_path):
         from .etr_factory import create_extractor, create_transformer

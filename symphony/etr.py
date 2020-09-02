@@ -1,11 +1,9 @@
-import hashlib
-import os
 import re
-import shutil
-from urllib.parse import urlparse
 
 import requests
 from bs4 import NavigableString, Tag
+
+from .utils import download_image
 
 
 class Extractor(object):
@@ -196,7 +194,7 @@ class Transformer(object):
         else:
             dim = f'{width}, {height}'
         url_path = requests.compat.urljoin(self.config['src_url'], src)
-        image_name = self.download_image(url_path, self.config['output_dir'])
+        image_name = download_image(url_path, self.config['output_dir'])
         return f'image:{image_name}[{alt},{dim}]'
 
     @classmethod
@@ -245,40 +243,6 @@ class Transformer(object):
         # print(tag)
         return text
 
-    @classmethod
-    def compute_image_path(cls, url_path, root):
-        m = hashlib.sha256()
-        m.update(url_path.encode('utf-8'))
-        os.makedirs(os.path.join(root, ".cached"), exist_ok=True)
-
-        u_path = urlparse(url_path)
-        output_path = u_path.path
-        output_path = os.path.splitext(output_path)
-        image_name = f'{m.hexdigest()}{output_path[1]}'
-        file_path = os.path.join(root, "images", image_name)
-        return file_path, image_name
-
-    @classmethod
-    def download_image(cls, url_path, root):
-        image_path, image_name = cls.compute_image_path(url_path, root)
-        if os.path.exists(image_path):
-            return image_name
-        else:
-            headers = {
-                'Accept': '*/*',
-                'User-Agent': 'curl/7.64.1',
-            }
-            req = requests.get(url_path, headers=headers, stream=True)
-            if req.status_code != 200:
-                print(f'Cannot make request. Result: {req.status_code:d}')
-                exit(1)
-
-            with open(image_path, 'wb') as file_out:
-                req.raw.decode_content = True
-                shutil.copyfileobj(req.raw, file_out)
-
-            return image_name
-
     def transform_tag(self, tag: Tag, indent_level=0) -> str:
         text = []
         if tag.name == 'table':
@@ -306,6 +270,7 @@ class Transformer(object):
     def transform(self):
         value = self.transform_tag(self.site)
         self.site.replace_with(value)
+        # cleanup large whitespace
         value = re.sub(r'\n{3,}', '\n\n', value)
         return value
 
