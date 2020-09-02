@@ -74,6 +74,14 @@ By invoking above command, `symphony` will download webpages (specified in `urls
 
 ## Compile ebook for consuming purpose
 
+### Prerequisites
+Before generating ebook, we need to install asciidoctor tools. Follow install guideline on following websites:
+
+* generating html: https://asciidoctor.org 
+* for generating epub: https://asciidoctor.org/docs/asciidoctor-epub3/
+* for generating pdf: https://asciidoctor.org/docs/asciidoctor-pdf/
+
+### Generating ebooks
 To help with generating ebook, `symphony` also create a `Makefile` in the root folder of the ebook. In the `Makefile`, there are three common targets that we can use to generate ebook in html, epub, pdf formats.
 
 ```bash
