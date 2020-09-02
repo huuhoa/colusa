@@ -53,7 +53,7 @@ class Extractor(object):
 
 class Transformer(object):
     """Transformer transform some html tags into asciidoc syntax"""
-    def __init__(self, config, doc, site):
+    def __init__(self, config, site):
         self.wrappers = {
             'a': self.tag_wrapper_a,
             'italic': self.tag_wrapper_italic,
@@ -82,7 +82,6 @@ class Transformer(object):
         }
 
         self.config = config
-        self.doc = doc
         self.site = site
 
     @classmethod
@@ -269,7 +268,6 @@ class Transformer(object):
 
     def transform(self):
         value = self.transform_tag(self.site)
-        self.site.replace_with(value)
         # cleanup large whitespace
         value = re.sub(r'\n{3,}', '\n\n', value)
         return value

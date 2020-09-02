@@ -56,7 +56,7 @@ class Symphony(object):
             file_out.write(article_metadata)
 
             extractor.cleanup()
-            transformer = create_transformer(url_path, bs, extractor.get_content(), self.output_dir)
+            transformer = create_transformer(url_path, extractor.get_content(), self.output_dir)
             value = transformer.transform()
             file_out.write(value)
 

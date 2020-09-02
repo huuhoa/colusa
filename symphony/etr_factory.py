@@ -26,17 +26,17 @@ def create_extractor(url_path, bs):
     return Extractor(bs)
 
 
-def create_transformer(url_path, bs, content, root):
+def create_transformer(url_path, content, root):
     config = {
         "src_url": url_path,
         "output_dir": root
     }
     if 'untools.co' in url_path:
-        return Transformer(config, bs, content)
+        return Transformer(config, content)
     if 'unintendedconsequenc' in url_path:
-        return Transformer(config, bs, content)
+        return Transformer(config, content)
     if 'blog.acolyer.org' in url_path:
-        return Transformer(config, bs, content)
+        return Transformer(config, content)
     if '//medium.com' in url_path:
-        return MediumTransformer(config, bs, content)
-    return Transformer(config, bs, content)
+        return MediumTransformer(config, content)
+    return Transformer(config, content)
