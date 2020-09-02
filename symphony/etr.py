@@ -15,7 +15,10 @@ class Extractor(object):
         self.internal_init()
 
     def get_title(self):
-        pass
+        meta = self.bs.find('meta', attrs={'property': 'og:title'})
+        if meta is not None:
+            return meta.get('content')
+        return self.bs.title.text
 
     def get_published(self):
         time_published = self.bs.find('time', attrs={'class': 'entry-date published'})
