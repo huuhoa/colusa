@@ -1,4 +1,5 @@
 from .etr import Extractor, Transformer
+from .etr_engineering_sportify import EngineeringSpotifyExtractor
 from .etr_fsblog import FsblogExtractor
 from .etr_increment import IncrementDotComExtractor
 from .etr_medium import MediumExtractor, MediumTransformer
@@ -29,6 +30,8 @@ def create_extractor(url_path, bs):
         return CSRutgersEduExtractor(bs)
     if '//www.preethikasireddy.com' in url_path:
         return PreethikasireddyExtractor(bs)
+    if '//engineering.atspotify.com' in url_path:
+        return EngineeringSpotifyExtractor(bs)
     return Extractor(bs)
 
 

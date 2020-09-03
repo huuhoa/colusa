@@ -166,14 +166,14 @@ class Transformer(object):
 
     @classmethod
     def tag_wrapper_figure(cls, tag: Tag, text: str, indent: int):
-        return f'{text}\n'
+        return f'{text}\n\n'
 
     @classmethod
     def tag_wrapper_figurecaption(cls, tag: Tag, text: str, indent: int):
         return f'\n{text}\n'
 
     def tag_wrapper_img(self, img: Tag, text: str, indent: int):
-        alt = img['alt']
+        alt = img.get('alt', '')
         height = img.get('height', '')
         width = img.get('width', '')
         src = img.get('src', None)
