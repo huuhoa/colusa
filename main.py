@@ -12,8 +12,7 @@ def main():
     parser.add_argument('--input', '-i', type=str, help='Configuration file')
     args = parser.parse_args()
     if args.new:
-        symp = Symphony()
-        symp.generate_new_configuration(args.input)
+        Symphony.generate_new_configuration(args.input)
         exit(0)
 
     configs = read_configuration_file(args.input)
