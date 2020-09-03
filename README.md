@@ -118,6 +118,7 @@ Currently `symphony` supports only limited number of websites. The following lis
 * https://slack.engineering
 * https://medium.com
 * https://www.cs.rutgers.edu/~pxk/
+* https://www.preethikasireddy.com
 
 ## Contribution
 

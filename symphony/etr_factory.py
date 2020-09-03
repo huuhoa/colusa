@@ -3,6 +3,7 @@ from .etr_fsblog import FsblogExtractor
 from .etr_increment import IncrementDotComExtractor
 from .etr_medium import MediumExtractor, MediumTransformer
 from .etr_morning import TheMorningPaperExtractor
+from .etr_preethikasireddy import PreethikasireddyExtractor
 from .etr_slack_engineering import SlackEngineeringExtractor
 from .etr_unintendedconsequences import UnintendedConsequencesExtractor
 from .etr_untools import UntoolsExtractor
@@ -26,6 +27,8 @@ def create_extractor(url_path, bs):
         return MediumExtractor(bs)
     if '//www.cs.rutgers.edu/~pxk/' in url_path:
         return CSRutgersEduExtractor(bs)
+    if '//www.preethikasireddy.com' in url_path:
+        return PreethikasireddyExtractor(bs)
     return Extractor(bs)
 
 
