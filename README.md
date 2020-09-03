@@ -117,6 +117,7 @@ Currently `symphony` supports only limited number of websites. The following lis
 * https://increment.com
 * https://slack.engineering
 * https://medium.com
+* https://www.cs.rutgers.edu/~pxk/
 
 ## Contribution
 

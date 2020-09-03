@@ -6,6 +6,7 @@ from .etr_morning import TheMorningPaperExtractor
 from .etr_slack_engineering import SlackEngineeringExtractor
 from .etr_unintendedconsequences import UnintendedConsequencesExtractor
 from .etr_untools import UntoolsExtractor
+from .etr_cs_rutgers_edu import CSRutgersEduExtractor
 
 
 def create_extractor(url_path, bs):
@@ -23,6 +24,8 @@ def create_extractor(url_path, bs):
         return SlackEngineeringExtractor(bs)
     if '//medium.com' in url_path:
         return MediumExtractor(bs)
+    if '//www.cs.rutgers.edu/~pxk/' in url_path:
+        return CSRutgersEduExtractor(bs)
     return Extractor(bs)
 
 
