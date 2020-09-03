@@ -52,6 +52,8 @@ class Extractor(object):
 
     def internal_init(self):
         self.site = self.bs.find('div', class_='entry-content')
+        if self.site is None:
+            self.site = self.bs.find('div', class_='article-content')
 
 
 class Transformer(object):
@@ -145,11 +147,11 @@ class Transformer(object):
 
     @classmethod
     def tag_wrapper_ul(cls, tag: Tag, text: str, indent: int):
-        return f'{text}\n'
+        return f'\n{text}\n'
 
     @classmethod
     def tag_wrapper_ol(cls, tag: Tag, text: str, indent: int):
-        return f'{text}\n'
+        return f'\n{text}\n'
 
     @classmethod
     def tag_wrapper_li(cls, tag: Tag, text: str, indent: int):
