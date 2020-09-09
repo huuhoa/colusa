@@ -12,6 +12,8 @@ import pathlib
 
 from bs4 import BeautifulSoup
 
+from symphony.etr import ContentNotFoundError
+
 
 class Symphony(object):
     def __init__(self, configuration: dict):
@@ -42,23 +44,27 @@ class Symphony(object):
         bs = BeautifulSoup(content, 'html.parser')
 
         with open(output_path, 'w', encoding='utf-8') as file_out:
-            extractor = create_extractor(url_path, bs)
-            file_out.write(f'== {extractor.get_title()}\n\n')
+            try:
+                extractor = create_extractor(url_path, bs)
+                file_out.write(f'== {extractor.get_title()}\n\n')
 
-            time_published = extractor.get_published()
-            if time_published is not None:
-                published_info = f'published on {time_published}'
-            else:
-                published_info = ''
-            article_metadata = f"'''\n" \
-                               f"source: {url_path} {published_info}\n\n{extractor.get_metadata()}\n" \
-                               f"'''\n"
-            file_out.write(article_metadata)
+                time_published = extractor.get_published()
+                if time_published is not None:
+                    published_info = f'published on {time_published}'
+                else:
+                    published_info = ''
+                article_metadata = f"'''\n" \
+                                   f"source: {url_path} {published_info}\n\n{extractor.get_metadata()}\n" \
+                                   f"'''\n"
+                file_out.write(article_metadata)
 
-            extractor.cleanup()
-            transformer = create_transformer(url_path, extractor.get_content(), self.output_dir)
-            value = transformer.transform()
-            file_out.write(value)
+                extractor.cleanup()
+                transformer = create_transformer(url_path, extractor.get_content(), self.output_dir)
+                value = transformer.transform()
+                file_out.write(value)
+            except ContentNotFoundError as e:
+                print(e, url_path)
+                # raise e
 
     @classmethod
     def generate_new_configuration(cls, file_path):

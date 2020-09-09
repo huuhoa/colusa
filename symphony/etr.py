@@ -6,6 +6,14 @@ from bs4 import NavigableString, Tag
 from .utils import download_image
 
 
+class ContentNotFoundError(Exception):
+    def __init__(self, *args, **kwargs):
+        pass
+
+    def __str__(self):
+        return 'cannot detect content of the site'
+
+
 class Extractor(object):
     """Extractor extract real article content from sea of other contents"""
     def __init__(self, bs):
@@ -13,6 +21,8 @@ class Extractor(object):
         self.site = None
         self.content = None
         self.internal_init()
+        if self.site is None:
+            raise ContentNotFoundError()
 
     def get_title(self):
         meta = self.bs.find('meta', attrs={'property': 'og:title'})
