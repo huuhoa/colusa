@@ -119,6 +119,9 @@ Currently `symphony` supports only limited number of websites. The following lis
 * https://medium.com
 * https://www.cs.rutgers.edu/~pxk/
 * https://www.preethikasireddy.com
+* https://engineering.atspotify.com
+* https://truyenfull.vn
+* https://avikdas.com
 
 ## Contribution
 
