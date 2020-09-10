@@ -4,6 +4,9 @@ import pathlib
 import shutil
 
 import requests
+from idna import unicode
+import unicodedata
+import re
 
 
 def download_url(url_path: str, file_path: str):
@@ -34,3 +37,22 @@ def download_image(url_path, output_dir):
     if not os.path.exists(image_path):
         download_url(url_path, image_path)
     return image_name
+
+
+def slugify(value):
+    """
+    Normalizes string, converts to lowercase, removes non-alpha characters,
+    and converts spaces to hyphens.
+
+    From Django's "django/template/defaultfilters.py".
+    Copied from: https://gist.github.com/berlotto/6295018
+    """
+
+    _slugify_strip_re = re.compile(r'[^\w\s-]')
+    _slugify_hyphenate_re = re.compile(r'[-\s]+')
+
+    if not isinstance(value, unicode):
+        value = unicode(value)
+    value = unicodedata.normalize('NFKD', value).encode('ascii', 'ignore').decode('ascii')
+    value = unicode(_slugify_strip_re.sub('', value).strip().lower())
+    return _slugify_hyphenate_re.sub('-', value)

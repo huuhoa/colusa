@@ -1,9 +1,10 @@
+import os
 import re
 
 import requests
 from bs4 import NavigableString, Tag
 
-from .utils import download_image
+from .utils import download_image, slugify
 
 
 class ContentNotFoundError(Exception):
@@ -69,6 +70,7 @@ class Extractor(object):
 class Transformer(object):
     """Transformer transform some html tags into asciidoc syntax"""
     def __init__(self, config, site):
+        self.value = ''
         self.wrappers = {
             'a': self.tag_wrapper_a,
             'italic': self.tag_wrapper_italic,
@@ -117,10 +119,14 @@ class Transformer(object):
 
     @classmethod
     def tag_wrapper_italic(cls, tag: Tag, text: str, indent: int):
+        if not text:
+            return ''
         return f'__{text}__'
 
     @classmethod
     def tag_wrapper_strong(cls, tag: Tag, text: str, indent: int):
+        if not text:
+            return ''
         return f'**{text}**'
 
     @classmethod
@@ -190,26 +196,36 @@ class Transformer(object):
         if src is None:
             return ''
         srcset = img.get('srcset', None)
-        if srcset is not None:
-            srcs = srcset.split(', ')
-            imgs = {}
-            for s in srcs:
-                s = s.strip()
-                ss = s.split(' ')
-                if len(ss) > 1:
-                    imgs[ss[1]] = ss[0]
-            dim_list = sorted(imgs.keys(), key=lambda x: int(x.replace('w', '').replace('h', '')))
-            largest = dim_list[-1]
-            src = imgs[largest]
-            if 'w' in largest:
-                dim = f"{largest.replace('w', '')},"
-            if 'h' in largest:
-                dim = f",{largest.replace('w', '')}"
-        else:
-            dim = f'{width}, {height}'
+        dim = f'{width}, {height}'
+        dim, src = self.get_image_from_srcset(srcset, src, dim)
         url_path = requests.compat.urljoin(self.config['src_url'], src)
         image_name = download_image(url_path, self.config['output_dir'])
         return f'image:{image_name}[{alt},{dim}]'
+
+    def get_image_from_srcset(self, srcset, default_src, default_dim):
+        if srcset is None:
+            return default_dim, default_src
+
+        srcs = srcset.split(', ')
+        imgs = {}
+        for s in srcs:
+            s = s.strip()
+            ss = s.split(' ')
+            if len(ss) > 1:
+                imgs[ss[1]] = ss[0]
+        if len(imgs) == 0:
+            return default_dim, default_src
+
+        dim_list = sorted(imgs.keys(), key=lambda x: int(x.replace('w', '').replace('h', '')))
+        largest = dim_list[-1]
+        src = imgs[largest]
+        dim = default_dim
+        if 'w' in largest:
+            dim = f"{largest.replace('w', '')},"
+        if 'h' in largest:
+            dim = f",{largest.replace('w', '')}"
+
+        return dim, src
 
     @classmethod
     def tag_wrapper_pre(cls, tag: Tag, text: str, indent: int):
@@ -284,6 +300,82 @@ class Transformer(object):
     def transform(self):
         value = self.transform_tag(self.site)
         # cleanup large whitespace
-        value = re.sub(r'\n{3,}', '\n\n', value)
+        value = re.sub(r'(\n\s*){3,}', '\n\n', value)
+        self.value = value
         return value
 
+
+class Render(object):
+    """
+        Render book metadata, structure
+    """
+    def __init__(self, config: dict):
+        self.output_dir = config.get('output_dir', '.')
+        self.config = config
+        self.file_list = []
+
+    def render_book_part(self, title: str, description: str):
+        file_name = f'part_{slugify(title)}.asciidoc'
+        self.file_list.append(file_name)
+        file_path = os.path.join(self.output_dir, file_name)
+        with open(file_path, 'w', encoding='utf-8') as file_out:
+            file_out.write(f'= {title}\n\n')
+            if len(description) > 0:
+                file_out.write(description)
+                file_out.write('\n\n')
+
+    def render_chapter(self, extractor: Extractor, content: Transformer, src_url, basename: str):
+        file_name = f'{basename}.asciidoc'
+        self.file_list.append(file_name)
+        file_path = os.path.join(self.output_dir, file_name)
+        with open(file_path, 'w', encoding='utf-8') as file_out:
+            file_out.write(f'== {extractor.get_title()}\n\n')
+
+            time_published = extractor.get_published()
+            if time_published is not None:
+                published_info = f'published on {time_published}'
+            else:
+                published_info = ''
+            article_metadata = f"'''\n" \
+                               f"source: {src_url} {published_info}\n\n{extractor.get_metadata()}\n" \
+                               f"'''\n"
+            file_out.write(article_metadata)
+            file_out.write(content.value)
+
+    def generate_makefile(self):
+        template = '''html:
+\tasciidoctor index.asciidoc -d book -b html5 -D output
+\tcp -r images output/
+
+epub:
+\tasciidoctor-epub3 index.asciidoc -d book -D output
+
+pdf:
+\tasciidoctor-pdf index.asciidoc -d book -D output
+'''
+        file_path = os.path.join(self.output_dir, 'Makefile')
+        with open(file_path, 'w') as out_file:
+            out_file.write(template)
+
+    def ebook_generate_master_file(self):
+        """ Generate master index.asciidoc to include all book related information such as
+        - book title
+        - book author
+        - book version
+        - etc
+        - and include all generated asciidoc files from `urls`
+        """
+        included_files = '\n'.join(['include::%s[]' % x for x in self.file_list])
+        content = f'''= {self.config["title"]}
+{self.config["author"]}
+{self.config["version"]}
+:doctype: book
+:partnums:
+:toc:
+:imagesdir: images
+:homepage: {self.config["homepage"]}
+
+{included_files}
+'''
+        with open(os.path.join(self.output_dir, 'index.asciidoc'), 'w') as index_file:
+            index_file.write(content)

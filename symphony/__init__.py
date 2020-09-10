@@ -12,59 +12,26 @@ import pathlib
 
 from bs4 import BeautifulSoup
 
-from symphony.etr import ContentNotFoundError
+from symphony.etr import ContentNotFoundError, Render
+
+
+def create_book_maker(config: dict):
+    return Render(config)
+
+
+class ConfigurationError(Exception):
+    def __init__(self, reason: str):
+        self.reason = reason
+
+    def __str__(self):
+        return f'ConfigurationError: {self.reason}'
 
 
 class Symphony(object):
     def __init__(self, configuration: dict):
         self.config = configuration
-        self.output_dir = configuration['output_dir']
-
-    def download_content(self, url_path):
-        from .utils import download_url, get_hexdigest
-
-        output_path = pathlib.Path(self.output_dir)
-        cached_file_path = output_path.joinpath('.cached', f'{get_hexdigest(url_path)}.html')
-        p = pathlib.PurePath(url_path)
-        output_file_name = f'{p.name}.asciidoc'
-        output_file_path = output_path.joinpath(output_file_name)
-        print(output_file_path)
-
-        if not cached_file_path.exists():
-            # download file from url_path
-            download_url(url_path, str(cached_file_path))
-
-        with open(cached_file_path, 'rt', encoding='utf-8') as file_in:
-            content = file_in.read()
-        return content, output_file_path, output_file_name
-
-    def ebook_generate_content(self, url_path, content, output_path):
-        from .etr_factory import create_extractor, create_transformer
-
-        bs = BeautifulSoup(content, 'html.parser')
-
-        with open(output_path, 'w', encoding='utf-8') as file_out:
-            try:
-                extractor = create_extractor(url_path, bs)
-                file_out.write(f'== {extractor.get_title()}\n\n')
-
-                time_published = extractor.get_published()
-                if time_published is not None:
-                    published_info = f'published on {time_published}'
-                else:
-                    published_info = ''
-                article_metadata = f"'''\n" \
-                                   f"source: {url_path} {published_info}\n\n{extractor.get_metadata()}\n" \
-                                   f"'''\n"
-                file_out.write(article_metadata)
-
-                extractor.cleanup()
-                transformer = create_transformer(url_path, extractor.get_content(), self.output_dir)
-                value = transformer.transform()
-                file_out.write(value)
-            except ContentNotFoundError as e:
-                print(e, url_path)
-                # raise e
+        self.output_dir = configuration.get('output_dir', '.')
+        self.book_maker = create_book_maker(configuration)
 
     @classmethod
     def generate_new_configuration(cls, file_path):
@@ -80,55 +47,59 @@ class Symphony(object):
         with open(file_path, 'w') as file_out:
             json.dump(template, file_out, indent=4)
 
-    def generate_makefile(self):
-        template = '''html:
-\tasciidoctor index.asciidoc -d book -b html5 -D output
-\tcp -r images output/
+    def download_content(self, url_path):
+        from .utils import download_url, get_hexdigest
 
-epub:
-\tasciidoctor-epub3 index.asciidoc -d book -D output
+        output_path = pathlib.Path(self.output_dir)
+        cached_file_path = output_path.joinpath('.cached', f'{get_hexdigest(url_path)}.html')
+        p = pathlib.PurePath(url_path)
+        print(url_path, p.name, cached_file_path)
 
-pdf:
-\tasciidoctor-pdf index.asciidoc -d book -D output
-'''
-        file_path = os.path.join(self.output_dir, 'Makefile')
-        with open(file_path, 'w') as out_file:
-            out_file.write(template)
+        if not cached_file_path.exists():
+            # download file from url_path
+            download_url(url_path, str(cached_file_path))
 
-    def ebook_generate_master_file(self, files: list):
-        """ Generate master index.asciidoc to include all book related information such as
-        - book title
-        - book author
-        - book version
-        - etc
-        - and include all generated asciidoc files from `urls`
-        """
-        included_files = '\n'.join(['include::%s[]' % x for x in files])
-        content = f'''= {self.config["title"]}
-{self.config["author"]}
-{self.config["version"]}
-:toc:
-:imagesdir: images
-:homepage: {self.config["homepage"]}
+        with open(cached_file_path, 'rt', encoding='utf-8') as file_in:
+            content = file_in.read()
+        return content, p.name
 
-{included_files}
-'''
-        with open(os.path.join(self.output_dir, 'index.asciidoc'), 'w') as index_file:
-            index_file.write(content)
+    def ebook_generate_content(self, url_path):
+        from .etr_factory import create_extractor, create_transformer
+
+        content, file_basename = self.download_content(url_path)
+        bs = BeautifulSoup(content, 'html.parser')
+
+        try:
+            extractor = create_extractor(url_path, bs)
+            extractor.cleanup()
+            transformer = create_transformer(url_path, extractor.get_content(), self.output_dir)
+            transformer.transform()
+            self.book_maker.render_chapter(extractor, transformer, url_path, file_basename)
+        except ContentNotFoundError as e:
+            print(e, url_path)
+            # raise e
 
     def main(self):
-        paths = self.config['urls']
         os.makedirs(os.path.join(self.output_dir, ".cached"), exist_ok=True)
         os.makedirs(os.path.join(self.output_dir, "images"), exist_ok=True)
-        self.generate_makefile()
+        self.book_maker.generate_makefile()
 
-        files = []
-        for url_path in paths:
-            content, output_path, relative_path = self.download_content(url_path)
-            self.ebook_generate_content(url_path, content, output_path)
-            files.append(relative_path)
+        paths = self.config.get('urls', None)
+        if paths is None:
+            parts = self.config.get('parts', None)
+            if parts is None:
+                raise ConfigurationError('cannot find either urls or parts field')
+            else:
+                for part in parts:
+                    self.book_maker.render_book_part(part['title'], part.get('description', ''))
+                    urls = part.get('urls', [])
+                    for url_path in urls:
+                        self.ebook_generate_content(url_path)
+        else:
+            for url_path in paths:
+                self.ebook_generate_content(url_path)
 
-        self.ebook_generate_master_file(files)
+        self.book_maker.ebook_generate_master_file()
 
 
 def read_configuration_file(file_path):
@@ -145,8 +116,7 @@ if __name__ == '__main__':
     parser.add_argument('--input', '-i', type=str, help='Configuration file')
     args = parser.parse_args()
     if args.new:
-        symp = Symphony()
-        symp.generate_new_configuration(args.input)
+        Symphony.generate_new_configuration(args.input)
         exit(0)
 
     configs = read_configuration_file(args.input)
