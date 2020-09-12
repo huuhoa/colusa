@@ -1,6 +1,8 @@
 from symphony.etr import Extractor
+from symphony.etr_factory import register_extractor
 
 
+@register_extractor('//increment.com')
 class IncrementDotComExtractor(Extractor):
     def get_title(self):
         title = self.bs.find('h1', class_='t-TitleSerif large title')

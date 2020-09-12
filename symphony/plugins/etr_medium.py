@@ -1,8 +1,10 @@
 from bs4 import Tag
 
 from symphony.etr import Extractor, Transformer
+from symphony.etr_factory import register_extractor, register_transformer
 
 
+@register_extractor('//medium.com')
 class MediumExtractor(Extractor):
     def get_title(self):
         title = self.site.find('h1')
@@ -17,6 +19,7 @@ class MediumExtractor(Extractor):
         self.site = self.bs.find('article')
 
 
+@register_transformer('//medium.com')
 class MediumTransformer(Transformer):
     def transform_tag(self, tag: Tag, indent_level=0) -> str:
         if tag.name == 'figure' and 'paragraph-image' in tag.get('class'):

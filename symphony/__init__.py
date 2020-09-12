@@ -29,6 +29,8 @@ class ConfigurationError(Exception):
 
 class Symphony(object):
     def __init__(self, configuration: dict):
+        from symphony.utils import scan
+        scan('symphony.plugins')
         self.config = configuration
         self.output_dir = configuration.get('output_dir', '.')
         self.book_maker = create_book_maker(configuration)
