@@ -2,8 +2,7 @@ import re
 
 from bs4 import Tag
 
-from symphony.etr import Extractor, Transformer
-from symphony.etr_factory import register_extractor, register_transformer
+from symphony.etr import Extractor, Transformer, register_extractor, register_transformer
 
 
 @register_extractor('//truyenfull.vn')

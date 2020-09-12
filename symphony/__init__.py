@@ -12,7 +12,7 @@ import pathlib
 
 from bs4 import BeautifulSoup
 
-from symphony.etr import ContentNotFoundError, Render
+from symphony.etr import ContentNotFoundError, Render, create_extractor, create_transformer
 
 
 def create_book_maker(config: dict):
@@ -66,8 +66,6 @@ class Symphony(object):
         return content, p.name
 
     def ebook_generate_content(self, url_path):
-        from .etr_factory import create_extractor, create_transformer
-
         content, file_basename = self.download_content(url_path)
         bs = BeautifulSoup(content, 'html.parser')
 
