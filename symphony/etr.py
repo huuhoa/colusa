@@ -162,15 +162,13 @@ class Transformer(object):
         self.config = config
         self.site = site
 
-    @classmethod
-    def tag_wrapper_cleanup(cls, text: str) -> str:
+    def tag_wrapper_cleanup(self, text: str) -> str:
         text = text.strip()
         rex = re.compile(r'\n\s*')
         text = re.sub(rex, ' ', text)
         return text
 
-    @classmethod
-    def tag_wrapper_a(cls, tag: Tag, text: str, indent: int):
+    def tag_wrapper_a(self, tag: Tag, text: str, indent: int):
         href = tag.get("href", "")
         m = re.match(r'https?://', href)
         if m is None:
@@ -178,93 +176,77 @@ class Transformer(object):
         else:
             return f'link:{href}[{text}]'
 
-    @classmethod
-    def tag_wrapper_italic(cls, tag: Tag, text: str, indent: int):
+    def tag_wrapper_italic(self, tag: Tag, text: str, indent: int):
         if not text:
             return ''
         return f'__{text}__'
 
-    @classmethod
-    def tag_wrapper_strong(cls, tag: Tag, text: str, indent: int):
+    def tag_wrapper_strong(self, tag: Tag, text: str, indent: int):
         if not text:
             return ''
         return f'**{text}**'
 
-    @classmethod
-    def tag_wrapper_h1(cls, tag: Tag, text: str, indent: int):
-        final_heading = cls.tag_wrapper_cleanup(text)
+    def tag_wrapper_h1(self, tag: Tag, text: str, indent: int):
+        final_heading = self.tag_wrapper_cleanup(text)
         if not final_heading:
             return ''
         return f'=== {final_heading}\n\n'
 
-    @classmethod
-    def tag_wrapper_h2(cls, tag: Tag, text: str, indent: int):
-        final_heading = cls.tag_wrapper_cleanup(text)
+    def tag_wrapper_h2(self, tag: Tag, text: str, indent: int):
+        final_heading = self.tag_wrapper_cleanup(text)
         if not final_heading:
             return ''
         return f'=== {final_heading}\n\n'
 
-    @classmethod
-    def tag_wrapper_h3(cls, tag: Tag, text: str, indent: int):
-        final_heading = cls.tag_wrapper_cleanup(text)
+    def tag_wrapper_h3(self, tag: Tag, text: str, indent: int):
+        final_heading = self.tag_wrapper_cleanup(text)
         if not final_heading:
             return ''
         return f'==== {final_heading}\n\n'
 
-    @classmethod
-    def tag_wrapper_h4(cls, tag: Tag, text: str, indent: int):
-        final_heading = cls.tag_wrapper_cleanup(text)
+    def tag_wrapper_h4(self, tag: Tag, text: str, indent: int):
+        final_heading = self.tag_wrapper_cleanup(text)
         if not final_heading:
             return ''
         return f'===== {final_heading}\n\n'
 
-    @classmethod
-    def tag_wrapper_h5(cls, tag: Tag, text: str, indent: int):
-        final_heading = cls.tag_wrapper_cleanup(text)
+    def tag_wrapper_h5(self, tag: Tag, text: str, indent: int):
+        final_heading = self.tag_wrapper_cleanup(text)
         if not final_heading:
             return ''
         return f'====== {final_heading}\n\n'
 
-    @classmethod
-    def tag_wrapper_h6(cls, tag: Tag, text: str, indent: int):
-        final_heading = cls.tag_wrapper_cleanup(text)
+    def tag_wrapper_h6(self, tag: Tag, text: str, indent: int):
+        final_heading = self.tag_wrapper_cleanup(text)
         if not final_heading:
             return ''
         return f'======= {final_heading}\n\n'
 
-    @classmethod
-    def tag_wrapper_p(cls, tag: Tag, text: str, indent: int):
+    def tag_wrapper_p(self, tag: Tag, text: str, indent: int):
         return f'{text}\n\n'
 
-    @classmethod
-    def tag_wrapper_span(cls, tag: Tag, text: str, indent: int):
+    def tag_wrapper_span(self, tag: Tag, text: str, indent: int):
         return text
 
-    @classmethod
-    def tag_wrapper_ul(cls, tag: Tag, text: str, indent: int):
+    def tag_wrapper_ul(self, tag: Tag, text: str, indent: int):
         return f'\n{text}\n'
 
-    @classmethod
-    def tag_wrapper_ol(cls, tag: Tag, text: str, indent: int):
+    def tag_wrapper_ol(self, tag: Tag, text: str, indent: int):
         return f'\n{text}\n'
 
-    @classmethod
-    def tag_wrapper_li(cls, tag: Tag, text: str, indent: int):
+    def tag_wrapper_li(self, tag: Tag, text: str, indent: int):
         if tag.parent.name == 'ol':
             return f'{"." * indent} {text}\n'
         else:
             return f'{"*" * indent} {text}\n'
 
-    @classmethod
-    def tag_wrapper_quote(cls, tag: Tag, text: str, indent: int):
+    def tag_wrapper_quote(self, tag: Tag, text: str, indent: int):
         return f'[quote]\n____\n{text}\n____\n\n'
 
-    @classmethod
-    def tag_wrapper_figure(cls, tag: Tag, text: str, indent: int):
+    def tag_wrapper_figure(self, tag: Tag, text: str, indent: int):
         return f'{text}\n\n'
 
-    @classmethod
-    def tag_wrapper_figurecaption(cls, tag: Tag, text: str, indent: int):
+    def tag_wrapper_figurecaption(self, tag: Tag, text: str, indent: int):
         return f'\n{text}\n'
 
     def tag_wrapper_img(self, img: Tag, text: str, indent: int):
