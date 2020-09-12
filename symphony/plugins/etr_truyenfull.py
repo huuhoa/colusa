@@ -2,9 +2,11 @@ import re
 
 from bs4 import Tag
 
-from .etr import Extractor, Transformer
+from symphony.etr import Extractor, Transformer
+from symphony.etr_factory import register_extractor, register_transformer
 
 
+@register_extractor('//truyenfull.vn')
 class TruyenFullExtractor(Extractor):
     def internal_init(self):
         self.site = self.bs.find('div', id='chapter-big-container')
@@ -16,6 +18,7 @@ class TruyenFullExtractor(Extractor):
         self.remove_tag(self.site, 'h2', attrs={})
 
 
+@register_transformer('//truyenfull.vn')
 class TruyenFullTransformer(Transformer):
     def transform_tag(self, tag: Tag, indent_level=0) -> str:
         if tag.name == 'br':

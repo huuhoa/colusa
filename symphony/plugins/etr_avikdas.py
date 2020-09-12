@@ -1,6 +1,8 @@
-from .etr import Extractor
+from symphony.etr import Extractor
+from symphony.etr_factory import register_extractor
 
 
+@register_extractor('avikdas.com')
 class AvikdasExtractor(Extractor):
     def internal_init(self):
         self.site = self.bs.body

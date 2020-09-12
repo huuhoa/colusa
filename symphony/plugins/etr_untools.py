@@ -1,8 +1,10 @@
 import re
 
 from symphony.etr import Extractor
+from symphony.etr_factory import register_extractor
 
 
+@register_extractor('//untools.co')
 class UntoolsExtractor(Extractor):
     def get_title(self):
         import re
