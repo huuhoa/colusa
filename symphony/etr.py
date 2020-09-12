@@ -1,5 +1,6 @@
 import os
 import re
+from dateutil.parser import parse
 
 import requests
 from bs4 import NavigableString, Tag
@@ -32,6 +33,14 @@ class Extractor(object):
         return self.bs.title.text
 
     def get_published(self):
+        meta = self.bs.find('meta', attrs={'property': 'article:published_time'})
+        if meta is not None:
+            value = meta.get('content')
+            if value is not None:
+                published = parse(value)
+                return_value = str(published.date())
+                return return_value
+
         time_published = self.bs.find('time', attrs={'class': 'entry-date published'})
         if time_published is not None:
             published = time_published.text
@@ -62,6 +71,10 @@ class Extractor(object):
         return self.site
 
     def internal_init(self):
+        site = self.bs.find(class_='hentry')
+        if site is not None:
+            self.site = site
+            return
         self.site = self.bs.find('div', class_='entry-content')
         if self.site is None:
             self.site = self.bs.find('div', class_='article-content')
