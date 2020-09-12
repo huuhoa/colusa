@@ -7,6 +7,53 @@ from bs4 import NavigableString, Tag
 
 from .utils import download_image, slugify
 
+"""
+Dictionary of extractor
+"""
+__EXTRACTORS = {}
+
+"""
+Dictionary of transformer
+"""
+__TRANSFORMERS = {}
+
+
+def register_extractor(pattern):
+    def decorator(cls):
+        __EXTRACTORS[pattern] = cls
+        return cls
+
+    return decorator
+
+
+def register_transformer(pattern):
+    def decorator(cls):
+        __TRANSFORMERS[pattern] = cls
+        return cls
+
+    return decorator
+
+
+def create_extractor(url_path, bs):
+    for p in __EXTRACTORS.keys():
+        if p in url_path:
+            cls = __EXTRACTORS[p]
+            return cls(bs)
+    return Extractor(bs)
+
+
+def create_transformer(url_path, content, root):
+    config = {
+        "src_url": url_path,
+        "output_dir": root
+    }
+    for p in __TRANSFORMERS.keys():
+        if p in url_path:
+            cls = __TRANSFORMERS[p]
+            return cls(config, content)
+
+    return Transformer(config, content)
+
 
 class ContentNotFoundError(Exception):
     def __init__(self, *args, **kwargs):
@@ -71,6 +118,7 @@ class Extractor(object):
         return self.site
 
     def internal_init(self):
+        # h-entry from microformat
         site = self.bs.find(class_='hentry')
         if site is not None:
             self.site = site
