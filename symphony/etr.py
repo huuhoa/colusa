@@ -144,27 +144,45 @@ class Transformer(object):
 
     @classmethod
     def tag_wrapper_h1(cls, tag: Tag, text: str, indent: int):
-        return f'=== {cls.tag_wrapper_cleanup(text)}\n\n'
+        final_heading = cls.tag_wrapper_cleanup(text)
+        if not final_heading:
+            return ''
+        return f'=== {final_heading}\n\n'
 
     @classmethod
     def tag_wrapper_h2(cls, tag: Tag, text: str, indent: int):
-        return f'=== {cls.tag_wrapper_cleanup(text)}\n\n'
+        final_heading = cls.tag_wrapper_cleanup(text)
+        if not final_heading:
+            return ''
+        return f'=== {final_heading}\n\n'
 
     @classmethod
     def tag_wrapper_h3(cls, tag: Tag, text: str, indent: int):
-        return f'==== {cls.tag_wrapper_cleanup(text)}\n\n'
+        final_heading = cls.tag_wrapper_cleanup(text)
+        if not final_heading:
+            return ''
+        return f'==== {final_heading}\n\n'
 
     @classmethod
     def tag_wrapper_h4(cls, tag: Tag, text: str, indent: int):
-        return f'===== {cls.tag_wrapper_cleanup(text)}\n\n'
+        final_heading = cls.tag_wrapper_cleanup(text)
+        if not final_heading:
+            return ''
+        return f'===== {final_heading}\n\n'
 
     @classmethod
     def tag_wrapper_h5(cls, tag: Tag, text: str, indent: int):
-        return f'====== {cls.tag_wrapper_cleanup(text)}\n\n'
+        final_heading = cls.tag_wrapper_cleanup(text)
+        if not final_heading:
+            return ''
+        return f'====== {final_heading}\n\n'
 
     @classmethod
     def tag_wrapper_h6(cls, tag: Tag, text: str, indent: int):
-        return f'======= {cls.tag_wrapper_cleanup(text)}\n\n'
+        final_heading = cls.tag_wrapper_cleanup(text)
+        if not final_heading:
+            return ''
+        return f'======= {final_heading}\n\n'
 
     @classmethod
     def tag_wrapper_p(cls, tag: Tag, text: str, indent: int):
