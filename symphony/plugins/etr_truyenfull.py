@@ -28,10 +28,11 @@ class TruyenFullTransformer(Transformer):
     def transform(self):
         value = super(TruyenFullTransformer, self).transform()
         # cleanup hr
-        value = re.sub(r'-{3,}', "'''", value)
-        value = re.sub(r'\.{5,}', "'''", value)
-        value = re.sub(r'_{3,}', "'''", value)
-        value = re.sub(r'\*{3,}', "'''", value)
+        value = re.sub(r'^-{3,}', "'''", value, flags=re.MULTILINE)
+        value = re.sub(r'^\.{4,}', "'''", value, flags=re.MULTILINE)
+        value = re.sub(r'^_{3,}', "'''", value, flags=re.MULTILINE)
+        value = re.sub(r'^\*{3,}', "'''", value, flags=re.MULTILINE)
 
+        self.value = value
         return value
 
