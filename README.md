@@ -5,7 +5,7 @@ Render website to ebook to make it easier to read on devices.
 ## Installation
 
 ```sh
-pip install -r requirements.txt
+python3 setup.py install
 ```
 
 ## Usage
@@ -17,7 +17,7 @@ First of all, we need to generate a configuration file for `symphony` to work on
 Run following command to generate configuration file:
 
 ```bash
-$ python3 main.py -i new_ebook.json --new True
+$ symphony init new_ebook.json
 ```
 
 `Symphony` will generate a configuration file as below:
@@ -67,7 +67,7 @@ We can update ebook content by modifying the `urls`, by adding or removing url i
 After adding or removing url in `urls`, we need to invoke `symphony` to have it regenerate ebook content. Run following command at terminal:
 
 ```bash
-$ python3 main.py -i new_ebook.json
+$ symphony generate new_ebook.json
 ```
 
 By invoking above command, `symphony` will download webpages (specified in `urls`), parse, transform them to asciidoc format, and save them to `output_dir`. `Symphony` also create a neccessary information for ebook compilating at later steps.

@@ -3,7 +3,7 @@
 from setuptools import setup
 
 setup(name='symphony',
-      version='0.1.0',
+      version='0.2.0',
       description='Render website to ebook to make it easier to read on devices',
       url='http://github.com/huuhoa/symphony',
       author='Huu Hoa NGUYEN',

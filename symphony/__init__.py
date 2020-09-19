@@ -5,7 +5,6 @@ __copyright__ = "Copyright (c) 2020 Huu Hoa NGUYEN"
 __license__ = "MIT"
 
 
-import argparse
 import json
 import os
 import pathlib
@@ -107,18 +106,3 @@ def read_configuration_file(file_path):
         data = json.load(file_in)
         return data
 
-
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--new', '-n', type=bool, default=False,
-                        help='Generate new configuration file. '
-                             'File name will be specified in the --input parameter')
-    parser.add_argument('--input', '-i', type=str, help='Configuration file')
-    args = parser.parse_args()
-    if args.new:
-        Symphony.generate_new_configuration(args.input)
-        exit(0)
-
-    configs = read_configuration_file(args.input)
-    symp = Symphony(configs)
-    symp.main()
