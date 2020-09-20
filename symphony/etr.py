@@ -5,6 +5,7 @@ from dateutil.parser import parse
 import requests
 from bs4 import NavigableString, Tag
 
+from .asciidoc_visitor import AsciidocVisitor
 from .utils import download_image, slugify
 
 """
@@ -126,6 +127,8 @@ class Extractor(object):
         self.site = self.bs.find('div', class_='entry-content')
         if self.site is None:
             self.site = self.bs.find('div', class_='article-content')
+        if self.site is None:
+            self.site = self.bs.find('article')
 
 
 class Transformer(object):
@@ -157,6 +160,7 @@ class Transformer(object):
             'figure': self.tag_wrapper_figure,
             'figcaption': self.tag_wrapper_figurecaption,
             'code': self.tag_wrapper_inline_code,
+            'pre': self.tag_wrapper_pre,
         }
 
         self.config = config
@@ -292,7 +296,6 @@ class Transformer(object):
     def tag_wrapper_pre(cls, tag: Tag, text: str, indent: int):
         code_pattern = r"^\[code\s+lang=(?P<lang>.*)\](?P<content>.*)\[\/code\]$"
         matches = re.finditer(code_pattern, tag.text, re.MULTILINE | re.DOTALL)
-
         content = []
         for matchNum, match in enumerate(matches, start=1):
             ascii_content = f'''[source, {match.group('lang')}]
@@ -302,7 +305,8 @@ class Transformer(object):
 '''
             content.append(ascii_content)
 
-        if matches is None:
+        if len(content) == 0:
+            print('PRE ====', text)
             content.append(f'''[listing]
 ....
 {text}
@@ -358,13 +362,22 @@ class Transformer(object):
         wrapper_fmt = self.wrappers.get(tag.name, self.tag_wrapper_default)
         return wrapper_fmt(tag, ''.join(text), indent_level)
 
-    def transform(self):
+    def transform_v1(self):
         value = self.transform_tag(self.site)
         # cleanup large whitespace
         value = re.sub(r'(\n\s*){3,}', '\n\n', value)
         self.value = value
         return value
 
+    def transform(self):
+        visitor = AsciidocVisitor()
+        value = visitor.visit(self.site, src_url=self.config['src_url'], output_dir=self.config['output_dir'])
+        # print(value)
+        # value = self.transform_tag(self.site)
+        # cleanup large whitespace
+        value = re.sub(r'(\n\s*){3,}', '\n\n', value)
+        self.value = value
+        return value
 
 class Render(object):
     """
