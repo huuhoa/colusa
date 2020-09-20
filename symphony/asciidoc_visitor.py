@@ -24,8 +24,16 @@ class AsciidocVisitor(NodeVisitor):
     def visit_tag_fall_through(self, node, *args, **kwargs):
         return self.generic_visit(node, *args, **kwargs)
 
+    def visit_tag_ignore_content(self, node, *args, **kwargs):
+        return ''
+
     visit_tag_span = visit_tag_fall_through
-    visit_tag_iframe = visit_tag_fall_through
+    visit_tag_iframe = visit_tag_ignore_content
+    visit_tag_style = visit_tag_ignore_content
+    visit_tag_svg = visit_tag_ignore_content
+    visit_Stylesheet = visit_tag_ignore_content
+    visit_Comment = visit_tag_ignore_content
+    visit_tag_button = visit_tag_ignore_content
 
     def visit_tag_a(self, node, *args, **kwargs):
         href = node.get('href', '')
@@ -40,8 +48,8 @@ class AsciidocVisitor(NodeVisitor):
         text = self.generic_visit(node, *args, **kwargs)
         return f'{text}\n\n'
 
+    visit_tag_article = visit_tag_p
     visit_tag_div = visit_tag_p
-    visit_tag_figure = visit_tag_p
 
     def visit_heading_node(level):
         def visitor(self, node, *args, **kwargs):
@@ -96,6 +104,9 @@ class AsciidocVisitor(NodeVisitor):
     def visit_tag_hr(self, node, *args, **kwargs):
         return "\n'''\n\n"
 
+    def visit_tag_br(self, node, *args, **kwargs):
+        return "\n\n"
+
     def visit_tag_ol(self, node, *args, **kwargs):
         return self.wrapper_list(node, 'ol', *args, **kwargs)
 
@@ -133,6 +144,22 @@ class AsciidocVisitor(NodeVisitor):
             sep = '.'
         return f'{sep*indent} {text}\n'
 
+    def visit_tag_figure(self, node, *args, **kwargs):
+        caption_node = node.find('figcaption')
+        if caption_node is not None:
+            kwargs['caption'] = caption_node.text
+            caption_node.extract()
+        # specialized for medium
+        node_to_visit = node
+        if 'paragraph-image' in node.get('class'):
+            noscript = node.find('noscript')
+            if noscript is not None:
+                node_to_visit = noscript
+        text = self.generic_visit(node_to_visit, *args, **kwargs)
+        if caption_node is not None:
+            del kwargs['caption']
+        return f'{text}\n\n'
+
     def visit_tag_img(self, node, *args, **kwargs):
         alt = node.get('alt', '')
         height = node.get('height', '')
@@ -145,7 +172,12 @@ class AsciidocVisitor(NodeVisitor):
         dim, src = self.get_image_from_srcset(srcset, src, dim)
         url_path = requests.compat.urljoin(kwargs['src_url'], src)
         image_name = download_image(url_path, kwargs['output_dir'])
-        return f'image:{image_name}[{alt},{dim}]'
+
+        caption = kwargs.get('caption', None)
+        if not caption:
+            return f'image:{image_name}[{alt},{dim}]'
+        else:
+            return f'.{caption}\nimage:{image_name}[{alt},{dim}]\n'
 
     def get_image_from_srcset(self, srcset, default_src, default_dim):
         if srcset is None:
