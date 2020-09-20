@@ -38,11 +38,12 @@ class AsciidocVisitor(NodeVisitor):
     def visit_tag_a(self, node, *args, **kwargs):
         href = node.get('href', '')
         text = self.generic_visit(node, *args, **kwargs)
+        if not text:
+            return ''
         m = re.match(r'https?://', href)
         if m is None:
             return text
-        else:
-            return f'link:{href}[{text}]'
+        return f'link:{href}[{text}]'
 
     def visit_tag_p(self, node, *args, **kwargs):
         text = self.generic_visit(node, *args, **kwargs)
