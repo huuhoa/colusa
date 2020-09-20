@@ -27,8 +27,7 @@ class NodeVisitor(object):
         elif type(node) is Tag:
             method = f"visit_tag_{node.name}"
         else:
-            method = "visit_" + node.__class__.__name__
-            print('UNKNOWN Node Type: =====', type(node))
+            method = "visit_unknown"
         value = getattr(self, method, None)
         if value is None:
             print('Cannot get visit method:', method)
@@ -44,7 +43,8 @@ class NodeVisitor(object):
     def visit_text(self, node, *args, **kwargs):
         return node.string
 
-    def visit_Comment(self, node, *args, **kwargs):
+    def visit_unknown(self, node, *args, **kwargs):
+        print('UNKNOWN Node Type:', node.__class__.__name__)
         return ''
 
     def generic_visit(self, node, *args, **kwargs):
