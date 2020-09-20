@@ -33,3 +33,7 @@ def generate(args):
     configs = read_configuration_file(args.input)
     s = Symphony(configs)
     s.main()
+
+
+if __name__ == '__main__':
+    main()
