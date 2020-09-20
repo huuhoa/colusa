@@ -87,6 +87,8 @@ class AsciidocVisitor(NodeVisitor):
         if not text:
             return ''
         new_text = text.strip()
+        if not new_text:
+            return ''
         begin, t, end = text.partition(new_text)
         return f'{begin}{w}{t}{w}{end}'
 
@@ -106,7 +108,11 @@ class AsciidocVisitor(NodeVisitor):
         return "\n'''\n\n"
 
     def visit_tag_br(self, node, *args, **kwargs):
-        return "\n\n"
+        pre = kwargs.get('pre')
+        if not pre:
+            return "\n\n"
+        else:
+            return "\n"
 
     def visit_tag_ol(self, node, *args, **kwargs):
         return self.wrapper_list(node, 'ol', *args, **kwargs)
@@ -204,3 +210,15 @@ class AsciidocVisitor(NodeVisitor):
             dim = f",{largest.replace('w', '')}"
 
         return dim, src
+
+    def visit_tag_pre(self, node, *args, **kwargs):
+        kwargs['pre'] = True
+        text = self.generic_visit(node, *args, **kwargs)
+        del kwargs['pre']
+        return f'''[listing]
+....
+{text}
+....
+
+'''
+
