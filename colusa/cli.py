@@ -1,6 +1,6 @@
 import argparse
 
-from symphony import Symphony, read_configuration_file, ConfigurationError, logs
+from colusa import Colusa, read_configuration_file, ConfigurationError, logs
 
 
 def main():
@@ -26,13 +26,13 @@ def parse_args():
 
 
 def init(args):
-    Symphony.generate_new_configuration(args.output)
+    Colusa.generate_new_configuration(args.output)
 
 
 def generate(args):
     try:
         configs = read_configuration_file(args.input)
-        s = Symphony(configs)
+        s = Colusa(configs)
         s.generate()
     except ConfigurationError as e:
         logs.error(e)

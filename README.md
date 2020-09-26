@@ -1,4 +1,4 @@
-# symphony
+# colusa
 
 Render website to ebook to make it easier to read on devices.
 
@@ -12,15 +12,15 @@ python3 setup.py install
 
 ### Start from scratch
 
-First of all, we need to generate a configuration file for `symphony` to work on.
-`Symphony` has builtin command to generate a template configuration as starter.
+First of all, we need to generate a configuration file for `colusa` to work on.
+`colusa` has builtin command to generate a template configuration as starter.
 Run following command to generate configuration file:
 
 ```bash
-$ symphony init new_ebook.json
+$ colusa init new_ebook.json
 ```
 
-`Symphony` will generate a configuration file as below:
+`colusa` will generate a configuration file as below:
 
 ```json
 {
@@ -64,13 +64,13 @@ We can update ebook content by modifying the `urls`, by adding or removing url i
 
 ### Generate ebook content
 
-After adding or removing url in `urls`, we need to invoke `symphony` to have it regenerate ebook content. Run following command at terminal:
+After adding or removing url in `urls`, we need to invoke `colusa` to have it regenerate ebook content. Run following command at terminal:
 
 ```bash
-$ symphony generate new_ebook.json
+$ colusa generate new_ebook.json
 ```
 
-By invoking above command, `symphony` will download webpages (specified in `urls`), parse, transform them to asciidoc format, and save them to `output_dir`. `Symphony` also create a neccessary information for ebook compilating at later steps.
+By invoking above command, `colusa` will download webpages (specified in `urls`), parse, transform them to asciidoc format, and save them to `output_dir`. `colusa` also create a neccessary information for ebook compilating at later steps.
 
 ## Compile ebook for consuming purpose
 
@@ -82,7 +82,7 @@ Before generating ebook, we need to install asciidoctor tools. Follow install gu
 * for generating pdf: https://asciidoctor.org/docs/asciidoctor-pdf/
 
 ### Generating ebooks
-To help with generating ebook, `symphony` also create a `Makefile` in the root folder of the ebook. In the `Makefile`, there are three common targets that we can use to generate ebook in html, epub, pdf formats.
+To help with generating ebook, `colusa` also create a `Makefile` in the root folder of the ebook. In the `Makefile`, there are three common targets that we can use to generate ebook in html, epub, pdf formats.
 
 ```bash
 # to generate html
@@ -108,7 +108,7 @@ drwxr-xr-x  10 320B images
 
 ## List of Supported Website
 
-Currently `symphony` supports only limited number of websites. The following list all support websites:
+Currently `colusa` supports only limited number of websites. The following list all support websites:
 
 * https://untools.co
 * https://unintendedconsequenc.es

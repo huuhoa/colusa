@@ -1,6 +1,6 @@
 import re
 
-from symphony.etr import Extractor, register_extractor
+from colusa.etr import Extractor, register_extractor
 
 
 @register_extractor('//untools.co')

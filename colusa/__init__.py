@@ -1,5 +1,5 @@
 __author__ = "Huu Hoa NGUYEN (huuhoa@gmail.com)"
-__version__ = "0.2.0"
+__version__ = "0.3.0"
 __copyright__ = "Copyright (c) 2020 Huu Hoa NGUYEN"
 # Use of this source code is governed by the MIT license.
 __license__ = "MIT"
@@ -11,7 +11,7 @@ import pathlib
 
 from bs4 import BeautifulSoup
 
-from symphony.etr import ContentNotFoundError, Render, create_extractor, create_transformer
+from colusa.etr import ContentNotFoundError, Render, create_extractor, create_transformer
 
 
 def create_book_maker(config: dict):
@@ -26,10 +26,10 @@ class ConfigurationError(Exception):
         return f'ConfigurationError: {self.reason}'
 
 
-class Symphony(object):
+class Colusa(object):
     def __init__(self, configuration: dict):
-        from symphony.utils import scan
-        scan('symphony.plugins')
+        from colusa.utils import scan
+        scan('colusa.plugins')
         self.config = configuration
         self.output_dir = configuration.get('output_dir', '.')
         self.book_maker = create_book_maker(configuration)

@@ -1,6 +1,6 @@
 import unittest
 
-from symphony.etr import Transformer
+from colusa.etr import Transformer
 from bs4 import BeautifulSoup
 
 
