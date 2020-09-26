@@ -131,6 +131,6 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-# symphony generated
+# colusa generated
 .cached/
 output/

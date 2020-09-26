@@ -5,7 +5,7 @@ meta introspection.
 
 from bs4 import PageElement, NavigableString, Tag
 
-from symphony import logs
+from colusa import logs
 
 
 class NodeVisitor(object):

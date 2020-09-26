@@ -1,4 +1,4 @@
-from symphony import colors
+from colusa import colors
 
 
 def error(msg, *args, **kwargs):

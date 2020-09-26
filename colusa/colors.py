@@ -9,13 +9,13 @@ with ANSI color codes for the appropriate color.
 
 For example, to print some text as green on supporting terminals::
 
-    from symphony.colors import green
+    from colusa.colors import green
 
     print(green("This text is green!"))
 
 Because these functions simply return modified strings, you can nest them::
 
-    from symphony.colors import red, green
+    from colusa.colors import red, green
 
     print(red("This sentence is red, except for " + \
           green("these words, which are green") + "."))

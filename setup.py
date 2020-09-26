@@ -2,14 +2,14 @@
 
 from setuptools import setup
 
-setup(name='symphony',
-      version='0.2.0',
+setup(name='colusa',
+      version='0.3.0',
       description='Render website to ebook to make it easier to read on devices',
-      url='http://github.com/huuhoa/symphony',
+      url='http://github.com/huuhoa/colusa',
       author='Huu Hoa NGUYEN',
       author_email='huuhoa@gmail.com',
       license='MIT',
-      packages=['symphony'],
+      packages=['colusa'],
       install_requires=[
           'beautifulsoup4==4.9.1',
           'certifi==2020.6.20',
@@ -22,6 +22,6 @@ setup(name='symphony',
       ],
       entry_points={
           'console_scripts': [
-              'symphony = symphony.cli:main'
+              'colusa = colusa.cli:main'
           ]
       })
