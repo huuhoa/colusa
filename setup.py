@@ -1,10 +1,14 @@
 # !/usr/bin/env python3
-
 from setuptools import setup
 
+with open("README.md", "r") as fh:
+    long_description = fh.read()
+
 setup(name='colusa',
-      version='0.3.0',
+      version='0.3.1',
       description='Render website to ebook to make it easier to read on devices',
+      long_description=long_description,
+      long_description_content_type="text/markdown",
       url='http://github.com/huuhoa/colusa',
       author='Huu Hoa NGUYEN',
       author_email='huuhoa@gmail.com',
@@ -19,6 +23,11 @@ setup(name='colusa',
           'soupsieve==2.0.1',
           'urllib3==1.25.10',
           'python-dateutil~=2.8.1'
+      ],
+      classifiers=[
+          "Programming Language :: Python :: 3",
+          "License :: OSI Approved :: MIT License",
+          "Operating System :: OS Independent",
       ],
       entry_points={
           'console_scripts': [
