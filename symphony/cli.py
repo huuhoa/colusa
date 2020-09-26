@@ -1,6 +1,6 @@
 import argparse
 
-from symphony import Symphony, read_configuration_file
+from symphony import Symphony, read_configuration_file, ConfigurationError, logs
 
 
 def main():
@@ -30,9 +30,12 @@ def init(args):
 
 
 def generate(args):
-    configs = read_configuration_file(args.input)
-    s = Symphony(configs)
-    s.main()
+    try:
+        configs = read_configuration_file(args.input)
+        s = Symphony(configs)
+        s.generate()
+    except ConfigurationError as e:
+        logs.error(e)
 
 
 if __name__ == '__main__':

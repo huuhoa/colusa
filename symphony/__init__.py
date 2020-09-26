@@ -42,8 +42,9 @@ class Symphony(object):
                 "version": "v1.0",
                 "homepage": "__fill url to home page__",
                 "output_dir": "__fill output dir__",
-                "urls": [
-                ]
+                "multi_part": False,
+                "parts": [],
+                "urls": []
             }
         with open(file_path, 'w') as file_out:
             json.dump(template, file_out, indent=4)
@@ -78,27 +79,35 @@ class Symphony(object):
             print(e, url_path)
             # raise e
 
-    def main(self):
+    def generate(self):
         os.makedirs(os.path.join(self.output_dir, ".cached"), exist_ok=True)
         os.makedirs(os.path.join(self.output_dir, "images"), exist_ok=True)
         self.book_maker.generate_makefile()
 
-        paths = self.config.get('urls', None)
-        if paths is None:
-            parts = self.config.get('parts', None)
-            if parts is None:
-                raise ConfigurationError('cannot find either urls or parts field')
-            else:
-                for part in parts:
-                    self.book_maker.render_book_part(part['title'], part.get('description', ''))
-                    urls = part.get('urls', [])
-                    for url_path in urls:
-                        self.ebook_generate_content(url_path)
+        multi_part = self.config.get('multi_part', False)
+        if multi_part:
+            self._generate_book_multi_part()
         else:
-            for url_path in paths:
-                self.ebook_generate_content(url_path)
+            self._generate_book_single_part()
 
         self.book_maker.ebook_generate_master_file()
+
+    def _generate_book_single_part(self):
+        paths = self.config.get('urls', [])
+        if len(paths) == 0:
+            raise ConfigurationError('urls field must contain at least one url')
+        for url_path in paths:
+            self.ebook_generate_content(url_path)
+
+    def _generate_book_multi_part(self):
+        parts = self.config.get('parts', [])
+        if len(parts) == 0:
+            raise ConfigurationError('parts field must contain at least one part object')
+        for part in parts:
+            self.book_maker.render_book_part(part['title'], part.get('description', ''))
+            urls = part.get('urls', [])
+            for url_path in urls:
+                self.ebook_generate_content(url_path)
 
 
 def read_configuration_file(file_path):

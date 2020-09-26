@@ -10,4 +10,4 @@ def warn(msg, *args, **kwargs):
 
 
 def info(msg, *args, **kwargs):
-    print("[INFO]", msg, *args, **kwargs)
+    print(colors.green("[INFO]"), msg, *args, **kwargs)

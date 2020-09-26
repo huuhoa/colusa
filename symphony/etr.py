@@ -1,12 +1,11 @@
 import os
 import re
+
+from bs4 import Tag
 from dateutil.parser import parse
 
-import requests
-from bs4 import NavigableString, Tag
-
 from .asciidoc_visitor import AsciidocVisitor
-from .utils import download_image, slugify
+from .utils import slugify
 
 """
 Dictionary of extractor
@@ -168,6 +167,7 @@ class Transformer(object):
         # cleanup large whitespace
         self.value = re.sub(r'(\n\s*){3,}', '\n\n', self.value)
         return self.value
+
 
 class Render(object):
     """
