@@ -2,6 +2,7 @@
 """API for traversing the document nodes. Implemented by the compiler and
 meta introspection.
 """
+
 from bs4 import PageElement, NavigableString, Tag
 
 
@@ -59,5 +60,4 @@ class NodeVisitor(object):
                 content.append(value)
         except TypeError as e:
             print(e)
-            # print(node)
         return ''.join(content)

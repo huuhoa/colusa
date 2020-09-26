@@ -158,7 +158,7 @@ class AsciidocVisitor(NodeVisitor):
             caption_node.extract()
         # specialized for medium
         node_to_visit = node
-        if 'paragraph-image' in node.get('class'):
+        if 'paragraph-image' in node.get('class', []):
             noscript = node.find('noscript')
             if noscript is not None:
                 node_to_visit = noscript
@@ -171,16 +171,16 @@ class AsciidocVisitor(NodeVisitor):
         alt = node.get('alt', '')
         height = node.get('height', '')
         width = node.get('width', '')
-        src = node.get('src', None)
+        src = node.get('src')
         if src is None:
             return ''
-        srcset = node.get('srcset', None)
+        srcset = node.get('srcset')
         dim = f'{width}, {height}'
         dim, src = self.get_image_from_srcset(srcset, src, dim)
         url_path = requests.compat.urljoin(kwargs['src_url'], src)
         image_name = download_image(url_path, kwargs['output_dir'])
 
-        caption = kwargs.get('caption', None)
+        caption = kwargs.get('caption')
         if not caption:
             return f'image:{image_name}[{alt},{dim}]'
         else:
