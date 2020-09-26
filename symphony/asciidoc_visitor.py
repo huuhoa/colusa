@@ -222,3 +222,19 @@ class AsciidocVisitor(NodeVisitor):
 
 '''
 
+    def visit_tag_code(self, node, *args, **kwargs):
+        text = self.generic_visit(node, *args, **kwargs)
+        if '\n' in text:
+            # multiline code
+            lang = node.get('class', ['text'])
+            lang = lang[0]
+            lang = lang.replace('language-', '')
+            ascii_content = f'''[source, {lang}]
+----
+{text}
+----
+'''
+            return ascii_content
+        else:
+            # inline
+            return f'`{text}`'
