@@ -5,6 +5,8 @@ meta introspection.
 
 from bs4 import PageElement, NavigableString, Tag
 
+from symphony import logs
+
 
 class NodeVisitor(object):
     """Walks the abstract syntax tree and call visitor functions for every
@@ -31,7 +33,7 @@ class NodeVisitor(object):
             method = "visit_unknown"
         value = getattr(self, method, None)
         if value is None:
-            print('Cannot get visit method:', method)
+            logs.warn('Cannot get visit method:', method)
         return value
 
     def visit(self, node, *args, **kwargs):
@@ -45,7 +47,7 @@ class NodeVisitor(object):
         return node.string
 
     def visit_unknown(self, node, *args, **kwargs):
-        print('UNKNOWN Node Type:', node.__class__.__name__)
+        logs.error('UNKNOWN Node Type:', node.__class__.__name__)
         return ''
 
     def generic_visit(self, node, *args, **kwargs):
@@ -59,5 +61,5 @@ class NodeVisitor(object):
                 value = self.visit(child, *args, **kwargs)
                 content.append(value)
         except TypeError as e:
-            print(e)
+            logs.error(e)
         return ''.join(content)
