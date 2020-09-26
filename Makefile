@@ -1,12 +1,9 @@
-generate:
-	python3 main.py
+clean:
+	rm -rf build dist colusa.egg-info
 
-html:
-	cd the-morning-paper && asciidoctor index.asciidoc -d book -b html5 -o index.html
+sdist:
+	python3 setup.py sdist bdist_wheel
 
-epub:
-	cd the-morning-paper && asciidoctor-epub3 index.asciidoc -d book -D output
-
-kf8:
-	cd the-morning-paper && asciidoctor-epub3 index.asciidoc -d book -D output -a ebook-format=kf8
+upload:
+	python3 -m twine upload dist/* --verbose
 
