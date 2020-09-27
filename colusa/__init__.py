@@ -9,6 +9,7 @@ import json
 import os
 import pathlib
 
+import yaml
 from bs4 import BeautifulSoup
 
 from colusa.etr import ContentNotFoundError, Render, create_extractor, create_transformer
@@ -46,8 +47,17 @@ class Colusa(object):
                 "parts": [],
                 "urls": []
             }
-        with open(file_path, 'w') as file_out:
-            json.dump(template, file_out, indent=4)
+        p = pathlib.PurePath(file_path)
+        if p.suffix == '.json':
+            with open(file_path, 'w') as file_out:
+                json.dump(template, file_out, indent=4)
+                return
+        if p.suffix == '.yml':
+            with open(file_path, 'w') as file_in:
+                yaml.safe_dump(template, file_in)
+                return
+        raise ConfigurationError(f'unknown configuration file format: {p.suffix}. '
+                                 f'Configuration file format should be either .json or .yml')
 
     def download_content(self, url_path):
         from .utils import download_url, get_hexdigest
@@ -111,7 +121,14 @@ class Colusa(object):
 
 
 def read_configuration_file(file_path):
-    with open(file_path, 'r') as file_in:
-        data = json.load(file_in)
-        return data
-
+    p = pathlib.PurePath(file_path)
+    if p.suffix == '.json':
+        with open(file_path, 'r') as file_in:
+            data = json.load(file_in)
+            return data
+    if p.suffix == '.yml':
+        with open(file_path, 'r') as file_in:
+            data = yaml.safe_load(file_in)
+            return data
+    raise ConfigurationError(f'unknown configuration file format: {p.suffix}. '
+                             f'Configuration file format should be either .json or .yml')
