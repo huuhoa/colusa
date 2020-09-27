@@ -47,7 +47,7 @@ class NodeVisitor(object):
         return node.string
 
     def visit_unknown(self, node, *args, **kwargs):
-        logs.error('UNKNOWN Node Type:', node.__class__.__name__)
+        logs.warn('UNKNOWN Node Type:', node.__class__.__name__)
         return ''
 
     def generic_visit(self, node, *args, **kwargs):

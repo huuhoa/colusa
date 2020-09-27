@@ -8,6 +8,8 @@ from idna import unicode
 import unicodedata
 import re
 
+from colusa import logs
+
 
 def download_url(url_path: str, file_path: str):
     headers = {
@@ -16,7 +18,7 @@ def download_url(url_path: str, file_path: str):
     }
     req = requests.get(url_path, headers=headers, stream=True)
     if req.status_code != 200:
-        print(f'Cannot make request. Result: {req.status_code:d}')
+        logs.error(f'Cannot make request. Result: {req.status_code:d}')
         exit(1)
 
     with open(file_path, 'wb') as file_out:
