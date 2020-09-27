@@ -12,6 +12,7 @@ import pathlib
 import yaml
 from bs4 import BeautifulSoup
 
+from colusa import logs
 from colusa.etr import ContentNotFoundError, Render, create_extractor, create_transformer
 
 
@@ -65,7 +66,7 @@ class Colusa(object):
         output_path = pathlib.Path(self.output_dir)
         cached_file_path = output_path.joinpath('.cached', f'{get_hexdigest(url_path)}.html')
         p = pathlib.PurePath(url_path)
-        print(url_path, p.name, cached_file_path)
+        logs.info(url_path, p.name, cached_file_path)
 
         if not cached_file_path.exists():
             # download file from url_path
@@ -86,7 +87,7 @@ class Colusa(object):
             transformer.transform()
             self.book_maker.render_chapter(extractor, transformer, url_path, file_basename)
         except ContentNotFoundError as e:
-            print(e, url_path)
+            logs.error(e, url_path)
             # raise e
 
     def generate(self):
