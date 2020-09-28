@@ -122,6 +122,7 @@ Currently `colusa` supports only limited number of websites. The following list 
 * https://engineering.atspotify.com
 * https://truyenfull.vn
 * https://avikdas.com
+* https://www.infoq.com
 
 ## Contribution
 

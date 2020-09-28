@@ -28,12 +28,17 @@ class AsciidocVisitor(NodeVisitor):
         return ''
 
     visit_tag_span = visit_tag_fall_through
+    visit_tag_section = visit_tag_fall_through
+
     visit_tag_iframe = visit_tag_ignore_content
     visit_tag_style = visit_tag_ignore_content
     visit_tag_svg = visit_tag_ignore_content
     visit_Stylesheet = visit_tag_ignore_content
     visit_Comment = visit_tag_ignore_content
     visit_tag_button = visit_tag_ignore_content
+    visit_tag_form = visit_tag_ignore_content
+    visit_tag_input = visit_tag_ignore_content
+    visit_tag_script = visit_tag_ignore_content
 
     def visit_tag_a(self, node, *args, **kwargs):
         href = node.get('href', '')
