@@ -29,6 +29,7 @@ class AsciidocVisitor(NodeVisitor):
 
     visit_tag_span = visit_tag_fall_through
     visit_tag_section = visit_tag_fall_through
+    visit_tag_input = visit_tag_fall_through
 
     visit_tag_iframe = visit_tag_ignore_content
     visit_tag_style = visit_tag_ignore_content
@@ -37,7 +38,6 @@ class AsciidocVisitor(NodeVisitor):
     visit_Comment = visit_tag_ignore_content
     visit_tag_button = visit_tag_ignore_content
     visit_tag_form = visit_tag_ignore_content
-    visit_tag_input = visit_tag_ignore_content
     visit_tag_script = visit_tag_ignore_content
 
     def visit_tag_a(self, node, *args, **kwargs):
@@ -69,12 +69,12 @@ class AsciidocVisitor(NodeVisitor):
 
         return visitor
 
-    visit_tag_h1 = visit_heading_node(1)
-    visit_tag_h2 = visit_heading_node(2)
-    visit_tag_h3 = visit_heading_node(3)
-    visit_tag_h4 = visit_heading_node(4)
-    visit_tag_h5 = visit_heading_node(5)
-    visit_tag_h6 = visit_heading_node(6)
+    visit_tag_h1 = visit_heading_node(2)
+    visit_tag_h2 = visit_heading_node(3)
+    visit_tag_h3 = visit_heading_node(4)
+    visit_tag_h4 = visit_heading_node(5)
+    visit_tag_h5 = visit_heading_node(6)
+    visit_tag_h6 = visit_heading_node(7)
 
     def visit_tag_strong(self, node, *args, **kwargs):
         text = self.generic_visit(node, *args, **kwargs)
@@ -114,10 +114,15 @@ class AsciidocVisitor(NodeVisitor):
 
     def visit_tag_br(self, node, *args, **kwargs):
         pre = kwargs.get('pre')
-        if not pre:
-            return "\n\n"
+        if len(node.contents) > 0:
+            text = self.generic_visit(node, *args, **kwargs)
         else:
-            return "\n"
+            text = ''
+
+        if not pre:
+            return f"\n\n{text}"
+        else:
+            return f"\n{text}"
 
     def visit_tag_ol(self, node, *args, **kwargs):
         return self.wrapper_list(node, 'ol', *args, **kwargs)
