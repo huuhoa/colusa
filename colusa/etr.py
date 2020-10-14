@@ -128,6 +128,10 @@ class Extractor(object):
             self.site = self.bs.find('div', class_='article-content')
         if self.site is None:
             self.site = self.bs.find('article')
+        hs_blog_post = self.bs.find(attrs={'class': 'hs-blog-post'})
+        if hs_blog_post is not None:
+            blog_content = hs_blog_post.find(attrs={'class': 'post-body'})
+            self.site = blog_content
 
 
 class Transformer(object):
@@ -162,6 +166,7 @@ class Transformer(object):
 
     def transform(self):
         visitor = AsciidocVisitor()
+        # print(self.site)
         self.value = visitor.visit(self.site, src_url=self.config['src_url'], output_dir=self.config['output_dir'])
         # print(value)
         # cleanup large whitespace
@@ -188,22 +193,27 @@ class Render(object):
                 file_out.write(description)
                 file_out.write('\n\n')
 
-    def render_chapter(self, extractor: Extractor, content: Transformer, src_url, basename: str):
+    def render_chapter(self, extractor: Extractor, content: Transformer, src_url, basename: str,
+                       metadata=True, title_strip=''):
         file_name = f'{basename}.asciidoc'
         self.file_list.append(file_name)
         file_path = os.path.join(self.output_dir, file_name)
         with open(file_path, 'w', encoding='utf-8') as file_out:
-            file_out.write(f'== {extractor.get_title()}\n\n')
+            title = extractor.get_title()
+            title = title.replace(title_strip, '')
+            file_out.write(f'== {title}\n\n')
 
-            time_published = extractor.get_published()
-            if time_published is not None:
-                published_info = f'published on {time_published}'
-            else:
-                published_info = ''
-            article_metadata = f"'''\n" \
-                               f"source: {src_url} {published_info}\n\n{extractor.get_metadata()}\n" \
-                               f"'''\n"
-            file_out.write(article_metadata)
+            if metadata:
+                time_published = extractor.get_published()
+                if time_published is not None:
+                    published_info = f'published on {time_published}'
+                else:
+                    published_info = ''
+                article_metadata = f"'''\n" \
+                                   f"source: {src_url} {published_info}\n\n{extractor.get_metadata()}\n" \
+                                   f"'''\n"
+                file_out.write(article_metadata)
+
             file_out.write(content.value)
 
     def generate_makefile(self):

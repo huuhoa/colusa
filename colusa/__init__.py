@@ -80,12 +80,16 @@ class Colusa(object):
         content, file_basename = self.download_content(url_path)
         bs = BeautifulSoup(content, 'html.parser')
 
+        chapter_metadata = self.config.get('metadata', True)
+        title_strip = self.config.get('title_prefix_trim', '')
         try:
             extractor = create_extractor(url_path, bs)
             extractor.cleanup()
             transformer = create_transformer(url_path, extractor.get_content(), self.output_dir)
             transformer.transform()
-            self.book_maker.render_chapter(extractor, transformer, url_path, file_basename)
+            self.book_maker.render_chapter(extractor, transformer, url_path, file_basename,
+                                           metadata=chapter_metadata,
+                                           title_strip=title_strip)
         except ContentNotFoundError as e:
             logs.error(e, url_path)
             # raise e
