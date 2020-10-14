@@ -32,7 +32,9 @@ class TruyenFullTransformer(Transformer):
         value = re.sub(r'^\.{4,}', "'''", value, flags=re.MULTILINE)
         value = re.sub(r'^_{3,}', "'''", value, flags=re.MULTILINE)
         value = re.sub(r'^\*{3,}', "'''", value, flags=re.MULTILINE)
-
+        value = re.sub(r'^\+{5,}', "'''", value, flags=re.MULTILINE)
+        value = re.sub(r"^'''\n\n$", "", value, flags=re.MULTILINE)
+        value = re.sub(r"^'''\n{2,}'''", "", value, flags=re.MULTILINE)
         self.value = value
         return value
 
