@@ -1,19 +1,31 @@
 # Changelog
 
 
-## Unreleased
+## v0.4.0 (2020-10-14)
 
 ### New
 
-* Support configuration file in YAML format. [Nguyen Huu Hoa]
+* Support new website https://www.infoq.com. [Nguyen Huu Hoa]
 
+* Yaml configuration (#9) [Huu Hoa NGUYEN]
+
+  * feat: support configuration file in YAML format
   + Configuration file format is determined by extension, i.e json or yml
+
+  * chg: add help str to make error report more concise
+  * chg: add logs statements in various place
+  * chg: dev: add CHANGELOG.md to record changes
 
 ### Changes
 
-* Add logs statements in various place. [Nguyen Huu Hoa]
+* Cleanup output for content from truyenfull.vn. [Nguyen Huu Hoa]
 
-* Add help str to make error report more concise. [Nguyen Huu Hoa]
+* Tolerate for some non-comforms htmls. [Nguyen Huu Hoa]
+
+* Add customization options for generated ebook. [Nguyen Huu Hoa]
+
+  + metadata: type bool, default is True. Metadata such as published_date, source url are generated after article (chapter) title if True
+  + title_prefix_trim: type string, default is empty. When specified, string value in `title_prefix_trim` will be removed from article (chapter) title
 
 
 ## v0.3.1 (2020-09-26)
