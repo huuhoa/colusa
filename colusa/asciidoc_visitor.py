@@ -65,16 +65,24 @@ class AsciidocVisitor(NodeVisitor):
                 # empty heading
                 return '\n\n'
 
-            return f'{"=" * (level + 1)} {text}\n\n'
+            return f'\n{"=" * (level + 1)} {text}\n\n'
 
         return visitor
 
     visit_tag_h1 = visit_heading_node(2)
-    visit_tag_h2 = visit_heading_node(3)
-    visit_tag_h3 = visit_heading_node(4)
-    visit_tag_h4 = visit_heading_node(5)
-    visit_tag_h5 = visit_heading_node(6)
-    visit_tag_h6 = visit_heading_node(7)
+    visit_tag_h2 = visit_heading_node(2)
+    visit_tag_h3 = visit_heading_node(3)
+    visit_tag_h4 = visit_heading_node(4)
+
+    def visit_tag_h5(self, node, *args, **kwargs):
+        text = self.generic_visit(node, *args, **kwargs)
+        text = self.text_cleanup(text)
+        if not text:
+            # empty heading
+            return '\n\n'
+
+        return f'\n\n**{text}**\n\n'
+    visit_tag_h6 = visit_tag_h5
 
     def visit_tag_strong(self, node, *args, **kwargs):
         text = self.generic_visit(node, *args, **kwargs)
@@ -188,6 +196,8 @@ class AsciidocVisitor(NodeVisitor):
         dim = f'{width}, {height}'
         dim, src = self.get_image_from_srcset(srcset, src, dim)
         url_path = requests.compat.urljoin(kwargs['src_url'], src)
+        if not (url_path.startswith('http://') or url_path.startswith('https://')):
+            return ''
         image_name = download_image(url_path, kwargs['output_dir'])
 
         caption = kwargs.get('caption')
