@@ -118,14 +118,14 @@ class Extractor(object):
         return self.site
 
     def internal_init(self):
+        def is_content_class(css_class):
+            return css_class is not None and css_class in ['postcontent', 'entry-content', 'article-content']
         # h-entry from microformat
         site = self.bs.find(class_='hentry')
         if site is not None:
             self.site = site
             return
-        self.site = self.bs.find('div', class_='entry-content')
-        if self.site is None:
-            self.site = self.bs.find('div', class_='article-content')
+        self.site = self.bs.find('div', class_=is_content_class)
         if self.site is None:
             self.site = self.bs.find('article')
         hs_blog_post = self.bs.find(attrs={'class': 'hs-blog-post'})
