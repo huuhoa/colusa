@@ -33,7 +33,10 @@ def get_hexdigest(str_value: str) -> str:
 
 
 def download_image(url_path, output_dir):
-    p = pathlib.PurePath(url_path)
+    import urllib
+
+    result = urllib.parse.urlsplit(url_path)
+    p = pathlib.PurePath(result.path)
     image_name = f'{get_hexdigest(url_path)}{p.suffix}'
     image_path = os.path.join(output_dir, "images", image_name)
     if not os.path.exists(image_path):
