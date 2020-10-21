@@ -272,3 +272,6 @@ class AsciidocVisitor(NodeVisitor):
         else:
             # inline
             return f'`{text}`'
+
+    def visit_tag_table(self, node, *args, **kwargs):
+        return f'++++\n{node.prettify()}\n++++\n\n'
