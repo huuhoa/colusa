@@ -132,6 +132,8 @@ class Extractor(object):
         if hs_blog_post is not None:
             blog_content = hs_blog_post.find(attrs={'class': 'post-body'})
             self.site = blog_content
+        if self.site is None:
+            self.site = self.bs.find('main')
 
 
 class Transformer(object):
