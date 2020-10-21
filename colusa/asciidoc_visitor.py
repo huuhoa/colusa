@@ -1,6 +1,7 @@
 import re
 
 import requests
+from bs4 import Tag
 
 from .utils import download_image
 from .visitor import NodeVisitor
@@ -42,12 +43,20 @@ class AsciidocVisitor(NodeVisitor):
 
     def visit_tag_a(self, node, *args, **kwargs):
         href = node.get('href', '')
+        # kwargs['href'] = href
         text = self.generic_visit(node, *args, **kwargs)
+        # del kwargs['href']
         if not text:
             return ''
         m = re.match(r'https?://', href)
         if m is None:
             return text
+        if len(node.contents) == 1:
+            child = node.contents[0]
+            if type(child) is Tag and child.name == 'img':
+                # anchor around image, should ignore the anchor
+                return text
+
         return f'link:{href}[{text}]'
 
     def visit_tag_p(self, node, *args, **kwargs):
@@ -201,10 +210,15 @@ class AsciidocVisitor(NodeVisitor):
         image_name = download_image(url_path, kwargs['output_dir'])
 
         caption = kwargs.get('caption')
-        if not caption:
-            return f'image:{image_name}[{alt},{dim}]'
+        href = kwargs.get('href')
+        if not href:
+            href_str = ''
         else:
-            return f'.{caption}\nimage:{image_name}[{alt},{dim}]\n'
+            href_str = f'[link={href}]\n'
+        if not caption:
+            return f'{href_str}image:{image_name}[{alt},{dim}]'
+        else:
+            return f'.{caption}\n{href_str}image:{image_name}[{alt},{dim}]\n'
 
     def get_image_from_srcset(self, srcset, default_src, default_dim):
         if srcset is None:
