@@ -107,7 +107,8 @@ class Extractor(object):
     def cleanup(self):
         self.remove_tag(self.site, 'div', attrs={'class': 'site-branding'})
         self.remove_tag(self.site, 'div', attrs={'class': 'navigation-top'})
-        self.remove_tag(self.site, 'footer', attrs={'class': 'site-footer'})
+        self.remove_tag(self.site, 'footer', attrs={})
+        # self.remove_tag(self.site, 'footer', attrs={'class': 'site-footer'})
         self.remove_tag(self.site, 'div', attrs={'class': 'searchsettings'})
         self.remove_tag(self.site, 'section', attrs={'id': 'ajaxsearchlitewidget-2'})
         self.remove_tag(self.site, 'aside', attrs={'id': 'secondary'})
@@ -119,7 +120,12 @@ class Extractor(object):
 
     def internal_init(self):
         def is_content_class(css_class):
-            return css_class is not None and css_class in ['postcontent', 'entry-content', 'article-content']
+            return css_class is not None and css_class in [
+                'postcontent',
+                'entry-content',
+                'article-content',
+                'blog-content',
+            ]
         # h-entry from microformat
         site = self.bs.find(class_='hentry')
         if site is not None:
