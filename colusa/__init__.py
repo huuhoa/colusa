@@ -61,7 +61,7 @@ class Colusa(object):
                                  f'Configuration file format should be either .json or .yml')
 
     def download_content(self, url_path):
-        from .utils import download_url, get_hexdigest
+        from .utils import download_url, get_hexdigest, get_short_hexdigest
 
         output_path = pathlib.Path(self.output_dir)
         cached_file_path = output_path.joinpath('.cached', f'{get_hexdigest(url_path)}.html')
@@ -74,7 +74,7 @@ class Colusa(object):
 
         with open(cached_file_path, 'rt', encoding='utf-8') as file_in:
             content = file_in.read()
-        return content, p.name
+        return content, f'{p.name}_{get_short_hexdigest(url_path)}'
 
     def ebook_generate_content(self, url_path):
         content, file_basename = self.download_content(url_path)

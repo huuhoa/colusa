@@ -32,6 +32,12 @@ def get_hexdigest(str_value: str) -> str:
     return m.hexdigest()
 
 
+def get_short_hexdigest(str_value: str) -> str:
+    m = hashlib.sha256()
+    m.update(str_value.encode('utf-8'))
+    return m.hexdigest()[:8]
+
+
 def download_image(url_path, output_dir):
     import urllib
 
