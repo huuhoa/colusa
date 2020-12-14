@@ -46,7 +46,11 @@ def download_image(url_path, output_dir):
     image_name = f'{get_hexdigest(url_path)}{p.suffix}'
     image_path = os.path.join(output_dir, "images", image_name)
     if not os.path.exists(image_path):
-        download_url(url_path, image_path)
+        try:
+            download_url(url_path, image_path)
+        except requests.exceptions.ConnectionError as ex:
+            logs.warn(f'error while downloading image. Exception: {ex}')
+        
     return image_name
 
 

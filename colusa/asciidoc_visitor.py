@@ -221,10 +221,12 @@ class AsciidocVisitor(NodeVisitor):
             return f'.{caption}\n{href_str}image:{image_name}[{alt},{dim}]\n'
 
     def get_image_from_srcset(self, srcset, default_src, default_dim):
+        import re
+
         if srcset is None:
             return default_dim, default_src
 
-        srcs = srcset.split(', ')
+        srcs = srcset.split(',')
         imgs = {}
         for s in srcs:
             s = s.strip()
@@ -234,7 +236,7 @@ class AsciidocVisitor(NodeVisitor):
         if len(imgs) == 0:
             return default_dim, default_src
 
-        dim_list = sorted(imgs.keys(), key=lambda x: int(x.replace('w', '').replace('h', '')))
+        dim_list = sorted(imgs.keys(), key=lambda x: float(re.sub('w|h|x', '', x)))
         largest = dim_list[-1]
         src = imgs[largest]
         dim = default_dim
