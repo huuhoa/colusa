@@ -129,7 +129,15 @@ class Extractor(object):
         # h-entry from microformat
         site = self.bs.find(class_='hentry')
         if site is not None:
+            role_main = site.find('div', attrs={'role': 'main'})
+            if role_main is not None:
+                site = role_main
+            role_main = site.find('div', attrs={'class': 'td-post-content'})
+            if role_main is not None:
+                site = role_main
+
             self.site = site
+
             return
         self.site = self.bs.find('div', class_=is_content_class)
         if self.site is None:
