@@ -204,7 +204,7 @@ class Render(object):
         self.file_list.append(file_name)
         file_path = os.path.join(self.output_dir, file_name)
         with open(file_path, 'w', encoding='utf-8') as file_out:
-            file_out.write(f'= {title}\n\n')
+            file_out.write(f'// {title}\n\n= {title}\n\n')
             if len(description) > 0:
                 file_out.write(description)
                 file_out.write('\n\n')
@@ -217,7 +217,7 @@ class Render(object):
         with open(file_path, 'w', encoding='utf-8') as file_out:
             title = extractor.get_title()
             title = title.replace(title_strip, '')
-            file_out.write(f'== {title}\n\n')
+            file_out.write(f'// {title}\n\n== {title}\n\n')
 
             if metadata:
                 time_published = extractor.get_published()
