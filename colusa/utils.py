@@ -7,14 +7,11 @@ import requests
 import re
 
 from colusa import logs
+import urllib
+from torpy import TorClient
 
 
-def download_url(url_path: str, file_path: str):
-    headers = {
-        'Accept': '*/*',
-        'User-Agent': 'curl/7.64.1',
-    }
-    req = requests.get(url_path, headers=headers, stream=True)
+def _process_request(req, file_path: str):
     if req.status_code != 200:
         logs.error(f'Cannot make request. Result: {req.status_code:d}')
         exit(1)
@@ -22,6 +19,30 @@ def download_url(url_path: str, file_path: str):
     with open(file_path, 'wb') as file_out:
         req.raw.decode_content = True
         shutil.copyfileobj(req.raw, file_out)
+
+
+def download_url(url_path: str, file_path: str):
+    headers = {
+        'Accept': '*/*',
+        'User-Agent': 'curl/7.64.1',
+    }
+
+    result = urllib.parse.urlparse(url_path)
+    scheme, netloc, url, params, query, fragment = result
+    if netloc.endswith('medium.com') or netloc.endswith('getambassador.io'):
+        logs.info('found url from medium.com, changed to Tor to workaround the blocking')
+        # logs.info('found url from medium.com, changed to medium0.com to workaround the blocking')
+        # netloc = netloc.replace('medium.com', 'medium0.com')
+        # url_path = urllib.parse.urlunparse([scheme, netloc, url, params, query, fragment])
+        from torpy.http.requests import TorRequests
+        with TorRequests() as tor_requests:
+            with tor_requests.get_session() as sess:
+                req = sess.get(url_path, headers=headers, stream=True)
+                _process_request(req, file_path)
+                return
+
+    req = requests.get(url_path, headers=headers, stream=True)
+    _process_request(req, file_path)
 
 
 def get_hexdigest(str_value: str) -> str:
