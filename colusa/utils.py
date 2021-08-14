@@ -4,8 +4,6 @@ import pathlib
 import shutil
 
 import requests
-from idna import unicode
-import unicodedata
 import re
 
 from colusa import logs
@@ -54,23 +52,26 @@ def download_image(url_path, output_dir):
     return image_name
 
 
-def slugify(value):
+def slugify(value, allow_unicode=False):
     """
-    Normalizes string, converts to lowercase, removes non-alpha characters,
-    and converts spaces to hyphens.
+    Convert to ASCII if 'allow_unicode' is False. Convert spaces to hyphens.
+    Remove characters that aren't alphanumerics, underscores, or hyphens.
+    Convert to lowercase. Also strip leading and trailing whitespace.
 
     From Django's "django/template/defaultfilters.py".
-    Copied from: https://gist.github.com/berlotto/6295018
+    Copied from: https://github.com/django/django/blob/a6b3938afc0204093b5356ade2be30b461a698c5/django/utils/text.py#L394
+
     """
 
-    _slugify_strip_re = re.compile(r'[^\w\s-]')
-    _slugify_hyphenate_re = re.compile(r'[-\s]+')
+    import unicodedata
 
-    if not isinstance(value, unicode):
-        value = unicode(value)
-    value = unicodedata.normalize('NFKD', value).encode('ascii', 'ignore').decode('ascii')
-    value = unicode(_slugify_strip_re.sub('', value).strip().lower())
-    return _slugify_hyphenate_re.sub('-', value)
+    value = str(value)
+    if allow_unicode:
+        value = unicodedata.normalize('NFKC', value)
+    else:
+        value = unicodedata.normalize('NFKD', value).encode('ascii', 'ignore').decode('ascii')
+    value = re.sub(r'[^\w\s-]', '', value.lower()).strip()
+    return re.sub(r'[-\s]+', '-', value)
 
 
 def scan(namespace):
