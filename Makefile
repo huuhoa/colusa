@@ -10,4 +10,8 @@ upload:
 changelog:
 	gitchangelog > CHANGELOG.md
 
+bump_minor:
+	bump2version minor
 
+bump_major:
+	bump2version major
