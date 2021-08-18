@@ -222,12 +222,10 @@ class Render(object):
             if metadata:
                 time_published = extractor.get_published()
                 if time_published is not None:
-                    published_info = f'published on {time_published}'
+                    published_info = f' was published on {time_published}'
                 else:
                     published_info = ''
-                article_metadata = f"'''\n" \
-                                   f"source: {src_url} {published_info}\n\n{extractor.get_metadata()}\n" \
-                                   f"'''\n"
+                article_metadata = f"_(link:{src_url}[original article]{published_info})_\n\n{extractor.get_metadata()}\n"
                 file_out.write(article_metadata)
 
             file_out.write(content.value)
