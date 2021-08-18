@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setup(name='colusa',
-      version='0.5.1',
+      version='0.6.0',
       description='Render website to ebook to make it easier to read on devices',
       long_description=long_description,
       long_description_content_type="text/markdown",
