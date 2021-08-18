@@ -7,5 +7,5 @@ soupsieve==2.2.1
 urllib3==1.26.6
 python-dateutil~=2.8.1
 PyYAML==5.4.1
-torpy~=1.1.4
+torpy~=1.1.6
 setuptools==57.4.0
