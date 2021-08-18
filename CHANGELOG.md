@@ -1,6 +1,93 @@
 # Changelog
 
 
+## v0.6.0 (2021-08-18)
+
+### New
+
+* Support new website https://agilethought.com (#11) [Huu Hoa NGUYEN]
+
+### Changes
+
+* Etr: improve metadata rendering for generated articles (#10) [Huu Hoa NGUYEN]
+
+### Other
+
+* Bump version: 0.5.1 → 0.6.0. [Nguyen Huu Hoa]
+
+
+## v0.5.1 (2021-08-14)
+
+### Changes
+
+* Update requirements for package and dev. [Nguyen Huu Hoa]
+
+### Other
+
+* Bump version: 0.5.0 → 0.5.1. [Nguyen Huu Hoa]
+
+
+## v0.5.0 (2021-08-14)
+
+### New
+
+* Support new website https://staffeng.com. [Nguyen Huu Hoa]
+
+### Changes
+
+* Initial configuration for bumpversion. [Nguyen Huu Hoa]
+
+* Add comments at the beginning of included files. [Nguyen Huu Hoa]
+
+  new version of asciidoctor removes leading and trailing empty lines of included files
+  therefore the beginning of new section in the included files will not
+  be separated as expected. The work around is to add comment line
+  at the very beginning of included files.
+
+* Support for parsing some common webblogs. [Nguyen Huu Hoa]
+
+* Support for parsing hbr.org. [Nguyen Huu Hoa]
+
+* Support parsing content for blog-content and wikipedia. [Nguyen Huu Hoa]
+
+* Support parsing srcset dimension with 'x' specification. [Nguyen Huu Hoa]
+
+* Add suffix to generated file name to prevent name colliding. [Nguyen Huu Hoa]
+
+* Support detecting webpage content inside `main` tag. [Nguyen Huu Hoa]
+
+* Passthrough the table tag content. [Nguyen Huu Hoa]
+
+* Special treatment for image inside an anchor tag. [Nguyen Huu Hoa]
+
+* Cleanup code to get content class of a website. [Nguyen Huu Hoa]
+
+* Heading level of generated asciidoc. [Nguyen Huu Hoa]
+
+* Add support for parsing new websites. [Nguyen Huu Hoa]
+
+  + https://cadenceworkflow.io
+  + https://softwareengineeringdaily.com
+
+### Fix
+
+* Correct config for bumpversion. [Nguyen Huu Hoa]
+
+* Slugify that import non existing unicode from idna. [Nguyen Huu Hoa]
+
+* Get correct image suffix by parsing url first to get only `path` in URL. [Nguyen Huu Hoa]
+
+### Other
+
+* Bump version: 0.4.0 → 0.5.0. [Nguyen Huu Hoa]
+
+* Docs: add some documents. [Nguyen Huu Hoa]
+
+* Add: proper configuration for packaging. [Nguyen Huu Hoa]
+
+  + add bump_version support
+
+
 ## v0.4.0 (2020-10-14)
 
 ### New
@@ -26,6 +113,10 @@
 
   + metadata: type bool, default is True. Metadata such as published_date, source url are generated after article (chapter) title if True
   + title_prefix_trim: type string, default is empty. When specified, string value in `title_prefix_trim` will be removed from article (chapter) title
+
+### Other
+
+* Docs: Prepare for release v0.4.0. [Nguyen Huu Hoa]
 
 
 ## v0.3.1 (2020-09-26)
