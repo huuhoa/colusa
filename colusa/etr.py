@@ -95,6 +95,15 @@ class Extractor(object):
         else:
             return None
 
+    def get_author(self):
+        meta = self.bs.find('meta', attrs={'name': 'author'})
+        if meta is not None:
+            value = meta.get('content')
+            if value is not None:
+                return value
+
+        return None
+
     def get_metadata(self):
         return ''
 
@@ -220,15 +229,34 @@ class Render(object):
             file_out.write(f'// {title}\n\n== {title}\n\n')
 
             if metadata:
-                time_published = extractor.get_published()
-                if time_published is not None:
-                    published_info = f' was published on {time_published}'
-                else:
-                    published_info = ''
-                article_metadata = f"_(link:{src_url}[original article]{published_info})_\n\n{extractor.get_metadata()}\n"
+                article_metadata = self.render_metadata(extractor, content, src_url)
                 file_out.write(article_metadata)
 
             file_out.write(content.value)
+
+    def render_metadata(self, extractor: Extractor, content: Transformer, src_url):
+        from urllib.parse import urlparse
+
+        author = extractor.get_author()
+        data = []
+        if author is not None:
+            author_fmt = f'by **{author}**'
+            data.append(author_fmt)
+        time_published = extractor.get_published()
+        if time_published is not None:
+            published_info = f'on {time_published}'
+            data.append(published_info)
+
+        domain = urlparse(src_url).netloc
+        data.append(f'at _link:{src_url}[{domain}]_')
+        first_line = ' '.join(data)
+        lines = [f"{first_line}\n"]
+        extra = extractor.get_metadata()
+        if extra:
+            lines.append(extra)
+        lines.append('\n')
+        article_metadata = "\n".join(lines)
+        return article_metadata
 
     def generate_makefile(self):
         template = '''html:
