@@ -23,3 +23,27 @@ class AgileThoughtExtractor(Extractor):
             section_counter += 1
         for section in to_removed:
             section.extract()
+
+    def get_author(self):
+        yoast_data = self.bs.find('script', attrs={
+            'type': "application/ld+json",
+            'class': "yoast-schema-graph",
+        })
+        if yoast_data is None:
+            return super(AgileThoughtExtractor, self).get_author()
+        import json
+        data = json.loads(yoast_data.string)
+        graph = data.get('@graph', [])
+        persons = {}
+        author = None
+        for g in graph:
+            g_type = g.get('@type', '')
+            if g_type == 'Article':
+                author = g.get('author', {}).get('@id')
+            if g_type == 'Person':
+                person_id = g.get('@id', '')
+                person_name = g.get('name', '')
+                persons[person_id] = person_name
+        if author in persons:
+            return persons[author]
+        return None
