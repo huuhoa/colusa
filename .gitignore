@@ -134,3 +134,4 @@ dmypy.json
 # colusa generated
 .cached/
 output/
+temp/
