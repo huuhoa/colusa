@@ -22,11 +22,12 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-__author__ = """Huu Hoa NGUYEN"""
-__email__ = "huuhoa@gmail.com"
-__version__ = '0.6.0'
-__copyright__ = "Copyright (c) 2020-2021 Huu Hoa NGUYEN"
-__license__ = "MIT License"
+from colusa import _version
+__author__ = _version.__author__
+__email__ = _version.__email__
+__version__ = _version.__version__
+__copyright__ = _version.__copyright__
+__license__ = _version.__license__
 
 
 import json
