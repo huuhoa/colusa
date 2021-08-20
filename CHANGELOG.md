@@ -1,6 +1,61 @@
 # Changelog
 
 
+## v0.7.0 (2021-08-20)
+
+### Changes
+
+* Improve article parsing (#15) [Huu Hoa NGUYEN]
+
+  * add: agilethought support to get article's author
+  * add: support website tech.trivago.com
+
+* Metadata rendering (#14) [Huu Hoa NGUYEN]
+
+  render metadata in a more clean way, the format should be
+
+  `by **{author}** on {published_date} at {url | domain}`
+
+### Other
+
+* Bump version: 0.6.0 → 0.7.0. [Nguyen Huu Hoa]
+
+* Chore: refactor project's setup configurations. [Nguyen Huu Hoa]
+
+* Build(deps): update python-dateutil requirement from ~=2.8.1 to ~=2.8.2 (#12) [dependabot[bot]]
+
+  Updates the requirements on [python-dateutil](https://github.com/dateutil/dateutil) to permit the latest version.
+  - [Release notes](https://github.com/dateutil/dateutil/releases)
+  - [Changelog](https://github.com/dateutil/dateutil/blob/master/NEWS)
+  - [Commits](https://github.com/dateutil/dateutil/compare/2.8.1...2.8.2)
+
+  ---
+  updated-dependencies:
+  - dependency-name: python-dateutil
+    dependency-type: direct:production
+  ...
+
+* Build(deps): update torpy requirement from ~=1.1.4 to ~=1.1.6 (#13) [dependabot[bot]]
+
+  Updates the requirements on [torpy](https://github.com/torpyorg/torpy) to permit the latest version.
+  - [Release notes](https://github.com/torpyorg/torpy/releases)
+  - [Commits](https://github.com/torpyorg/torpy/compare/v1.1.4...v1.1.6)
+
+  ---
+  updated-dependencies:
+  - dependency-name: torpy
+    dependency-type: direct:production
+  ...
+
+* Setup codeql-analysis. [Huu Hoa NGUYEN]
+
+* Setup dependabot. [Huu Hoa NGUYEN]
+
+* Dev: update requirements_dev.txt. [Nguyen Huu Hoa]
+
+* Docs: update CHANGELOG. [Nguyen Huu Hoa]
+
+
 ## v0.6.0 (2021-08-18)
 
 ### New
