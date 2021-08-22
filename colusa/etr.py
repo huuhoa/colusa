@@ -282,6 +282,7 @@ pdf:
         - and include all generated asciidoc files from `urls`
         """
         included_files = '\n'.join(['include::%s[]' % x for x in self.file_list])
+        book_properties = '\n'.join([x.strip() for x in self.config.get('book_properties', [])])
         content = f'''= {self.config["title"]}
 {self.config["author"]}
 {self.config["version"]}
@@ -290,6 +291,7 @@ pdf:
 :toc:
 :imagesdir: images
 :homepage: {self.config["homepage"]}
+{book_properties}
 
 {included_files}
 '''
