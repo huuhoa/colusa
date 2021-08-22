@@ -1,6 +1,43 @@
 # Changelog
 
 
+## v0.8.0 (2021-08-22)
+
+### New
+
+* Support rendering additional book properties (#16) [Huu Hoa NGUYEN]
+
+  In the book configuration file, add new array `book_properties`
+  with content is list of strings. Those strings will be render as
+  book properties on master file (index.asciidoc)
+
+  Example:
+
+  ```json
+  "book_properties": [
+      "ifdef::backend-pdf[]",
+      ":front-cover-image: image:cover.pdf[]",
+      ":notitle:",
+      "endif::[]",
+      "ifdef::backend-epub3[]",
+      ":front-cover-image: image:cover.png[]",
+      "endif::[]"
+  ]
+  ```
+
+  Above example will instruct asciidoctor processor to use:
+  + cover.pdf as front cover image when generating pdf
+  + cover.png as front cover image when generating epub3
+
+### Changes
+
+* Render html table as native asciidoc table (#17) [Huu Hoa NGUYEN]
+
+### Other
+
+* Add(plugins): support for scrumcrazy.wordpress.com. [Nguyen Huu Hoa]
+
+
 ## v0.7.0 (2021-08-20)
 
 ### Changes
