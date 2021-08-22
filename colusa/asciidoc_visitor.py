@@ -276,4 +276,38 @@ class AsciidocVisitor(NodeVisitor):
             return f'`{text}`'
 
     def visit_tag_table(self, node, *args, **kwargs):
-        return f'++++\n{node.prettify()}\n++++\n\n'
+        all_tr = node.find_all('tr')
+        table = []
+        headers = []
+        num_cols = 0
+        for tr in all_tr:
+            all_td = []
+            for td in tr.contents:
+                if td.name == 'td':
+                    text = self.generic_visit(td, *args, **kwargs)
+                    all_td.append(text)
+                if td.name == 'th':
+                    text = self.generic_visit(td, *args, **kwargs)
+                    headers.append(text)
+            if num_cols == 0:
+                num_cols = len(all_td)
+            table.append(all_td)
+        if len(headers) == 0:
+            option_header = '%noheader'
+        else:
+            option_header = '%header'
+        option_cols = ','.join(['1' for _ in range(num_cols)])
+
+        table_preamble = '|==='
+        table_close = '|==='
+        r_table = [f'[{option_header},cols="{option_cols}"]', table_preamble]
+        if len(headers) > 0:
+            r_header = '\n'.join([f'| {h}' for h in headers]) + '\n'
+            r_table.append(r_header)
+        for row in table:
+            r_row = '\n'.join([f'a| {c}' if len(c) > 0 else '|' for c in row]) + '\n'
+            r_table.append(r_row)
+        r_table.append(table_close)
+        r_table.append('\n')
+        render_text = '\n'.join(r_table)
+        return render_text
