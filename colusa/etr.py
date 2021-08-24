@@ -69,9 +69,12 @@ class Extractor(object):
         self.bs = bs
         self.site = None
         self.content = None
+        self.author = None
+        self.published = None
         self.internal_init()
         if self.site is None:
             raise ContentNotFoundError()
+        self._parse_yoast_data()
 
     def get_title(self):
         meta = self.bs.find('meta', attrs={'property': 'og:title'})
@@ -80,26 +83,33 @@ class Extractor(object):
         return self.bs.title.text
 
     def get_published(self):
+        if self.published:
+            return self.published
+
         meta = self.bs.find('meta', attrs={'property': 'article:published_time'})
         if meta is not None:
             value = meta.get('content')
             if value is not None:
                 published = parse(value)
-                return_value = str(published.date())
-                return return_value
+                self.published = str(published.date())
+                return self.published
 
         time_published = self.bs.find('time', attrs={'class': 'entry-date published'})
         if time_published is not None:
-            published = time_published.text
-            return published
+            self.published = time_published.text
+            return self.published
         else:
             return None
 
     def get_author(self):
+        if self.author:
+            return self.author
+
         meta = self.bs.find('meta', attrs={'name': 'author'})
         if meta is not None:
             value = meta.get('content')
             if value is not None:
+                self.author = value
                 return value
 
         return None
@@ -115,6 +125,9 @@ class Extractor(object):
                 e.extract()
 
     def cleanup(self):
+        """
+        Cleanup extra content (mostly ads) within main content
+        """
         self.remove_tag(self.site, 'div', attrs={'class': 'site-branding'})
         self.remove_tag(self.site, 'div', attrs={'class': 'navigation-top'})
         self.remove_tag(self.site, 'footer', attrs={})
@@ -126,9 +139,19 @@ class Extractor(object):
         self.remove_tag(self.site, 'header', attrs={'id': 'masthead'})
 
     def get_content(self):
+        """
+        :return: handle to main content of website
+        """
         return self.site
 
     def internal_init(self):
+        """
+        The purpose of internal_init is to find the main content of website
+        and set the member self.site to handle of that content
+
+        Default implementation tries to cover as much as possible the commonly
+        known web structure such as blog, hentry, article
+        """
         def is_content_class(css_class):
             return css_class is not None and css_class in [
                 'postcontent',
@@ -158,6 +181,39 @@ class Extractor(object):
             self.site = blog_content
         if self.site is None:
             self.site = self.bs.find('main')
+
+    def _parse_yoast_data(self):
+        """
+        Parse yoast json data to get some metadata such as author, published date
+        """
+        yoast_data = self.bs.find('script', attrs={
+            'type': "application/ld+json",
+            'class': "yoast-schema-graph",
+        })
+        if yoast_data is None:
+            return
+
+        import json
+        from dateutil import parser
+        data = json.loads(yoast_data.string)
+        graph = data.get('@graph', [])
+        persons = {}
+        author = None
+        for g in graph:
+            g_type = g.get('@type', '')
+            if g_type == 'Article':
+                author = g.get('author', {}).get('@id')
+                published_value = g.get('datePublished')
+                if published_value:
+                    published = parser.parse(published_value)
+                    self.published = str(published.date())
+
+            if (type(g_type) is list and 'Person' in g_type) or (type(g_type) is str and g_type == 'Person'):
+                person_id = g.get('@id', '')
+                person_name = g.get('name', '')
+                persons[person_id] = person_name
+        if author in persons:
+            self.author = persons[author]
 
 
 class Transformer(object):
