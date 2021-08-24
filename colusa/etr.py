@@ -109,9 +109,10 @@ class Extractor(object):
 
     @classmethod
     def remove_tag(cls, site, tag, attrs):
-        b = site.find(tag, attrs=attrs)
-        if b is not None:
-            b.extract()
+        elements = site.find_all(tag, attrs=attrs)
+        if elements is not None:
+            for e in elements:
+                e.extract()
 
     def cleanup(self):
         self.remove_tag(self.site, 'div', attrs={'class': 'site-branding'})
