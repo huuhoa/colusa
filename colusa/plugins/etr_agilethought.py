@@ -1,13 +1,15 @@
+from bs4 import Tag
+
 from colusa.etr import Extractor, register_extractor
 
 
 @register_extractor('//agilethought.com')
 class AgileThoughtExtractor(Extractor):
-    def _find_main_content(self):
-        self.site = self.bs.find('div', attrs={'data-elementor-type': 'single'})
+    def _find_main_content(self) -> Tag:
+        return self.bs.find('div', attrs={'data-elementor-type': 'single'})
 
     def cleanup(self):
-        first_div = self.site.find('div', class_="elementor-section-wrap")
+        first_div = self.main_content.find('div', class_="elementor-section-wrap")
         if first_div is None:
             super(Extractor, self).cleanup()
             return

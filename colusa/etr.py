@@ -67,14 +67,13 @@ class Extractor(object):
     """Extractor extract real article content from sea of other contents"""
     def __init__(self, bs):
         self.bs = bs
-        self.main_content = None
         self.content = None
         self.author = None
         self.published = None
         self.title = None
         self.extra_metadata = ''
         self._parse_metadata()
-        self._find_main_content()
+        self.main_content = self._find_main_content()
         if self.main_content is None:
             raise ContentNotFoundError()
 
@@ -148,13 +147,15 @@ class Extractor(object):
         """
         return self.main_content
 
-    def _find_main_content(self):
+    def _find_main_content(self) -> Tag:
         """
         The purpose of internal_init is to find the main content of website
         and set the member self.site to handle of that content
 
         Default implementation tries to cover as much as possible the commonly
         known web structure such as blog, hentry, article
+
+        :return: Tag of main content
         """
         def is_content_class(css_class):
             return css_class is not None and css_class in [
@@ -173,18 +174,21 @@ class Extractor(object):
             if role_main is not None:
                 site = role_main
 
-            self.main_content = site
+            return site
 
-            return
-        self.main_content = self.bs.find('div', class_=is_content_class)
-        if self.main_content is None:
-            self.main_content = self.bs.find('article')
+        tag = self.bs.find('div', class_=is_content_class)
+        if tag is not None:
+            return tag
         hs_blog_post = self.bs.find(attrs={'class': 'hs-blog-post'})
         if hs_blog_post is not None:
             blog_content = hs_blog_post.find(attrs={'class': 'post-body'})
-            self.main_content = blog_content
-        if self.main_content is None:
-            self.main_content = self.bs.find('main')
+            return blog_content
+        tag = self.bs.find('article')
+        if tag is not None:
+            return tag
+        tag = self.bs.find('main')
+        if tag is not None:
+            return tag
 
     def _parse_yoast_data(self) -> dict:
         """

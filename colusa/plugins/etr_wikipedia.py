@@ -8,4 +8,4 @@ class WikipediaExtractor(Extractor):
         return title.text
 
     def _find_main_content(self):
-        self.site = self.bs.find(id='bodyContent')
+        return self.bs.find(id='bodyContent')

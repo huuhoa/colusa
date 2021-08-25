@@ -15,7 +15,7 @@ class MediumExtractor(Extractor):
         return self.bs.title.text
 
     def _find_main_content(self):
-        self.site = self.bs.find('article')
+        return self.bs.find('article')
 
 
 @register_transformer('//medium.com')

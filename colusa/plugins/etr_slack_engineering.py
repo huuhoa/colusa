@@ -8,4 +8,4 @@ class SlackEngineeringExtractor(Extractor):
         return title.text
 
     def _find_main_content(self):
-        self.site = self.bs.find(id='primary', class_='main-content')
+        return self.bs.find(id='primary', class_='main-content')

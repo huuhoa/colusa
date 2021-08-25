@@ -8,13 +8,13 @@ from colusa.etr import Extractor, Transformer, register_extractor, register_tran
 @register_extractor('//truyenfull.vn')
 class TruyenFullExtractor(Extractor):
     def _find_main_content(self):
-        self.site = self.bs.find('div', id='chapter-big-container')
+        return self.bs.find('div', id='chapter-big-container')
 
     def cleanup(self):
-        self.remove_tag(self.site, 'div', attrs={'id': 'chapter-nav-top'})
-        self.remove_tag(self.site, 'div', attrs={'id': 'chapter-nav-bot'})
-        self.remove_tag(self.site, 'a', attrs={'class': 'truyen-title'})
-        self.remove_tag(self.site, 'h2', attrs={})
+        self.remove_tag(self.main_content, 'div', attrs={'id': 'chapter-nav-top'})
+        self.remove_tag(self.main_content, 'div', attrs={'id': 'chapter-nav-bot'})
+        self.remove_tag(self.main_content, 'a', attrs={'class': 'truyen-title'})
+        self.remove_tag(self.main_content, 'h2', attrs={})
 
 
 @register_transformer('//truyenfull.vn')

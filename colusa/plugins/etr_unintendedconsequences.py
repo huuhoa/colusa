@@ -7,7 +7,7 @@ class UnintendedConsequencesExtractor(Extractor):
         return self.bs.find('h1').text
 
     def _find_main_content(self):
-        self.site = self.bs.find(id='page')
+        return self.bs.find(id='page')
 
     def get_content(self):
-        return self.site.find(attrs={'class': 'entry-content'})
+        return self.main_content.find(attrs={'class': 'entry-content'})

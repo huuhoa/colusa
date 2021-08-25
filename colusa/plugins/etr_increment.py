@@ -8,7 +8,7 @@ class IncrementDotComExtractor(Extractor):
         return title.text
 
     def _find_main_content(self):
-        self.site = self.bs.find('article', attrs={'itemprop': 'articleBody'})
+        return self.bs.find('article', attrs={'itemprop': 'articleBody'})
 
     def _parse_extra_metadata(self):
         author_tag = self.bs.find('a', attrs={'itemprop': 'author'})

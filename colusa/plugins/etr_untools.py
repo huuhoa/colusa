@@ -20,4 +20,4 @@ class UntoolsExtractor(Extractor):
         return f'.{tag}\n****\n{usage}\n****\n\n'
 
     def _find_main_content(self):
-        self.site = self.bs.find(class_=re.compile('article-module--content--'))
+        return self.bs.find(class_=re.compile('article-module--content--'))
