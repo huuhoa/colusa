@@ -7,7 +7,7 @@ from colusa.etr import Extractor, Transformer, register_extractor, register_tran
 
 @register_extractor('//hbr.org')
 class HBRExtractor(Extractor):
-    def internal_init(self):
+    def _find_main_content(self):
         self.site = self.bs.find('div', class_='article-body standard-content')
 
     def cleanup(self):

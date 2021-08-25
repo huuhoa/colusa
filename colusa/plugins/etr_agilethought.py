@@ -3,7 +3,7 @@ from colusa.etr import Extractor, register_extractor
 
 @register_extractor('//agilethought.com')
 class AgileThoughtExtractor(Extractor):
-    def internal_init(self):
+    def _find_main_content(self):
         self.site = self.bs.find('div', attrs={'data-elementor-type': 'single'})
 
     def cleanup(self):
@@ -24,13 +24,13 @@ class AgileThoughtExtractor(Extractor):
         for section in to_removed:
             section.extract()
 
-    def get_author(self):
+    def _parse_author(self):
         yoast_data = self.bs.find('script', attrs={
             'type': "application/ld+json",
             'class': "yoast-schema-graph",
         })
         if yoast_data is None:
-            return super(AgileThoughtExtractor, self).get_author()
+            return super(AgileThoughtExtractor, self)._parse_author()
         import json
         data = json.loads(yoast_data.string)
         graph = data.get('@graph', [])

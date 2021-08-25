@@ -5,7 +5,7 @@ from colusa.etr import Extractor, Transformer, register_extractor, register_tran
 
 @register_extractor('//medium.com')
 class MediumExtractor(Extractor):
-    def get_title(self):
+    def _parse_title(self):
         title = self.site.find('h1')
         if title is not None:
             return title.text
@@ -14,7 +14,7 @@ class MediumExtractor(Extractor):
             return meta.get('content')
         return self.bs.title.text
 
-    def internal_init(self):
+    def _find_main_content(self):
         self.site = self.bs.find('article')
 
 

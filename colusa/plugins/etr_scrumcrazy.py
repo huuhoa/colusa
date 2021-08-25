@@ -7,22 +7,22 @@ class ScrumCrazyExtractor(Extractor):
         self.author = None
         super(ScrumCrazyExtractor, self).__init__(bs)
 
-    def get_author(self):
+    def _parse_author(self):
         if self.author:
             return self.author
         else:
-            return super(ScrumCrazyExtractor, self).get_author()
+            return super(ScrumCrazyExtractor, self)._parse_author()
 
-    def internal_init(self):
-        super(ScrumCrazyExtractor, self).internal_init()
-        post_info_div = self.site.find('div', class_='postinfo')
+    def _find_main_content(self):
+        super(ScrumCrazyExtractor, self)._find_main_content()
+        post_info_div = self.main_content.find('div', class_='postinfo')
         if post_info_div is not None:
             post_info = post_info_div.text.strip()
             import re
             m = re.search(r'by (.*)$', post_info)
             if m is not None:
                 self.author = m.group(1)
-        entry = self.site.find('div', class_='entry')
+        entry = self.main_content.find('div', class_='entry')
         if entry is not None:
             self.site = entry
 

@@ -3,7 +3,7 @@ from colusa.etr import Extractor, register_extractor
 
 @register_extractor('www.cs.rutgers.edu/~pxk/')
 class CSRutgersEduExtractor(Extractor):
-    def internal_init(self):
+    def _find_main_content(self):
         self.site = self.bs.find('div', attrs={'id': 'main'})
 
     def cleanup(self):

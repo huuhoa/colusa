@@ -7,7 +7,7 @@ from colusa.etr import Extractor, Transformer, register_extractor, register_tran
 
 @register_extractor('//truyenfull.vn')
 class TruyenFullExtractor(Extractor):
-    def internal_init(self):
+    def _find_main_content(self):
         self.site = self.bs.find('div', id='chapter-big-container')
 
     def cleanup(self):

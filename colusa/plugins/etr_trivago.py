@@ -7,10 +7,10 @@ class TrivagoExtractor(Extractor):
         super(TrivagoExtractor, self).__init__(bs)
         self.title = ''
 
-    def get_title(self):
+    def _parse_title(self):
         return self.title
 
-    def get_author(self):
+    def _parse_author(self):
         meta = self.bs.find_all('meta', attrs={'name': 'author'})
         for a in meta:
             value = a.get('content')
@@ -20,5 +20,5 @@ class TrivagoExtractor(Extractor):
         return None
 
     def cleanup(self):
-        self.title = self.site.find('header', class_='post__header').find('h1').text
-        self.remove_tag(self.site, 'header', attrs={'class': 'post__header'})
+        self.title = self.main_content.find('header', class_='post__header').find('h1').text
+        self.remove_tag(self.main_content, 'header', attrs={'class': 'post__header'})

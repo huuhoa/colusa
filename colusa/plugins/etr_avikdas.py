@@ -3,7 +3,7 @@ from colusa.etr import Extractor, register_extractor
 
 @register_extractor('avikdas.com')
 class AvikdasExtractor(Extractor):
-    def internal_init(self):
+    def _find_main_content(self):
         self.site = self.bs.body
 
     def cleanup(self):

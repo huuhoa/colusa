@@ -3,14 +3,14 @@ from colusa.etr import Extractor, register_extractor
 
 @register_extractor('//increment.com')
 class IncrementDotComExtractor(Extractor):
-    def get_title(self):
+    def _parse_title(self):
         title = self.bs.find('h1', class_='t-TitleSerif large title')
         return title.text
 
-    def internal_init(self):
+    def _find_main_content(self):
         self.site = self.bs.find('article', attrs={'itemprop': 'articleBody'})
 
-    def get_metadata(self):
+    def _parse_extra_metadata(self):
         author_tag = self.bs.find('a', attrs={'itemprop': 'author'})
         if author_tag is None:
             author = ''

@@ -8,7 +8,7 @@ class XP123Extractor(Extractor):
         self.published = None
         super(XP123Extractor, self).__init__(bs)
 
-    def internal_init(self):
+    def _find_main_content(self):
         self.site = self.bs.find('article', attrs={'class': 'post'})
 
     def cleanup(self):
@@ -16,10 +16,10 @@ class XP123Extractor(Extractor):
         self.remove_tag(self.site, 'section', attrs={'class': 'yikes-mailchimp-container'})
         self.remove_tag(self.site, 'footer', attrs={'class': 'entry-meta'})
 
-    def get_author(self):
-        return self.author if self.author else super(XP123Extractor, self).get_author()
+    def _parse_author(self):
+        return self.author if self.author else super(XP123Extractor, self)._parse_author()
 
-    def get_published(self):
-        return self.published if self.published else super(XP123Extractor, self).get_published()
+    def _parse_published(self):
+        return self.published if self.published else super(XP123Extractor, self)._parse_published()
 
 
