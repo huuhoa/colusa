@@ -6,7 +6,7 @@ from colusa.etr import Extractor, Transformer, register_extractor, register_tran
 @register_extractor('//medium.com')
 class MediumExtractor(Extractor):
     def _parse_title(self):
-        title = self.site.find('h1')
+        title = self.main_content.find('h1')
         if title is not None:
             return title.text
         meta = self.bs.find('meta', attrs={'property': 'og:title'})

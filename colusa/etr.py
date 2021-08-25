@@ -72,10 +72,12 @@ class Extractor(object):
         self.published = None
         self.title = None
         self.extra_metadata = ''
-        self._parse_metadata()
+
         self.main_content = self._find_main_content()
         if self.main_content is None:
             raise ContentNotFoundError()
+
+        self._parse_metadata()
 
     def _parse_title(self) -> str:
         """
@@ -211,6 +213,8 @@ class Extractor(object):
         persons = {}
         author = None
         for g in graph:
+            if type(g) is not dict:
+                continue
             g_type = g.get('@type', '')
             if g_type == 'Article':
                 author = g.get('author', {}).get('@id')
