@@ -67,44 +67,59 @@ class Extractor(object):
     """Extractor extract real article content from sea of other contents"""
     def __init__(self, bs):
         self.bs = bs
-        self.site = None
         self.content = None
-        self.internal_init()
-        if self.site is None:
+        self.author = None
+        self.published = None
+        self.title = None
+        self.extra_metadata = ''
+
+        self.main_content = self._find_main_content()
+        if self.main_content is None:
             raise ContentNotFoundError()
 
-    def get_title(self):
+        self._parse_metadata()
+
+    def _parse_title(self) -> str:
+        """
+        Parse known tags in html for article's title
+        :return: title if found
+        """
         meta = self.bs.find('meta', attrs={'property': 'og:title'})
         if meta is not None:
             return meta.get('content')
-        return self.bs.title.text
+        else:
+            return self.bs.title.text
 
-    def get_published(self):
+    def _parse_published(self) -> str:
+        """
+        Parse known tags in html for article's published date
+        :return: str value for date in format `%Y-%m-%d`
+        """
         meta = self.bs.find('meta', attrs={'property': 'article:published_time'})
-        if meta is not None:
-            value = meta.get('content')
-            if value is not None:
-                published = parse(value)
-                return_value = str(published.date())
-                return return_value
+        value = meta.get('content') if meta else None
+        if value is not None:
+            published = parse(value)
+            return str(published.date())
 
         time_published = self.bs.find('time', attrs={'class': 'entry-date published'})
         if time_published is not None:
-            published = time_published.text
-            return published
-        else:
-            return None
+            return time_published.text
 
-    def get_author(self):
+        return ''
+
+    def _parse_author(self) -> str:
+        """
+        Parse known tags in html for article's author
+        :return: author name if found
+        """
         meta = self.bs.find('meta', attrs={'name': 'author'})
         if meta is not None:
             value = meta.get('content')
             if value is not None:
                 return value
+        return ''
 
-        return None
-
-    def get_metadata(self):
+    def _parse_extra_metadata(self) -> str:
         return ''
 
     @classmethod
@@ -115,20 +130,35 @@ class Extractor(object):
                 e.extract()
 
     def cleanup(self):
-        self.remove_tag(self.site, 'div', attrs={'class': 'site-branding'})
-        self.remove_tag(self.site, 'div', attrs={'class': 'navigation-top'})
-        self.remove_tag(self.site, 'footer', attrs={})
+        """
+        Cleanup extra content (mostly ads) within main content
+        """
+        self.remove_tag(self.main_content, 'div', attrs={'class': 'site-branding'})
+        self.remove_tag(self.main_content, 'div', attrs={'class': 'navigation-top'})
+        self.remove_tag(self.main_content, 'footer', attrs={})
         # self.remove_tag(self.site, 'footer', attrs={'class': 'site-footer'})
-        self.remove_tag(self.site, 'div', attrs={'class': 'searchsettings'})
-        self.remove_tag(self.site, 'section', attrs={'id': 'ajaxsearchlitewidget-2'})
-        self.remove_tag(self.site, 'aside', attrs={'id': 'secondary'})
-        self.remove_tag(self.site, 'nav', attrs={'class': 'post-navigation'})
-        self.remove_tag(self.site, 'header', attrs={'id': 'masthead'})
+        self.remove_tag(self.main_content, 'div', attrs={'class': 'searchsettings'})
+        self.remove_tag(self.main_content, 'section', attrs={'id': 'ajaxsearchlitewidget-2'})
+        self.remove_tag(self.main_content, 'aside', attrs={'id': 'secondary'})
+        self.remove_tag(self.main_content, 'nav', attrs={'class': 'post-navigation'})
+        self.remove_tag(self.main_content, 'header', attrs={'id': 'masthead'})
 
     def get_content(self):
-        return self.site
+        """
+        :return: handle to main content of website
+        """
+        return self.main_content
 
-    def internal_init(self):
+    def _find_main_content(self) -> Tag:
+        """
+        The purpose of internal_init is to find the main content of website
+        and set the member self.site to handle of that content
+
+        Default implementation tries to cover as much as possible the commonly
+        known web structure such as blog, hentry, article
+
+        :return: Tag of main content
+        """
         def is_content_class(css_class):
             return css_class is not None and css_class in [
                 'postcontent',
@@ -146,18 +176,77 @@ class Extractor(object):
             if role_main is not None:
                 site = role_main
 
-            self.site = site
+            return site
 
-            return
-        self.site = self.bs.find('div', class_=is_content_class)
-        if self.site is None:
-            self.site = self.bs.find('article')
+        tag = self.bs.find('div', class_=is_content_class)
+        if tag is not None:
+            return tag
         hs_blog_post = self.bs.find(attrs={'class': 'hs-blog-post'})
         if hs_blog_post is not None:
             blog_content = hs_blog_post.find(attrs={'class': 'post-body'})
-            self.site = blog_content
-        if self.site is None:
-            self.site = self.bs.find('main')
+            return blog_content
+        tag = self.bs.find('article')
+        if tag is not None:
+            return tag
+        tag = self.bs.find('main')
+        if tag is not None:
+            return tag
+
+    def _parse_yoast_data(self) -> dict:
+        """
+        Parse yoast json data to get some metadata such as author, published date
+        :return: dict of metadata found in yoast data
+        """
+        yoast_data = self.bs.find('script', attrs={
+            'type': "application/ld+json",
+            'class': "yoast-schema-graph",
+        })
+
+        return_data = {}
+        if yoast_data is None:
+            return return_data
+
+        import json
+        from dateutil import parser
+        data = json.loads(yoast_data.string)
+        graph = data.get('@graph', [])
+        persons = {}
+        author = None
+        for g in graph:
+            if type(g) is not dict:
+                continue
+            g_type = g.get('@type', '')
+            if g_type == 'Article':
+                author = g.get('author', {}).get('@id')
+                published_value = g.get('datePublished')
+                if published_value:
+                    published = parser.parse(published_value)
+                    return_data['published'] = str(published.date())
+                headline = g.get('headline')
+                if headline:
+                    return_data['title'] = headline
+
+            if (type(g_type) is list and 'Person' in g_type) or (type(g_type) is str and g_type == 'Person'):
+                person_id = g.get('@id', '')
+                person_name = g.get('name', '')
+                persons[person_id] = person_name
+        if author in persons:
+            return_data['author'] = persons[author]
+
+        return return_data
+
+    def _parse_metadata(self):
+        """
+        Parse existing web metadata to get value for `title`, `author`, `published`
+        """
+        self.title = self._parse_title()
+        self.author = self._parse_author()
+        self.published = self._parse_published()
+        self.extra_metadata = self._parse_extra_metadata()
+        data = self._parse_yoast_data()
+        self.title = data.get('title', self.title)
+        self.author = data.get('author', self.author)
+        self.published = data.get('published', self.published)
 
 
 class Transformer(object):
@@ -225,7 +314,7 @@ class Render(object):
         self.file_list.append(file_name)
         file_path = os.path.join(self.output_dir, file_name)
         with open(file_path, 'w', encoding='utf-8') as file_out:
-            title = extractor.get_title()
+            title = extractor.title
             title = title.replace(title_strip, '')
             file_out.write(f'// {title}\n\n== {title}\n\n')
 
@@ -238,13 +327,13 @@ class Render(object):
     def render_metadata(self, extractor: Extractor, content: Transformer, src_url):
         from urllib.parse import urlparse
 
-        author = extractor.get_author()
+        author = extractor.author
         data = []
-        if author is not None:
+        if author:
             author_fmt = f'by **{author}**'
             data.append(author_fmt)
-        time_published = extractor.get_published()
-        if time_published is not None:
+        time_published = extractor.published
+        if time_published:
             published_info = f'on {time_published}'
             data.append(published_info)
 
@@ -252,7 +341,7 @@ class Render(object):
         data.append(f'at _link:{src_url}[{domain}]_')
         first_line = ' '.join(data)
         lines = [f"{first_line}\n"]
-        extra = extractor.get_metadata()
+        extra = extractor.extra_metadata
         if extra:
             lines.append(extra)
         lines.append('\n')
