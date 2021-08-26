@@ -3,7 +3,7 @@
 meta introspection.
 """
 
-from bs4 import PageElement, NavigableString, Tag
+from bs4 import PageElement, NavigableString, Tag, BeautifulSoup
 
 from colusa import logs
 
@@ -29,6 +29,8 @@ class NodeVisitor(object):
             method = "visit_text"
         elif type(node) is Tag:
             method = f"visit_tag_{node.name}"
+        elif type(node) is BeautifulSoup:
+            method = 'visit_BeautifulSoup'
         else:
             method = "visit_unknown"
         value = getattr(self, method, None)
@@ -36,21 +38,24 @@ class NodeVisitor(object):
             logs.warn('Cannot get visit method:', method)
         return value
 
-    def visit(self, node, *args, **kwargs):
+    def visit(self, node, *args, **kwargs) -> str:
         """Visit a node."""
         f = self.get_visitor(node)
         if f is not None:
             return f(node, *args, **kwargs)
         return self.generic_visit(node, *args, **kwargs)
 
-    def visit_text(self, node, *args, **kwargs):
+    def visit_text(self, node, *args, **kwargs) -> str:
         return node.string
 
-    def visit_unknown(self, node, *args, **kwargs):
+    def visit_unknown(self, node, *args, **kwargs) -> str:
         logs.warn('UNKNOWN Node Type:', node.__class__.__name__)
         return ''
 
-    def generic_visit(self, node, *args, **kwargs):
+    def visit_BeautifulSoup(self, node, *args, **kwargs) -> str:
+        return self.generic_visit(node, *args, **kwargs)
+
+    def generic_visit(self, node, *args, **kwargs) -> str:
         """Called if no explicit visitor function exists for a node."""
         if node is None:
             return ''

@@ -1,8 +1,8 @@
 clean:
 	rm -rf build dist colusa.egg-info
 
-sdist:
-	python3 setup.py sdist bdist_wheel
+bdist:
+	python3 setup.py bdist bdist_wheel
 
 upload:
 	python3 -m twine upload dist/* --verbose
