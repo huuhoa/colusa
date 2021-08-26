@@ -1,6 +1,36 @@
 # Changelog
 
 
+## v0.9.0 (2021-08-26)
+
+### New
+
+* Integration tests (#20) [Huu Hoa NGUYEN]
+
+  * chg: add tox.ini for running tox
+  * chg(colusa): move colusa source to src folder
+
+* Support parsing site xp123.com (#18) [Huu Hoa NGUYEN]
+
+### Other
+
+* Refactor(etr): Rework on Extractor (#19) [Huu Hoa NGUYEN]
+
+  * refactor(etr): move _parse_yoast from a plugin extract to base Extractor
+  * refactor(etr): rename methods for clarification
+
+    + rename `internal_init` to `_find_main_content`
+    + rename `get_author` to field `author` and `_parse_author` for parsing value
+    + rename `get_published` to field `published` and `_parse_published` for parsing value
+    + rename `get_title` to field `title` and `_parse_title` for parsing value
+    + add `_parse_metadata` for parsing all related metadata from html
+
+  * refactor(etr): change signature of Extractor._find_main_content
+
+    + `_find_main_content` is now return bs.Tag instead of setting value for field `main_content`. The change make it more clear for purpose of `_find_main_content`, i.e. only to find the main content, does not modify anything
+    + `_parse_metadata` will be executed after we found the main content
+
+
 ## v0.8.0 (2021-08-22)
 
 ### New
@@ -34,6 +64,10 @@
 * Render html table as native asciidoc table (#17) [Huu Hoa NGUYEN]
 
 ### Other
+
+* Bump version: 0.7.0 → 0.8.0. [Nguyen Huu Hoa]
+
+* Prepare for bump version 0.8. [Nguyen Huu Hoa]
 
 * Add(plugins): support for scrumcrazy.wordpress.com. [Nguyen Huu Hoa]
 
