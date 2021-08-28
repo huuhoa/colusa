@@ -1,0 +1,695 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
+<head profile="http://gmpg.org/xfn/11">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Tackling Tech Debt with the Frontend Guild | Constant Contact Tech Blog</title><meta name='robots' content='max-image-preview:large' />
+<meta name='OBKey' content='UvW1sYTDrLCH6jcqyEVHfA==' />
+
+<!-- This site is optimized with the Yoast SEO plugin v12.8 - https://yoast.com/wordpress/plugins/seo/ -->
+<meta name="description" content="I love working at Constant Contact. But like any engineering group — especially at a mid-sized, 20-year old startup-gone-public — technology can easily"/>
+<meta name="robots" content="max-snippet:-1, max-image-preview:large, max-video-preview:-1"/>
+<link rel="canonical" href="https://techblog.constantcontact.com/software-development/tackling-tech-debt-frontend-guild/" />
+<meta property="og:locale" content="en_US" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="Tackling Tech Debt with the Frontend Guild | Constant Contact Tech Blog" />
+<meta property="og:description" content="I love working at Constant Contact. But like any engineering group — especially at a mid-sized, 20-year old startup-gone-public — technology can easily" />
+<meta property="og:url" content="https://techblog.constantcontact.com/software-development/tackling-tech-debt-frontend-guild/" />
+<meta property="og:site_name" content="Constant Contact Tech Blog" />
+<meta property="article:tag" content="Babel" />
+<meta property="article:tag" content="frontend" />
+<meta property="article:tag" content="guild" />
+<meta property="article:tag" content="Javascript" />
+<meta property="article:tag" content="Tech Debt" />
+<meta property="article:tag" content="tech enablement" />
+<meta property="article:tag" content="webpack" />
+<meta property="article:section" content="Software Development" />
+<meta property="article:published_time" content="2018-09-18T13:00:40+00:00" />
+<meta property="article:modified_time" content="2018-09-17T19:52:15+00:00" />
+<meta property="og:updated_time" content="2018-09-17T19:52:15+00:00" />
+<meta property="og:image" content="https://techblog.constantcontact.com/wp-content/uploads/2018/09/guild_flowchart_edit-998x1024.jpg" />
+<meta property="og:image:secure_url" content="https://techblog.constantcontact.com/wp-content/uploads/2018/09/guild_flowchart_edit-998x1024.jpg" />
+<meta property="og:image:width" content="998" />
+<meta property="og:image:height" content="1024" />
+<script type='application/ld+json' class='yoast-schema-graph yoast-schema-graph--main'>{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://techblog.constantcontact.com/#website","url":"https://techblog.constantcontact.com/","name":"Constant Contact Tech Blog","description":"Welcome to the Constant Contact Tech Blog! We post about trends, how to, and learnings about our API, DevOps, Software Development and general technology.","potentialAction":{"@type":"SearchAction","target":"https://techblog.constantcontact.com/?s={search_term_string}","query-input":"required name=search_term_string"}},{"@type":"ImageObject","@id":"https://techblog.constantcontact.com/software-development/tackling-tech-debt-frontend-guild/#primaryimage","url":"https://techblog.constantcontact.com/wp-content/uploads/2018/09/guild_flowchart_edit.jpg","width":2962,"height":3038},{"@type":"WebPage","@id":"https://techblog.constantcontact.com/software-development/tackling-tech-debt-frontend-guild/#webpage","url":"https://techblog.constantcontact.com/software-development/tackling-tech-debt-frontend-guild/","inLanguage":"en-US","name":"Tackling Tech Debt with the Frontend Guild | Constant Contact Tech Blog","isPartOf":{"@id":"https://techblog.constantcontact.com/#website"},"primaryImageOfPage":{"@id":"https://techblog.constantcontact.com/software-development/tackling-tech-debt-frontend-guild/#primaryimage"},"datePublished":"2018-09-18T13:00:40+00:00","dateModified":"2018-09-17T19:52:15+00:00","author":{"@id":"https://techblog.constantcontact.com/#/schema/person/8d0bc77903b685fee24a2f8c031876cb"},"description":"I love working at\u00a0Constant Contact. But like any engineering group \u2014 especially at a mid-sized, 20-year old startup-gone-public \u2014 technology can easily"},{"@type":["Person"],"@id":"https://techblog.constantcontact.com/#/schema/person/8d0bc77903b685fee24a2f8c031876cb","name":"Ben Centra","image":{"@type":"ImageObject","@id":"https://techblog.constantcontact.com/#authorlogo","url":"https://secure.gravatar.com/avatar/321d21025a44e1a6f1b3bf7e2666392b?s=96&d=mm&r=g","caption":"Ben Centra"},"description":"I\u2019m a Senior Software Engineer at Constant Contact. I love solving problems and making things better for everyone \u2013 our customers and my fellow engineers.","sameAs":["https://twitter.com/TheBenCentra"]}]}</script>
+<!-- / Yoast SEO plugin. -->
+
+<link rel='dns-prefetch' href='//s0.wp.com' />
+<link rel='dns-prefetch' href='//secure.gravatar.com' />
+<link rel='dns-prefetch' href='//tealium.hs.llnwd.net' />
+<link rel='dns-prefetch' href='//s7.addthis.com' />
+<link rel='dns-prefetch' href='//s.w.org' />
+<link rel="alternate" type="application/rss+xml" title="Constant Contact Tech Blog &raquo; Feed" href="https://techblog.constantcontact.com/feed/" />
+<link rel="alternate" type="application/rss+xml" title="Constant Contact Tech Blog &raquo; Comments Feed" href="https://techblog.constantcontact.com/comments/feed/" />
+<link rel="alternate" type="application/rss+xml" title="Constant Contact Tech Blog &raquo; Tackling Tech Debt with the Frontend Guild Comments Feed" href="https://techblog.constantcontact.com/software-development/tackling-tech-debt-frontend-guild/feed/" />
+		<script type="text/javascript">
+			window._wpemojiSettings = {"baseUrl":"https:\/\/s.w.org\/images\/core\/emoji\/13.1.0\/72x72\/","ext":".png","svgUrl":"https:\/\/s.w.org\/images\/core\/emoji\/13.1.0\/svg\/","svgExt":".svg","source":{"concatemoji":"https:\/\/techblog.constantcontact.com\/wp-includes\/js\/wp-emoji-release.min.js?ver=5.8"}};
+			!function(e,a,t){var n,r,o,i=a.createElement("canvas"),p=i.getContext&&i.getContext("2d");function s(e,t){var a=String.fromCharCode;p.clearRect(0,0,i.width,i.height),p.fillText(a.apply(this,e),0,0);e=i.toDataURL();return p.clearRect(0,0,i.width,i.height),p.fillText(a.apply(this,t),0,0),e===i.toDataURL()}function c(e){var t=a.createElement("script");t.src=e,t.defer=t.type="text/javascript",a.getElementsByTagName("head")[0].appendChild(t)}for(o=Array("flag","emoji"),t.supports={everything:!0,everythingExceptFlag:!0},r=0;r<o.length;r++)t.supports[o[r]]=function(e){if(!p||!p.fillText)return!1;switch(p.textBaseline="top",p.font="600 32px Arial",e){case"flag":return s([127987,65039,8205,9895,65039],[127987,65039,8203,9895,65039])?!1:!s([55356,56826,55356,56819],[55356,56826,8203,55356,56819])&&!s([55356,57332,56128,56423,56128,56418,56128,56421,56128,56430,56128,56423,56128,56447],[55356,57332,8203,56128,56423,8203,56128,56418,8203,56128,56421,8203,56128,56430,8203,56128,56423,8203,56128,56447]);case"emoji":return!s([10084,65039,8205,55357,56613],[10084,65039,8203,55357,56613])}return!1}(o[r]),t.supports.everything=t.supports.everything&&t.supports[o[r]],"flag"!==o[r]&&(t.supports.everythingExceptFlag=t.supports.everythingExceptFlag&&t.supports[o[r]]);t.supports.everythingExceptFlag=t.supports.everythingExceptFlag&&!t.supports.flag,t.DOMReady=!1,t.readyCallback=function(){t.DOMReady=!0},t.supports.everything||(n=function(){t.readyCallback()},a.addEventListener?(a.addEventListener("DOMContentLoaded",n,!1),e.addEventListener("load",n,!1)):(e.attachEvent("onload",n),a.attachEvent("onreadystatechange",function(){"complete"===a.readyState&&t.readyCallback()})),(n=t.source||{}).concatemoji?c(n.concatemoji):n.wpemoji&&n.twemoji&&(c(n.twemoji),c(n.wpemoji)))}(window,document,window._wpemojiSettings);
+		</script>
+		<style type="text/css">
+img.wp-smiley,
+img.emoji {
+	display: inline !important;
+	border: none !important;
+	box-shadow: none !important;
+	height: 1em !important;
+	width: 1em !important;
+	margin: 0 .07em !important;
+	vertical-align: -0.1em !important;
+	background: none !important;
+	padding: 0 !important;
+}
+</style>
+	<link rel='stylesheet' id='magazine-css'  href='https://techblog.constantcontact.com/wp-content/themes/magazine/style.css?ver=2.4.2' type='text/css' media='all' />
+<link rel='stylesheet' id='wp-block-library-css'  href='https://techblog.constantcontact.com/wp-includes/css/dist/block-library/style.min.css?ver=5.8' type='text/css' media='all' />
+<link rel='stylesheet' id='tablepress-default-css'  href='https://techblog.constantcontact.com/wp-content/plugins/tablepress/css/default.min.css?ver=1.10' type='text/css' media='all' />
+<link rel='stylesheet' id='social-logos-css'  href='https://techblog.constantcontact.com/wp-content/plugins/jetpack/_inc/social-logos/social-logos.min.css?ver=1' type='text/css' media='all' />
+<link rel='stylesheet' id='jetpack_css-css'  href='https://techblog.constantcontact.com/wp-content/plugins/jetpack/css/jetpack.css?ver=8.0.1' type='text/css' media='all' />
+<script type='text/javascript' src='https://techblog.constantcontact.com/wp-includes/js/jquery/jquery.min.js?ver=3.6.0' id='jquery-core-js'></script>
+<script type='text/javascript' src='https://techblog.constantcontact.com/wp-includes/js/jquery/jquery-migrate.min.js?ver=3.3.2' id='jquery-migrate-js'></script>
+<!--[if lt IE 9]>
+<script type='text/javascript' src='https://techblog.constantcontact.com/wp-content/themes/frameworks/genesis/lib/js/html5shiv.min.js?ver=3.7.3' id='html5shiv-js'></script>
+<![endif]-->
+<script type='text/javascript' src='http://tealium.hs.llnwd.net/o43/utag/cc/main/prod/utag.js?ver=5.8' id='constant_contact_tealium-js'></script>
+<script type='text/javascript' src='https://techblog.constantcontact.com/wp-content/themes/magazine/js/sticktotop.plugin.js?ver=5.8' id='constant_contact_sticktotop-js'></script>
+<script type='text/javascript' src='http://s7.addthis.com/js/300/addthis_widget.js?ver=5.8#pubid=ccwebsite' id='constant_contact_addthis-js'></script>
+<script type='text/javascript' src='https://techblog.constantcontact.com/wp-content/themes/magazine/js/jquery.validate-1.10.0.min.js?ver=5.8' id='jquery-validate-js'></script>
+<link rel="https://api.w.org/" href="https://techblog.constantcontact.com/wp-json/" /><link rel="alternate" type="application/json" href="https://techblog.constantcontact.com/wp-json/wp/v2/posts/4170" /><link rel="EditURI" type="application/rsd+xml" title="RSD" href="https://techblog.constantcontact.com/xmlrpc.php?rsd" />
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="https://techblog.constantcontact.com/wp-includes/wlwmanifest.xml" /> 
+<link rel='shortlink' href='https://wp.me/p2YPsE-15g' />
+<link rel="alternate" type="application/json+oembed" href="https://techblog.constantcontact.com/wp-json/oembed/1.0/embed?url=https%3A%2F%2Ftechblog.constantcontact.com%2Fsoftware-development%2Ftackling-tech-debt-frontend-guild%2F" />
+<link rel="alternate" type="text/xml+oembed" href="https://techblog.constantcontact.com/wp-json/oembed/1.0/embed?url=https%3A%2F%2Ftechblog.constantcontact.com%2Fsoftware-development%2Ftackling-tech-debt-frontend-guild%2F&#038;format=xml" />
+
+<link rel='dns-prefetch' href='//v0.wordpress.com'/>
+<link rel='dns-prefetch' href='//jetpack.wordpress.com'/>
+<link rel='dns-prefetch' href='//s0.wp.com'/>
+<link rel='dns-prefetch' href='//s1.wp.com'/>
+<link rel='dns-prefetch' href='//s2.wp.com'/>
+<link rel='dns-prefetch' href='//public-api.wordpress.com'/>
+<link rel='dns-prefetch' href='//0.gravatar.com'/>
+<link rel='dns-prefetch' href='//1.gravatar.com'/>
+<link rel='dns-prefetch' href='//2.gravatar.com'/>
+<link rel="icon" href="https://techblog.constantcontact.com/wp-content/themes/magazine/images/favicon.ico" />
+<link rel="pingback" href="https://techblog.constantcontact.com/xmlrpc.php" />
+<style type="text/css">#header { background: url(https://techblog.constantcontact.com/wp-content/themes/magazine/images/header.png) no-repeat !important; }</style>
+</head>
+<body class="post-template-default single single-post postid-4170 single-format-standard content-sidebar category-software-development"><div id="wrap"><div id="header"><div class="wrap"><div id="title-area"><p id="title"><a href="https://techblog.constantcontact.com/">Constant Contact Tech Blog</a></p></div><div class="widget-area header-widget-area"><div id="search-3" class="widget widget_search"><div class="widget-wrap">
+		<form method="get" class="searchform" action="https://techblog.constantcontact.com/" >
+			<input type="text" value="Search this blog &hellip;" name="s" class="s" onfocus="if (this.value == 'Search this blog &hellip;') {this.value = '';}" onblur="if (this.value == '') {this.value = 'Search this blog &hellip;';}" />
+			<input type="image" src="https://techblog.constantcontact.com/wp-content/themes/magazine/images/bg_search.gif" class="searchsubmit" value="Search" />
+		</form>
+	</div></div>
+<div id="text-2" class="widget widget_text"><div class="widget-wrap">			<div class="textwidget"><div style="float:right;clear:right;padding:8px 0 0;color:#919191;">
+Go to <a href="/archives/">Archives</a>
+</div></div>
+		</div></div>
+<div id="text-3" class="widget widget_text"><div class="widget-wrap">			<div class="textwidget"><ul class="rss">
+	<li>
+		<a href="http://feeds.feedburner.com/ConstantContactTechBlog">Posts</a>
+	</li>
+	<li>
+		<a href="http://techblog.constantcontact.com/comments/feed/">Comments</a>
+	</li>
+</ul></div>
+		</div></div>
+</div></div></div><div id="subnav"><div class="wrap"><ul id="menu-main-navigation" class="menu genesis-nav-menu menu-secondary js-superfish"><li id="menu-item-16" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-16"><a href="/">Latest Posts</a></li>
+<li id="menu-item-517" class="nav-level-1-arrow menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-517"><a>Tech Topics</a>
+<ul class="sub-menu">
+	<li id="menu-item-507" class="nav-level-2-arrow menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children menu-item-507"><a href="https://techblog.constantcontact.com/category/api/">API</a>
+	<ul class="sub-menu">
+		<li id="menu-item-514" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-514"><a href="https://techblog.constantcontact.com/category/api/developer-spotlight/">Developer Spotlight</a></li>
+		<li id="menu-item-515" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-515"><a href="https://techblog.constantcontact.com/category/api/events/">Events</a></li>
+		<li id="menu-item-613" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-613"><a href="https://techblog.constantcontact.com/category/api/how-to/">How To</a></li>
+		<li id="menu-item-513" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-513"><a href="https://techblog.constantcontact.com/category/api/release-updates/">Release Updates</a></li>
+	</ul>
+</li>
+	<li id="menu-item-516" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-516"><a href="https://techblog.constantcontact.com/category/devops/">DevOps</a></li>
+	<li id="menu-item-505" class="menu-item menu-item-type-taxonomy menu-item-object-category current-post-ancestor current-menu-parent current-post-parent menu-item-505 current-menu-item"><a href="https://techblog.constantcontact.com/category/software-development/">Software Development</a></li>
+	<li id="menu-item-506" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-506"><a href="https://techblog.constantcontact.com/category/tech-talk/">Tech Talk</a></li>
+</ul>
+</li>
+<li id="menu-item-518" class="nav-level-1-arrow menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-518"><a>Resources</a>
+<ul class="sub-menu">
+	<li id="menu-item-525" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-525"><a href="https://techblog.constantcontact.com/apps-and-integrations/">Apps and Integrations</a></li>
+	<li id="menu-item-526" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-526"><a href="https://techblog.constantcontact.com/developer-portal/">Developer Portal</a></li>
+	<li id="menu-item-524" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-524"><a href="https://techblog.constantcontact.com/user-community/">User Community</a></li>
+</ul>
+</li>
+<li id="menu-item-441" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-441"><a href="https://techblog.constantcontact.com/contact-us/">Contact Us</a></li>
+</ul></div></div><div id="inner"><div class="wrap"><div id="content-sidebar-wrap"><div id="content" class="hfeed"><div class="post-4170 post type-post status-publish format-standard has-post-thumbnail hentry category-software-development tag-babel tag-frontend tag-guild tag-javascript tag-tech-debt tag-tech-enablement tag-webpack entry"><h1 class="entry-title">Tackling Tech Debt with the Frontend Guild</h1> 
+<div class="post-info"><span class="date published time" title="2018-09-18T09:00:40-04:00">September 18, 2018</span>  by <span class="author vcard"><span class="fn"><a href="https://techblog.constantcontact.com/author/bcentra/" title="Posts by Ben Centra" class="author url fn" rel="author">Ben Centra</a></span></span> <span class="post-comments"><a href="https://techblog.constantcontact.com/software-development/tackling-tech-debt-frontend-guild/#respond">Leave a Comment</a></span> </div><div class="entry-content"><p>I love working at <a href="https://www.constantcontact.com/index.jsp">Constant Contact</a>. But like any engineering group — especially at a mid-sized, 20-year old startup-gone-public — technology can easily lag over time, drift between teams, and generally become a hassle. This time last year I wanted to do something about it, specifically for frontend tooling since that’s what I work with every day.</p>
+<div style="width: 330px" class="wp-caption aligncenter"><img loading="lazy" class="size-medium" src="https://media.giphy.com/media/P7yA7L32AUjG8/giphy.gif" alt="Your team trying to keep up with tech debt" width="320" height="240" /><p class="wp-caption-text">Your team trying to keep up with tech debt</p></div>
+<p>Fast-forward one year. I’ve been leading a group of fellow engineers that we call the <strong>Frontend Guild</strong>. Together we’re making tech debt reduction and tooling improvements a full-time effort, not an afterthought. We still have a long way to go, but our work is already impacting teams across the company. Keeping up with changing technology is tough, but we’re more ready for it than ever.</p>
+<p>Leading and organizing this group has been an incredible learning experience. Here’s the short version of how I ran the group, the successes we had, and the challenges we faced.</p>
+<h2>Before The Guild</h2>
+<p>It all began with some friendly complaining between coworkers. When overall you enjoy your work environment the negatives really stand out. For us it was frontend tech debt that we continued to gripe about, the stuff that kept us from doing our best work.</p>
+<div style="width: 510px" class="wp-caption aligncenter"><img loading="lazy" class="size-medium" src="https://media.giphy.com/media/Vy16AvNMa9N8Q/giphy.gif" alt="Shouting alone doesn't get us anywhere" width="500" height="365" /><p class="wp-caption-text">Shouting alone doesn&#8217;t get us anywhere</p></div>
+<p>After talking it through a number of times, we identified some key issues:</p>
+<ul>
+<li><strong>How do we keep frontend tech up-to-date? </strong>We’re not talking about hopping on the latest framework hotness. We mean tools and techniques that can simplify writing and shipping JavaScript: ES2015+, <a href="https://babeljs.io/">Babel</a>, <a href="https://webpack.js.org/">Webpack</a>, modular code, etc.</li>
+<li><strong>How do we bridge the gap between teams? </strong>We’re pretty good at coordinating work across teams. But our build tools became out-of-date and ownerless, so no team had stepped up to fix them in a few years.</li>
+<li><strong>How do we do this with as few resources as possible? </strong>We were still adjusting from some <a href="https://www.forbes.com/sites/greatspeculations/2016/02/19/endurance-finalizes-constant-contact-acquisition-lays-off-15-of-the-staff/#508ebf1518ff">major company changes</a> last year. So having the engineering group drop everything to support a tooling modernization wasn’t gonna happen.</li>
+</ul>
+<p>We’ve formed specialized groups before. For instance, Constant Contact has a “Continuous Delivery” team who develops tooling and standards, but their expertise is in backend apps and deploy processes. By this point the frontend teams that cared about dev tooling had all separately begun to upgrade their build setups independently. This of course resulted in several different implementations instead of a single standard.</p>
+<p>Previous attempts to get teams working together on tech debt had fizzled out without making progress. But for whatever reason, my coworkers and I thought we could do better! I talked to my manager and our director about forming another group to tackle our tech debt. They both supported the idea — it was a low-stakes way of changing and improving a very busy engineering organization.</p>
+<p>With management’s blessing and a quorum of eager engineers on board, we could begin. We called ourselves the “Frontend Guild,” held our first meeting, and wrote up a mission statement:</p>
+<blockquote><p>The Frontend Guild is a group of engineers who want to push for Stability, Maintainability, and Modernization on frontend projects across the organization. We will do this by providing shared tools, patterns, and resources for teams across the company. Together we will make tech enablement a dedicated effort at Constant Contact.</p></blockquote>
+<p><strong>Right away&#8230;</strong></p>
+<ul>
+<li><strong>Success:</strong> The Guild exists!</li>
+<li><strong>Challenge:</strong> Turning constraints into a constructive plan</li>
+<li><strong>Challenge: </strong>Had to advocate for it ourselves – the company wasn’t gonna do it for us</li>
+</ul>
+<h2>Knowledge Gathering</h2>
+<p>And so the Guild came into existence. There was no shortage of challenges, but we didn’t know where to begin. How would we know what issues were really important?</p>
+<p>Simple: just ask! We came up with a “Tech Inventory” survey for all teams to fill out, with about 25 questions regarding the state of their projects and tooling: library versions (jQuery, underscore, etc.), Node versions (for tooling), ES6 or ES5, etc. We also gathered opinions such as “how happy are you with your build setup” or “do you find your UI automation reliable.”</p>
+<p>After some nagging we got nearly 30 responses, representing most frontend apps created over the last 10 years. Even if the Guild idea were to fall apart here we would have done something useful — in taking a rough inventory of technology across the company, we can provide awareness for both engineering and management.</p>
+<div style="width: 510px" class="wp-caption aligncenter"><img loading="lazy" class="size-medium" src="https://media.giphy.com/media/OQsa4Yca9BJFS/giphy.gif" alt="We learned a lot, very quickly" width="500" height="381" /><p class="wp-caption-text">We learned a lot, very quickly</p></div>
+<p>We followed this up by asking each team to give a presentation about their projects to the Guild to get some more in-depth info than the survey. They reiterated their tech stack, shared some “pride points” (things they do well), and listed some major technical challenges or blockers.</p>
+<p>We kept our meetings bi-weekly so as not to overwhelm anyone. Each team was represented and so awareness of the Guild spread. Attendance was good in these early days, too, since everyone came out to support their team’s speaker. The presentations rounded out our knowledge from the survey and got us ready for the next exciting phase…</p>
+<p><strong>In the first month&#8230;</strong></p>
+<ul>
+<li><strong>Success:</strong> Described the state of frontend tech at the company</li>
+<li><strong>Success:</strong> Started holding regular meetings</li>
+<li><strong>Success:</strong> Spread awareness of the Guild</li>
+<li><strong>Challenge:</strong> Had to repeatedly bug people to fill out the Tech Inventory</li>
+</ul>
+<h2>Backlog Grooming</h2>
+<p>Okay, no one <em>really</em> finds backlog grooming exciting. Our meeting attendance began to slip pretty heavily, from a rotating group of 20+ people to a core group of around 8. But we had sufficient cross-team representation that one team wouldn’t be making decisions for the whole company (or lead to unnecessary fights later on). And someone had to turn all our gathered knowledge into something useful!</p>
+<div style="width: 510px" class="wp-caption aligncenter"><img loading="lazy" class="size-medium" src="https://media.giphy.com/media/vLtVDZvF5uklq/giphy.gif" alt="Backlog grooming? Let’s look at cats instead!" width="500" height="281" /><p class="wp-caption-text">Backlog grooming? Let’s look at cats instead!</p></div>
+<p>After pouring over the survey we came up with a bunch of categories such as:</p>
+<ul>
+<li><strong>Enable ES6, Sass, ESLint, ESDoc, etc.:</strong>Upgrade our build tooling to enable the latest tech for developing and testing.</li>
+<li><strong>Webpack and “Modularize” Code:</strong>Enable proper <a href="https://blog.softwaremill.com/it-depends-the-art-of-dependency-management-in-javascript-f1f9c3cde3f7">dependency resolution</a>, simplify <a href="https://www.sitepoint.com/beginners-guide-webpack-module-bundling/">code bundling</a>, and enable the development of smaller, sharable code modules.</li>
+<li><strong>App/Component Generators:</strong>Allow developers to create new projects &#8211; and upgrade existing ones &#8211; using a command-line tool.</li>
+</ul>
+<div id="attachment_4173" style="width: 310px" class="wp-caption aligncenter"><a href="https://techblog.constantcontact.com/wp-content/uploads/2018/09/guild_topics_edit.jpg"><img aria-describedby="caption-attachment-4173" data-attachment-id="4173" data-permalink="https://techblog.constantcontact.com/software-development/tackling-tech-debt-frontend-guild/attachment/guild_topics_edit/" data-orig-file="https://techblog.constantcontact.com/wp-content/uploads/2018/09/guild_topics_edit.jpg" data-orig-size="3015,3024" data-comments-opened="1" data-image-meta="{&quot;aperture&quot;:&quot;2&quot;,&quot;credit&quot;:&quot;&quot;,&quot;camera&quot;:&quot;Nexus 6P&quot;,&quot;caption&quot;:&quot;&quot;,&quot;created_timestamp&quot;:&quot;1505905208&quot;,&quot;copyright&quot;:&quot;&quot;,&quot;focal_length&quot;:&quot;4.67&quot;,&quot;iso&quot;:&quot;410&quot;,&quot;shutter_speed&quot;:&quot;0.0143969982463&quot;,&quot;title&quot;:&quot;&quot;,&quot;orientation&quot;:&quot;1&quot;}" data-image-title="guild_topics_edit" data-image-description="&lt;p&gt;Potential topics for the Guild to tackle&lt;/p&gt;
+" data-medium-file="https://techblog.constantcontact.com/wp-content/uploads/2018/09/guild_topics_edit-300x300.jpg" data-large-file="https://techblog.constantcontact.com/wp-content/uploads/2018/09/guild_topics_edit-1021x1024.jpg" loading="lazy" class="size-medium wp-image-4173" src="https://techblog.constantcontact.com/wp-content/uploads/2018/09/guild_topics_edit-300x300.jpg" alt="Potential topics for the Guild to tackle" width="300" height="300" srcset="https://techblog.constantcontact.com/wp-content/uploads/2018/09/guild_topics_edit-300x300.jpg 300w, https://techblog.constantcontact.com/wp-content/uploads/2018/09/guild_topics_edit-150x150.jpg 150w, https://techblog.constantcontact.com/wp-content/uploads/2018/09/guild_topics_edit-768x770.jpg 768w, https://techblog.constantcontact.com/wp-content/uploads/2018/09/guild_topics_edit-1021x1024.jpg 1021w, https://techblog.constantcontact.com/wp-content/uploads/2018/09/guild_topics_edit-120x120.jpg 120w, https://techblog.constantcontact.com/wp-content/uploads/2018/09/guild_topics_edit-32x32.jpg 32w, https://techblog.constantcontact.com/wp-content/uploads/2018/09/guild_topics_edit-50x50.jpg 50w, https://techblog.constantcontact.com/wp-content/uploads/2018/09/guild_topics_edit-64x64.jpg 64w, https://techblog.constantcontact.com/wp-content/uploads/2018/09/guild_topics_edit-96x96.jpg 96w, https://techblog.constantcontact.com/wp-content/uploads/2018/09/guild_topics_edit-128x128.jpg 128w" sizes="(max-width: 300px) 100vw, 300px" /></a><p id="caption-attachment-4173" class="wp-caption-text">Potential topics for the Guild to tackle</p></div>
+<p>Using these categories as a guide we began to form them into epics, each with several specific implementation stories. A pattern began to emerge: demo a build tool, integrate it into a new project, test it in an existing project, and wait for adoption. One tool at a time, it seemed like we could slowly bring about a large number of improvements. But moving slowly doesn’t get developers excited, and it certainly doesn’t improve meeting attendance.</p>
+<p><strong>In the first three months…</strong></p>
+<ul>
+<li><strong>Success: </strong>Over a dozen high-level “epics” groomed</li>
+<li><strong>Success: </strong>Several epics groomed into a few dozen workable stories</li>
+<li><strong>Challenge: </strong>Reduced meeting attendance</li>
+<li><strong>Challenge: </strong>No tangible progress, people getting antsy</li>
+</ul>
+<h2>The Task Force</h2>
+<p>And so a backlog was forming but we had no one to do the work! We tried asking for a full-time engineer to work on it, but that idea got no traction with management this early on. And I didn’t want to rely on the Guild being just a side project &#8211; when push comes to shove sprint work will always come first, leaving Guild work to fall to the wayside.</p>
+<p>We discussed this predicament during Guild meetings, and we came up with a compromise: a rotating “Task Force” consisting of two volunteers from different teams for one month at a time. This would provide a constant work force without sacrificing too much from any single team. By pairing, they would be able to solve problems together. And if they come from different teams, knowledge from the Guild would be able to spread to more teams more quickly.</p>
+<div style="width: 490px" class="wp-caption aligncenter"><img loading="lazy" class="size-medium" src="https://media.giphy.com/media/yUlFNRDWVfxCM/giphy.gif" alt="How well we hoped Task Force members would work together" width="480" height="360" /><p class="wp-caption-text">How well we hoped Task Force members would work together</p></div>
+<p>This plan quickly fell apart. We started with a short list of interested engineers, enough to last a few months. But some engineers felt uncomfortable leaving their teams to make up for them during a busy sprint. Others simply lost interest and wanted to focus on their own work. After some lineup changes we only ever got one pair of engineers together, but we did get four back-to-back months of volunteers, mostly one engineer at a time.</p>
+<p>Those of us not actively volunteering helped by reviewing code. We required two reviewers — both from different teams — to approve a pull request before merging. This was to ensure a wider variety of opinion, since we’ve found teammates tend to think somewhat alike (for better or worse). The small group of developers who provided code review continued the core of our meetings and discussions as well.</p>
+<p><strong>After about five months&#8230;</strong></p>
+<ul>
+<li><strong>Success: </strong>A temporary Task Force to get work done</li>
+<li><strong>Success:</strong> Code review from across the org</li>
+<li><strong>Success:</strong> A dedicated core of active participants</li>
+<li><strong>Challenge:</strong> Less Task Force engagement than we anticipated</li>
+<li><strong>Challenge:</strong> Few newcomers to meetings</li>
+</ul>
+<h2>A Yeoman Generator</h2>
+<p>Our first engineer on the Task Force made the smart choice to focus on the “App Generator” work first. This would be the vehicle for all other tooling changes. And so he made a custom <a href="http://yeoman.io/">Yeoman</a> generator for scaffolding new JavaScript projects, both “apps” (<a href="https://en.wikipedia.org/wiki/Single-page_application">single-page applications</a>) and “libraries” (smaller, sharable components). He set it up to create new projects built using Webpack with plugins for Babel, Sass, EJS templates, and more. We continued to use <a href="https://gruntjs.com/">Grunt</a> to tie together all our tools and commands, including Webpack.</p>
+<div id="attachment_4172" style="width: 210px" class="wp-caption aligncenter"><a href="https://techblog.constantcontact.com/wp-content/uploads/2018/09/yo-ctct-3.jpg"><img aria-describedby="caption-attachment-4172" data-attachment-id="4172" data-permalink="https://techblog.constantcontact.com/software-development/tackling-tech-debt-frontend-guild/attachment/yo-ctct-3/" data-orig-file="https://techblog.constantcontact.com/wp-content/uploads/2018/09/yo-ctct-3.jpg" data-orig-size="200,200" data-comments-opened="1" data-image-meta="{&quot;aperture&quot;:&quot;0&quot;,&quot;credit&quot;:&quot;&quot;,&quot;camera&quot;:&quot;&quot;,&quot;caption&quot;:&quot;&quot;,&quot;created_timestamp&quot;:&quot;0&quot;,&quot;copyright&quot;:&quot;&quot;,&quot;focal_length&quot;:&quot;0&quot;,&quot;iso&quot;:&quot;0&quot;,&quot;shutter_speed&quot;:&quot;0&quot;,&quot;title&quot;:&quot;&quot;,&quot;orientation&quot;:&quot;1&quot;}" data-image-title="yo-ctct-3" data-image-description="&lt;p&gt;CTCT &amp;lt;3&#039;s Yeoman&lt;/p&gt;
+" data-medium-file="https://techblog.constantcontact.com/wp-content/uploads/2018/09/yo-ctct-3.jpg" data-large-file="https://techblog.constantcontact.com/wp-content/uploads/2018/09/yo-ctct-3.jpg" loading="lazy" class="size-full wp-image-4172" src="https://techblog.constantcontact.com/wp-content/uploads/2018/09/yo-ctct-3.jpg" alt="CTCT &lt;3's Yeoman" width="200" height="200" srcset="https://techblog.constantcontact.com/wp-content/uploads/2018/09/yo-ctct-3.jpg 200w, https://techblog.constantcontact.com/wp-content/uploads/2018/09/yo-ctct-3-150x150.jpg 150w, https://techblog.constantcontact.com/wp-content/uploads/2018/09/yo-ctct-3-120x120.jpg 120w, https://techblog.constantcontact.com/wp-content/uploads/2018/09/yo-ctct-3-32x32.jpg 32w, https://techblog.constantcontact.com/wp-content/uploads/2018/09/yo-ctct-3-50x50.jpg 50w, https://techblog.constantcontact.com/wp-content/uploads/2018/09/yo-ctct-3-64x64.jpg 64w, https://techblog.constantcontact.com/wp-content/uploads/2018/09/yo-ctct-3-96x96.jpg 96w, https://techblog.constantcontact.com/wp-content/uploads/2018/09/yo-ctct-3-128x128.jpg 128w" sizes="(max-width: 200px) 100vw, 200px" /></a><p id="caption-attachment-4172" class="wp-caption-text">CTCT &lt;3&#8217;s Yeoman</p></div>
+<p>The next few Task Force engineers built upon the initial progress &#8211; unit testing (with code coverage) via Karma, UI automation testing with <a href="https://www.protractortest.org/#/">Protractor</a>, sample <a href="https://marionettejs.com/">Marionette</a> code for new projects, and more. Most importantly, we built in the ability to “extend” core config files &#8211; package.json, .eslintrc, and Webpack configs to name a few. This would enable us to deliver a “base” config that could change over time while maintaining the ability for teams to provide overrides to those files.</p>
+<div id="attachment_4171" style="width: 410px" class="wp-caption aligncenter"><a href="https://techblog.constantcontact.com/wp-content/uploads/2018/09/generator_file_tree.png"><img aria-describedby="caption-attachment-4171" data-attachment-id="4171" data-permalink="https://techblog.constantcontact.com/software-development/tackling-tech-debt-frontend-guild/attachment/generator_file_tree/" data-orig-file="https://techblog.constantcontact.com/wp-content/uploads/2018/09/generator_file_tree.png" data-orig-size="706,486" data-comments-opened="1" data-image-meta="{&quot;aperture&quot;:&quot;0&quot;,&quot;credit&quot;:&quot;&quot;,&quot;camera&quot;:&quot;&quot;,&quot;caption&quot;:&quot;&quot;,&quot;created_timestamp&quot;:&quot;0&quot;,&quot;copyright&quot;:&quot;&quot;,&quot;focal_length&quot;:&quot;0&quot;,&quot;iso&quot;:&quot;0&quot;,&quot;shutter_speed&quot;:&quot;0&quot;,&quot;title&quot;:&quot;&quot;,&quot;orientation&quot;:&quot;0&quot;}" data-image-title="generator_file_tree" data-image-description="&lt;p&gt;Some of the directory structure produced by the generator&lt;/p&gt;
+" data-medium-file="https://techblog.constantcontact.com/wp-content/uploads/2018/09/generator_file_tree-300x207.png" data-large-file="https://techblog.constantcontact.com/wp-content/uploads/2018/09/generator_file_tree.png" loading="lazy" class="wp-image-4171" src="https://techblog.constantcontact.com/wp-content/uploads/2018/09/generator_file_tree-300x207.png" alt="Some of the directory structure produced by the generator" width="400" height="275" srcset="https://techblog.constantcontact.com/wp-content/uploads/2018/09/generator_file_tree-300x207.png 300w, https://techblog.constantcontact.com/wp-content/uploads/2018/09/generator_file_tree.png 706w" sizes="(max-width: 400px) 100vw, 400px" /></a><p id="caption-attachment-4171" class="wp-caption-text">Some of the directory structure produced by the generator</p></div>
+<p>In order to further spread the word about our work, I had begun sending out <a href="https://conta.cc/2HbbUW4">monthly emails</a> (made with Constant Contact, of course!) describing our progress on the Generator and other news from our meetings. Beyond information, I encouraged people to stay involved by coming to Guild meetings. We also used our HipChat room as a place for tech support, which our regular members graciously helped provide.</p>
+<p><strong>After about seven months…</strong></p>
+<ul>
+<li><strong>Success:</strong> A working Yeoman generator for creating and upgrading JavaScript apps</li>
+<li><strong>Success: </strong>Email updates to keep the organization informed of our progress</li>
+<li><strong>Challenge:</strong> Only a few teams contributing directly</li>
+</ul>
+<h2>Showing Off</h2>
+<p>We had run out of willing volunteers, and a few weeks went by with no active Task Force. I had been running meetings and doing code review thus far, so I stepped up to do active development on the Generator for a short time. A few final PRs later and we were ready to show off work!</p>
+<div style="width: 490px" class="wp-caption aligncenter"><img loading="lazy" class="size-medium" src="https://media.giphy.com/media/JDtaCpMal8mOY/giphy.gif" alt="It’s OK to show off once in a while" width="480" height="247" /><p class="wp-caption-text">It’s OK to show off once in a while</p></div>
+<p>Along with the Task Force volunteers, we presented our progress to the company over several engineering meetings. We outlined the new “company standards” for frontend tech — Babel, Webpack, ESLint, etc. — and touted the benefits of modular code. This and a little in-person badgering led to a few teams adopting the Generator for new projects. Early reviews were positive, especially in regards to daily development — with the <a href="https://webpack.js.org/guides/development/#using-webpack-dev-server">Webpack dev server</a>, changes built nearly instantly and local pages would auto-reload!</p>
+<p>Now that teams were beginning to use our tool our meetings had become weekly. Though attendance remained fairly regular at 6-10 people, this helped us keep up with bug reports and remain as open to the organization as possible. We had to find time to do the work in between normal sprint work, but our managers were supportive — The Generator and the modular approach it supports were key to some upcoming initiatives.</p>
+<p><strong>After about ten months…</strong></p>
+<ul>
+<li><strong>Success: </strong>Several teams using our tools to create new apps and update them on a regular basis</li>
+<li><strong>Success: </strong>More exposure to the org, leading to more adopters</li>
+<li><strong>Challenge: </strong>More pressure to keep things working</li>
+<li><strong>Challenge: </strong>Cutting into regular work to keep up with demand</li>
+</ul>
+<h2>A Real Full-Time Effort</h2>
+<p>Coming up on a year since starting the Guild a lot had changed. We were making a big push for new product features, with several new projects and redesigns of existing ones underway (and <a href="https://jobs.endurance.com/search-jobs/ALL?orgIds=17854-6226&amp;alp=ALL&amp;alt=0&amp;ascf=%5B%7B%22Key%22:%22travel%22,%22Value%22:%22Constant%20Contact%22%7D%5D&amp;">lots of new positions open</a> to get the work done). The tooling provided by the Generator simplified the setup and continued development of those projects. Senior engineers had continued to push for broad frontend architecture changes to reduce costs and minimize future tech debt. The Generator was central to this plan and the standardization system and delivery mechanism for future changes. And the Guild’s ability to groom a backlog and get work done demonstrated that this group effort was supported by teams and sustainable if given the resources. But of course without a dedicated Task Force, our ability to multitask would eventually falter.</p>
+<div style="width: 490px" class="wp-caption aligncenter"><img loading="lazy" class="size-medium" src="https://media.giphy.com/media/xT5LMpOCc57v5lR3vG/giphy.gif" alt="Resources were getting stretched a bit thin..." width="480" height="360" /><p class="wp-caption-text">Resources were getting stretched a bit thin&#8230;</p></div>
+<p>Luckily management had taken notice of our good work and we finally got what we needed: a full-time engineering position for the Guild! One of the past Task Force volunteers, a relatively recent hire, transitioned into the new role. Embedded in our Continuous Delivery team he began to integrate the Generator more closely with our existing <a href="https://jenkins.io/">Jenkins</a>-based tooling for building and deploying JavaScript apps, in addition to feature development. The Guild continued to own the backlog of work, which we happily struggled to keep up with at our meetings.</p>
+<p><strong>After about a year…</strong></p>
+<ul>
+<li><strong>Success: </strong>Lots of new work enabled by the Generator</li>
+<li><strong>Success:</strong> A permanent engineer working on the Frontend Guild backlog</li>
+<li><strong>Challenge: </strong>Lots of activity led to busier meetings</li>
+<li><strong>Challenge:</strong> Guild backlog ownership and responsibility</li>
+</ul>
+<h2>Further Progress</h2>
+<p>The Generator is out in the wild but our work is far from over. Of course there are many more improvements to make, especially in ensuring the quality of the Generator itself. We primarily test by generating new apps, so identifying issues when upgrading from <em>any</em> old version to the latest is tricky. We’re looking into doing more manual regression testing before each release to try and catch more bugs before our users do. If the manual process helps, we’ll try to automate the process to speed things up and test a wider variety of cases.</p>
+<p>As more teams adopt the Generator — and therefore Webpack and modular JavaScript — we’ll begin testing the limits of our approach. For each individual project, how do we best ensure that they rerun the generator regularly to stay up to date? As projects become intertwined, how will we deal with dependency conflicts? How will we properly split up our testing? How will these new apps play with our legacy projects? We have some answers and guesses for now, and we’ll keep working towards the best solutions.</p>
+<div style="width: 510px" class="wp-caption aligncenter"><img loading="lazy" class="size-medium" src="https://media.giphy.com/media/7K3p2z8Hh9QOI/giphy.gif" alt="We still have lots of questions" width="500" height="281" /><p class="wp-caption-text">We still have lots of questions</p></div>
+<p>Whatever changes may come there will be a lot of work coming up. After only three months we’re seeing that a single full-time engineer might not be enough to keep up with bug fixes, features, and tech support. Though the “Task Force” never officially ended, finding new volunteers has been a fruitless effort after the first group that stepped up. We’re starting to discuss whether to formalize the program — have managers assign engineers every so often — or hire another engineer, but it’s too soon to tell what we’ll end up with.</p>
+<p>We know our immediate future lies in the Generator, but I also want to get an idea of what might come after. And so we’ve also begun a second round of knowledge gathering. Instead of getting every single team involved, we’re targeting project leads and critical apps/services. Our goal this time is to identify the next “big thing” we can tackle — after the Generator, what other ways can we improve the frontend development experience at Constant Contact?</p>
+<h2>Conclusion</h2>
+<div style="width: 510px" class="wp-caption aligncenter"><img loading="lazy" class="size-medium" src="https://media.giphy.com/media/26gsjCZpPolPr3sBy/giphy.gif" alt="Thanks to everyone for the help along the way!" width="500" height="500" /><p class="wp-caption-text">Thanks to everyone for the help along the way!</p></div>
+<p>But all that hard work has paid off. I’m seeing the benefits of our work every time I work on my project. Most other teams have one or more projects using the Generator as well. Now that most teams have the same, up-to-date base setup we can more easily help each other out. And when we solve a problem for one project, we’re really enabling all teams at once. Not only has tackling tech debt become a serious focus for us, we’re dealing with it faster and better than ever before.</p>
+<div class="addthis addthis_bar_vertical addthis_bar_medium">
+		    <div class="addthis_toolbox addthis_default_style vertical">
+		        <span><a class="addthis_button_facebook_like" fb:like:layout="box_count"></a></span>
+		        <span><a class="addthis_button_tweet" tw:count="vertical" tw:via="constantcontact"></a></span>
+		        <span><a class="addthis_button_google_plusone" g:plusone:size="tall"></a></span>
+				<span><a class="addthis_button_linkedin_counter" li:counter="top"></a></span>
+		   		<span><a href="http://pinterest.com/pin/create/button/?url=https%3A%2F%2Ftechblog.constantcontact.com%2Fsoftware-development%2Ftackling-tech-debt-frontend-guild&media=https%3A%2F%2Ftechblog.constantcontact.com%2Fwp-content%2Fuploads%2F2018%2F09%2Fguild_flowchart_edit.jpg" class="pin-it-button" count-layout="vertical">Pin It</a><script type="text/javascript" src="http://assets.pinterest.com/js/pinit.js"></script></span>
+		    </div>
+		</div><div class="sharedaddy sd-sharing-enabled"><div class="robots-nocontent sd-block sd-social sd-social-icon-text sd-sharing"><h3 class="sd-title">Share this:</h3><div class="sd-content"><ul><li class="share-facebook"><a rel="nofollow noopener noreferrer" data-shared="sharing-facebook-4170" class="share-facebook sd-button share-icon" href="https://techblog.constantcontact.com/software-development/tackling-tech-debt-frontend-guild/?share=facebook" target="_blank" title="Click to share on Facebook"><span>Facebook</span></a></li><li class="share-twitter"><a rel="nofollow noopener noreferrer" data-shared="sharing-twitter-4170" class="share-twitter sd-button share-icon" href="https://techblog.constantcontact.com/software-development/tackling-tech-debt-frontend-guild/?share=twitter" target="_blank" title="Click to share on Twitter"><span>Twitter</span></a></li><li class="share-pinterest"><a rel="nofollow noopener noreferrer" data-shared="sharing-pinterest-4170" class="share-pinterest sd-button share-icon" href="https://techblog.constantcontact.com/software-development/tackling-tech-debt-frontend-guild/?share=pinterest" target="_blank" title="Click to share on Pinterest"><span>Pinterest</span></a></li><li class="share-linkedin"><a rel="nofollow noopener noreferrer" data-shared="sharing-linkedin-4170" class="share-linkedin sd-button share-icon" href="https://techblog.constantcontact.com/software-development/tackling-tech-debt-frontend-guild/?share=linkedin" target="_blank" title="Click to share on LinkedIn"><span>LinkedIn</span></a></li><li class="share-email"><a rel="nofollow noopener noreferrer" data-shared="" class="share-email sd-button share-icon" href="https://techblog.constantcontact.com/software-development/tackling-tech-debt-frontend-guild/?share=email" target="_blank" title="Click to email this to a friend"><span>Email</span></a></li><li class="share-print"><a rel="nofollow noopener noreferrer" data-shared="" class="share-print sd-button share-icon" href="https://techblog.constantcontact.com/software-development/tackling-tech-debt-frontend-guild/#print" target="_blank" title="Click to print"><span>Print</span></a></li><li class="share-end"></li></ul></div></div></div><!--<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+			xmlns:dc="http://purl.org/dc/elements/1.1/"
+			xmlns:trackback="http://madskills.com/public/xml/rss/module/trackback/">
+		<rdf:Description rdf:about="https://techblog.constantcontact.com/software-development/tackling-tech-debt-frontend-guild/"
+    dc:identifier="https://techblog.constantcontact.com/software-development/tackling-tech-debt-frontend-guild/"
+    dc:title="Tackling Tech Debt with the Frontend Guild"
+    trackback:ping="https://techblog.constantcontact.com/software-development/tackling-tech-debt-frontend-guild/trackback/" />
+</rdf:RDF>-->
+</div><div class="post-meta"><span class="categories">Filed Under: <a href="https://techblog.constantcontact.com/category/software-development/" rel="category tag">Software Development</a></span> <span class="tags">Tagged With: <a href="https://techblog.constantcontact.com/tag/babel/" rel="tag">Babel</a>, <a href="https://techblog.constantcontact.com/tag/frontend/" rel="tag">frontend</a>, <a href="https://techblog.constantcontact.com/tag/guild/" rel="tag">guild</a>, <a href="https://techblog.constantcontact.com/tag/javascript/" rel="tag">Javascript</a>, <a href="https://techblog.constantcontact.com/tag/tech-debt/" rel="tag">Tech Debt</a>, <a href="https://techblog.constantcontact.com/tag/tech-enablement/" rel="tag">tech enablement</a>, <a href="https://techblog.constantcontact.com/tag/webpack/" rel="tag">webpack</a></span></div></div><div class="related-posts">
+		<h3>Related Posts</h3>
+		<script type='text/javascript'>
+		<!--
+		//OBSTART:do_NOT_remove_this_comment
+		var OutbrainPermaLink="https://techblog.constantcontact.com/software-development/tackling-tech-debt-frontend-guild/";
+		if(typeof(OB_Script)!='undefined'){OutbrainStart();} else {
+		var OB_PlugInVer="7.0.0.0_Regular";;var OB_raterMode="stars";var OB_recMode="rec";var OBITm="1355530424";var OB_Script=true;var OB_langJS="http://widgets.outbrain.com/lang_en.js";document.write(unescape("%3Cscript src='http://widgets.outbrain.com/OutbrainRater.js' type='text/javascript'%3E%3C/script%3E"));}
+		//OBEND:do_NOT_remove_this_comment
+		//-->
+		</script>
+		</div>
+		
+		<div id="respond" class="comment-respond">
+							<h3 id="reply-title" class="comment-reply-title">Leave a Comment					<small><a rel="nofollow" id="cancel-comment-reply-link" href="/software-development/tackling-tech-debt-frontend-guild/#respond" style="display:none;">Cancel reply</a></small>
+				</h3>
+						<form id="commentform" class="comment-form">
+				<iframe title="Comment Form" src="https://jetpack.wordpress.com/jetpack-comment/?blogid=44050172&#038;postid=4170&#038;comment_registration=0&#038;require_name_email=1&#038;stc_enabled=1&#038;stb_enabled=1&#038;show_avatars=1&#038;avatar_default=mystery&#038;greeting=Leave+a+Comment&#038;greeting_reply=Leave+a+Reply+to+%25s&#038;color_scheme=transparent&#038;lang=en_US&#038;jetpack_version=8.0.1&#038;show_cookie_consent=10&#038;has_cookie_consent=0&#038;token_key=%3Bnormal%3B&#038;sig=960f80fb98097d30c449ac099a9f3a32091ddb0c#parent=https%3A%2F%2Ftechblog.constantcontact.com%2Fsoftware-development%2Ftackling-tech-debt-frontend-guild%2F" style="width:100%; height: 430px; border:0;" name="jetpack_remote_comment" class="jetpack_remote_comment" id="jetpack_remote_comment" sandbox="allow-same-origin allow-top-navigation allow-scripts allow-forms allow-popups"></iframe>
+									<!--[if !IE]><!-->
+					<script>
+						document.addEventListener('DOMContentLoaded', function () {
+							var commentForms = document.getElementsByClassName('jetpack_remote_comment');
+							for (var i = 0; i < commentForms.length; i++) {
+								commentForms[i].allowTransparency = true;
+								commentForms[i].scrolling = 'no';
+							}
+						});
+					</script>
+					<!--<![endif]-->
+							</form>
+		</div>
+
+		
+		<input type="hidden" name="comment_parent" id="comment_parent" value="" />
+
+		</div><div id="sidebar" class="sidebar widget-area"><div id="categories-3" class="widget widget_categories"><div class="widget-wrap"><h4 class="widget-title widgettitle">Tech Topics</h4>
+
+			<ul>
+					<li class="cat-item cat-item-83"><a href="https://techblog.constantcontact.com/category/api/" title="API, API release updates, API how to, API lessons learned, API trends, API events, API partner spotlight, public open API">API</a>
+<ul class='children'>
+	<li class="cat-item cat-item-77"><a href="https://techblog.constantcontact.com/category/api/developer-spotlight/">Developer Spotlight</a>
+</li>
+	<li class="cat-item cat-item-78"><a href="https://techblog.constantcontact.com/category/api/events/">Events</a>
+</li>
+	<li class="cat-item cat-item-140"><a href="https://techblog.constantcontact.com/category/api/how-to/">How To</a>
+</li>
+	<li class="cat-item cat-item-220"><a href="https://techblog.constantcontact.com/category/api/lessons-learned/">Lessons Learned</a>
+</li>
+	<li class="cat-item cat-item-81"><a href="https://techblog.constantcontact.com/category/api/release-updates/">Release Updates</a>
+</li>
+</ul>
+</li>
+	<li class="cat-item cat-item-124"><a href="https://techblog.constantcontact.com/category/devops/" title="Culture, Automation, Measurement, Sharing, CAMS">DevOps</a>
+</li>
+	<li class="cat-item cat-item-125"><a href="https://techblog.constantcontact.com/category/software-development/" title="software development processes and methodologies, software development platforms, software development languages, software programming tools, software development algorithms, QE testing, UI design, software development trends">Software Development</a>
+</li>
+	<li class="cat-item cat-item-126"><a href="https://techblog.constantcontact.com/category/tech-talk/" title="the use of technology, Cassandra, ESBs, databases, Big Data, product architecture, enterprise architecture, general tech approaches, tech trends, tech talk">Tech Talk</a>
+</li>
+	<li class="cat-item cat-item-1"><a href="https://techblog.constantcontact.com/category/uncategorized/">Uncategorized</a>
+</li>
+	<li class="cat-item cat-item-344"><a href="https://techblog.constantcontact.com/category/ux/">UX</a>
+</li>
+			</ul>
+
+			</div></div>
+<div id="post_author_profile" class="widget ctcttechblog_author_profile_widget"><div class="widget-wrap"><h4 class="widget-title widgettitle">About the Author</h4>
+	
+	<div class="author_spotlight group">
+		<img alt='Ben Centra' src='https://techblog.constantcontact.com/wp-content/uploads/2018/09/Ben-Centra_avatar_1537211939-68x68.jpg' class='avatar avatar-68 photo' height='68' width='68' />		<h4 id="author_name">
+			Ben Centra		</h4>
+		<a target="_blank" title="http://bencentra.com" href="http://bencentra.com">http://bencentra.com</a>		
+	</div>
+	<div id="author_profile">
+		I’m a Senior Software Engineer at Constant Contact. I love solving problems and making things better for everyone – our customers and my fellow engineers.	</div>
+	<div id="author_posts_link"><a href="https://techblog.constantcontact.com/author/bcentra/" title="More posts by this author">More posts by the author</a></div>
+
+	</div></div>
+<div id="top-posts-2" class="widget widget_top-posts"><div class="widget-wrap"><h4 class="widget-title widgettitle">Popular Posts</h4>
+<ul>				<li>
+					<a href="https://techblog.constantcontact.com/software-development/types-of-innovation/" class="bump-view" data-bump-view="tp">Types of Innovation</a>					</li>
+								<li>
+					<a href="https://techblog.constantcontact.com/software-development/circuit-breakers-and-microservices/" class="bump-view" data-bump-view="tp">Circuit Breakers and Microservices Architecture</a>					</li>
+								<li>
+					<a href="https://techblog.constantcontact.com/software-development/using-cors-for-cross-domain-ajax-requests/" class="bump-view" data-bump-view="tp">Using CORS for Cross-Domain Ajax Requests</a>					</li>
+								<li>
+					<a href="https://techblog.constantcontact.com/software-development/scrum-and-raci/" class="bump-view" data-bump-view="tp">SCRUM and RACI</a>					</li>
+				</ul></div></div>
+<div id="twitter_timeline-2" class="widget widget_twitter_timeline"><div class="widget-wrap"><h4 class="widget-title widgettitle">Recent Tweets</h4>
+<a class="twitter-timeline" data-width="300" data-height="500" data-theme="light" data-link-color="#5fabd4" data-border-color="#f5f5f5" data-lang="EN" data-partner="jetpack" data-chrome="noheader nofooter noborders transparent" data-widget-id="355037825667854336" href="https://twitter.com/355037825667854336">My Tweets</a></div></div>
+<div id="text-5" class="widget widget_text"><div class="widget-wrap"><h4 class="widget-title widgettitle">The Marketing Perspective</h4>
+			<div class="textwidget">Get fresh marketing insights on email, events, social media, loyalty, and more from our <a href="http://blogs.constantcontact.com" target="_blank" rel="noopener">marketing blogs</a>.</div>
+		</div></div>
+<div id="tag_cloud-2" class="widget widget_tag_cloud"><div class="widget-wrap"><h4 class="widget-title widgettitle">Tag Cloud</h4>
+<div class="tagcloud"><a href="https://techblog.constantcontact.com/tag/agile/" class="tag-cloud-link tag-link-212 tag-link-position-1" style="font-size: 17.0927835052pt;" aria-label="Agile (12 items)">Agile</a>
+<a href="https://techblog.constantcontact.com/tag/android/" class="tag-cloud-link tag-link-82 tag-link-position-2" style="font-size: 12.3298969072pt;" aria-label="Android (5 items)">Android</a>
+<a href="https://techblog.constantcontact.com/tag/api/" class="tag-cloud-link tag-link-724 tag-link-position-3" style="font-size: 22pt;" aria-label="API (27 items)">API</a>
+<a href="https://techblog.constantcontact.com/tag/api-documentation/" class="tag-cloud-link tag-link-247 tag-link-position-4" style="font-size: 11.175257732pt;" aria-label="API documentation (4 items)">API documentation</a>
+<a href="https://techblog.constantcontact.com/tag/api-release-notes/" class="tag-cloud-link tag-link-301 tag-link-position-5" style="font-size: 14.7835051546pt;" aria-label="API Release Notes (8 items)">API Release Notes</a>
+<a href="https://techblog.constantcontact.com/tag/appconnect/" class="tag-cloud-link tag-link-262 tag-link-position-6" style="font-size: 8pt;" aria-label="AppConnect (2 items)">AppConnect</a>
+<a href="https://techblog.constantcontact.com/tag/big-data/" class="tag-cloud-link tag-link-366 tag-link-position-7" style="font-size: 9.73195876289pt;" aria-label="Big Data (3 items)">Big Data</a>
+<a href="https://techblog.constantcontact.com/tag/compression/" class="tag-cloud-link tag-link-489 tag-link-position-8" style="font-size: 8pt;" aria-label="Compression (2 items)">Compression</a>
+<a href="https://techblog.constantcontact.com/tag/constant-contact/" class="tag-cloud-link tag-link-86 tag-link-position-9" style="font-size: 9.73195876289pt;" aria-label="Constant Contact (3 items)">Constant Contact</a>
+<a href="https://techblog.constantcontact.com/tag/constant-contact-api/" class="tag-cloud-link tag-link-302 tag-link-position-10" style="font-size: 16.6597938144pt;" aria-label="Constant Contact API (11 items)">Constant Contact API</a>
+<a href="https://techblog.constantcontact.com/tag/contacts/" class="tag-cloud-link tag-link-143 tag-link-position-11" style="font-size: 11.175257732pt;" aria-label="contacts (4 items)">contacts</a>
+<a href="https://techblog.constantcontact.com/tag/crm/" class="tag-cloud-link tag-link-183 tag-link-position-12" style="font-size: 9.73195876289pt;" aria-label="CRM (3 items)">CRM</a>
+<a href="https://techblog.constantcontact.com/tag/data-management/" class="tag-cloud-link tag-link-87 tag-link-position-13" style="font-size: 11.175257732pt;" aria-label="Data Management (4 items)">Data Management</a>
+<a href="https://techblog.constantcontact.com/tag/development-process/" class="tag-cloud-link tag-link-437 tag-link-position-14" style="font-size: 11.175257732pt;" aria-label="Development Process (4 items)">Development Process</a>
+<a href="https://techblog.constantcontact.com/tag/e4e/" class="tag-cloud-link tag-link-273 tag-link-position-15" style="font-size: 11.175257732pt;" aria-label="e4e (4 items)">e4e</a>
+<a href="https://techblog.constantcontact.com/tag/engineering/" class="tag-cloud-link tag-link-438 tag-link-position-16" style="font-size: 11.175257732pt;" aria-label="Engineering (4 items)">Engineering</a>
+<a href="https://techblog.constantcontact.com/tag/engineers4engineers/" class="tag-cloud-link tag-link-272 tag-link-position-17" style="font-size: 9.73195876289pt;" aria-label="Engineers4Engineers (3 items)">Engineers4Engineers</a>
+<a href="https://techblog.constantcontact.com/tag/hackathon/" class="tag-cloud-link tag-link-91 tag-link-position-18" style="font-size: 9.73195876289pt;" aria-label="Hackathon (3 items)">Hackathon</a>
+<a href="https://techblog.constantcontact.com/tag/innovation/" class="tag-cloud-link tag-link-93 tag-link-position-19" style="font-size: 14.0618556701pt;" aria-label="Innovation (7 items)">Innovation</a>
+<a href="https://techblog.constantcontact.com/tag/integration/" class="tag-cloud-link tag-link-151 tag-link-position-20" style="font-size: 14.7835051546pt;" aria-label="Integration (8 items)">Integration</a>
+<a href="https://techblog.constantcontact.com/tag/ios/" class="tag-cloud-link tag-link-211 tag-link-position-21" style="font-size: 9.73195876289pt;" aria-label="iOS (3 items)">iOS</a>
+<a href="https://techblog.constantcontact.com/tag/iphone/" class="tag-cloud-link tag-link-96 tag-link-position-22" style="font-size: 11.175257732pt;" aria-label="Iphone (4 items)">Iphone</a>
+<a href="https://techblog.constantcontact.com/tag/javascript/" class="tag-cloud-link tag-link-159 tag-link-position-23" style="font-size: 11.175257732pt;" aria-label="Javascript (4 items)">Javascript</a>
+<a href="https://techblog.constantcontact.com/tag/json/" class="tag-cloud-link tag-link-203 tag-link-position-24" style="font-size: 11.175257732pt;" aria-label="JSON (4 items)">JSON</a>
+<a href="https://techblog.constantcontact.com/tag/json-schema/" class="tag-cloud-link tag-link-246 tag-link-position-25" style="font-size: 9.73195876289pt;" aria-label="JSON schema (3 items)">JSON schema</a>
+<a href="https://techblog.constantcontact.com/tag/lead-capture/" class="tag-cloud-link tag-link-155 tag-link-position-26" style="font-size: 9.73195876289pt;" aria-label="lead capture (3 items)">lead capture</a>
+<a href="https://techblog.constantcontact.com/tag/libraries/" class="tag-cloud-link tag-link-99 tag-link-position-27" style="font-size: 9.73195876289pt;" aria-label="Libraries (3 items)">Libraries</a>
+<a href="https://techblog.constantcontact.com/tag/microservices/" class="tag-cloud-link tag-link-625 tag-link-position-28" style="font-size: 9.73195876289pt;" aria-label="microservices (3 items)">microservices</a>
+<a href="https://techblog.constantcontact.com/tag/mobile/" class="tag-cloud-link tag-link-102 tag-link-position-29" style="font-size: 13.3402061856pt;" aria-label="Mobile (6 items)">Mobile</a>
+<a href="https://techblog.constantcontact.com/tag/oauth/" class="tag-cloud-link tag-link-134 tag-link-position-30" style="font-size: 9.73195876289pt;" aria-label="OAuth (3 items)">OAuth</a>
+<a href="https://techblog.constantcontact.com/tag/oauth-2-0/" class="tag-cloud-link tag-link-135 tag-link-position-31" style="font-size: 11.175257732pt;" aria-label="OAuth 2.0 (4 items)">OAuth 2.0</a>
+<a href="https://techblog.constantcontact.com/tag/open-source/" class="tag-cloud-link tag-link-105 tag-link-position-32" style="font-size: 9.73195876289pt;" aria-label="Open Source (3 items)">Open Source</a>
+<a href="https://techblog.constantcontact.com/tag/partner/" class="tag-cloud-link tag-link-153 tag-link-position-33" style="font-size: 11.175257732pt;" aria-label="Partner (4 items)">Partner</a>
+<a href="https://techblog.constantcontact.com/tag/performance-testing/" class="tag-cloud-link tag-link-284 tag-link-position-34" style="font-size: 9.73195876289pt;" aria-label="Performance testing (3 items)">Performance testing</a>
+<a href="https://techblog.constantcontact.com/tag/platforms/" class="tag-cloud-link tag-link-106 tag-link-position-35" style="font-size: 12.3298969072pt;" aria-label="Platforms (5 items)">Platforms</a>
+<a href="https://techblog.constantcontact.com/tag/puppet/" class="tag-cloud-link tag-link-166 tag-link-position-36" style="font-size: 13.3402061856pt;" aria-label="puppet (6 items)">puppet</a>
+<a href="https://techblog.constantcontact.com/tag/python/" class="tag-cloud-link tag-link-108 tag-link-position-37" style="font-size: 12.3298969072pt;" aria-label="Python (5 items)">Python</a>
+<a href="https://techblog.constantcontact.com/tag/release-notes/" class="tag-cloud-link tag-link-109 tag-link-position-38" style="font-size: 16.6597938144pt;" aria-label="Release Notes (11 items)">Release Notes</a>
+<a href="https://techblog.constantcontact.com/tag/rest/" class="tag-cloud-link tag-link-202 tag-link-position-39" style="font-size: 12.3298969072pt;" aria-label="REST (5 items)">REST</a>
+<a href="https://techblog.constantcontact.com/tag/ruby/" class="tag-cloud-link tag-link-111 tag-link-position-40" style="font-size: 11.175257732pt;" aria-label="Ruby (4 items)">Ruby</a>
+<a href="https://techblog.constantcontact.com/tag/safe/" class="tag-cloud-link tag-link-412 tag-link-position-41" style="font-size: 14.7835051546pt;" aria-label="SAFe (8 items)">SAFe</a>
+<a href="https://techblog.constantcontact.com/tag/scaled-agile-framework/" class="tag-cloud-link tag-link-413 tag-link-position-42" style="font-size: 11.175257732pt;" aria-label="Scaled Agile Framework (4 items)">Scaled Agile Framework</a>
+<a href="https://techblog.constantcontact.com/tag/scrum/" class="tag-cloud-link tag-link-526 tag-link-position-43" style="font-size: 14.7835051546pt;" aria-label="SCRUM (8 items)">SCRUM</a>
+<a href="https://techblog.constantcontact.com/tag/software-development-process/" class="tag-cloud-link tag-link-112 tag-link-position-44" style="font-size: 11.175257732pt;" aria-label="Software development process (4 items)">Software development process</a>
+<a href="https://techblog.constantcontact.com/tag/web-development/" class="tag-cloud-link tag-link-114 tag-link-position-45" style="font-size: 12.3298969072pt;" aria-label="Web Development (5 items)">Web Development</a></div>
+</div></div>
+</div></div></div></div><div id="footer" class="footer"><div class="wrap">	<div class="group">
+		<ul class="col products_features">
+			<h5>Products &amp; Features</h5>
+			<li><a href="http://www.constantcontact.com/email-marketing/index.jsp">Email Marketing</a></li>
+			<li><a href="http://www.constantcontact.com/social-campaigns/index.jsp">Social Campaigns</a></li>
+			<li><a href="http://www.constantcontact.com/eventspot/index.jsp">EventSpot</a></li>
+			<li><a href="http://www.constantcontact.com/savelocal/index.jsp">SaveLocal</a></li>
+			<li><a href="http://www.constantcontact.com/online-surveys/index.jsp">Online Survey</a></li>
+			<li><a href="http://www.constantcontact.com/landing/single-platform/index.jsp">SinglePlatform</a></li>
+			<li><a href="http://www.constantcontact.com/industry/index.jsp">By Industry</a></li>
+		</ul>
+
+		<ul class="col coaching_support">
+			<h5>Coaching &amp; Support</h5>
+			<li><a href="http://support2.constantcontact.com/CTCTSupportSiteFAQs" target="_blank">Frequently Asked Questions</a></li>
+			<li><a href="http://www.constantcontact.com/support/index.jsp">Contact Support</a></li>
+			<li>Call (866) 876-8464</li>
+			<li><a href="http://www.constantcontact.com/learning-center/training/bootcamp/index.jsp">Boot Camp Classes</a></li>
+			<li><a href="http://www.constantcontact.com/features/tours.jsp">Live Online Demonstration</a></li>
+			<li><a href="http://www.constantcontact.com/services/index.jsp">Custom Services</a></li>
+		</ul>
+
+		<ul class="col peer_networking">
+			<h5>Peer to Peer / Networking</h5>
+			<li><a href="http://community.constantcontact.com/" rel="nofollow" target="_blank">User Community</a></li>
+			<li><a href="http://marketplace.constantcontact.com/?top5services" rel="nofollow" target="_blank">Partner Directory</a></li>
+			<li><a href="http://www.constantcontact.com/partners/index.jsp">Partner Programs</a></li>
+			<li><a href="http://marketplace.constantcontact.com/" rel="nofollow" target="_blank">Apps &amp; Integrations</a></li>
+			<li><a href="http://developer.constantcontact.com/" rel="nofollow" target="_blank">Developers/APIs</a></li>
+			<li><a href="http://www.constantcontact.com/refer-a-friend.jsp" rel="nofollow">Refer a Friend</a></li>
+		</ul>
+
+		<ul class="col about_us">
+			<h5>About Us</h5>
+			<li><a href="http://www.constantcontact.com/about-constant-contact/index.jsp">Company Information</a></li>
+			<li><a href="http://jobs.constantcontact.com/" target="_blank">Careers</a></li>
+			<li><a href="http://www.constantcontact.com/about-constant-contact/office-locations.jsp">Office Locations</a></li>
+			<li><a href="http://www.constantcontact.com/about-constant-contact/cares4kids.jsp">Cares4Kids</a></li>
+			<li><a href="http://news.constantcontact.com/">Newsroom</a></li>
+			<li><a href="http://investor.constantcontact.com/" rel="nofollow">Investor Relations</a></li>
+			<li><a href="http://www.constantcontact.com/contact/index.jsp">Contact Us</a></li>
+			<li><a href="http://www.constantcontact.com/about-constant-contact/security/index.jsp">Security &amp; Privacy</a></li>
+		</ul>
+
+		<p class="cta">Call Us (866) 876-8464<br />
+		Take us for a spin — <a href="http://www.constantcontact.com/features/signup.jsp">Try FREE »</a></p>
+	
+	</div>
+
+	<ul class="legal">
+		<li><a href="http://www.constantcontact.com/privacy_guarantee.jsp" target="_blank">Privacy Statement</a></li>
+		<li><a href="http://www.constantcontact.com/privacy_california.jsp" target="_blank">California Privacy Rights</a></li>
+		<li><a href="http://www.constantcontact.com/uidocs/CCSpamPolicy.jsp" target="_blank">Anti-Spam Policy</a></li>
+		<li><a href="http://www.constantcontact.com/uidocs/CCSiteOwnerAgreement.jsp" target="_blank">Terms &amp; Conditions</a></li>
+	</ul>
+
+	<p class="no_spam">
+		<a href="http://www.constantcontact.com/anti_spam.jsp">No Spam</a>
+	</p>
+
+	<script type="text/javascript">
+		jQuery(function($) {
+			$('.addthis').stickToTop('.entry-content');
+			
+			$('#subscribe-field')
+				.val('Enter email address')
+				.blur(function() {
+					if ($(this).val() == '') {
+						$(this).val('Enter email address');
+					}
+				})
+				.focus(function(){
+					if ($(this).val() == 'Enter email address') {
+						$(this).val('');
+					}
+				});
+
+			$('#ctct-dev-news-signup-form').validate({
+			    rules: {
+		            email: {
+		                required: true,
+		                email: true
+		            }
+		        },
+		        messages: {
+		            email: "Please enter a valid email address."
+		        },
+		        onkeyup: false
+			});
+		});
+	</script>
+	</div></div></div>	<div style="display:none">
+	<div class="grofile-hash-map-321d21025a44e1a6f1b3bf7e2666392b">
+	</div>
+	</div>
+
+	<script type="text/javascript">
+		window.WPCOM_sharing_counts = {"https:\/\/techblog.constantcontact.com\/software-development\/tackling-tech-debt-frontend-guild\/":4170};
+	</script>
+							<div id="sharing_email" style="display: none;">
+		<form action="/software-development/tackling-tech-debt-frontend-guild/" method="post">
+			<label for="target_email">Send to Email Address</label>
+			<input type="email" name="target_email" id="target_email" value="" />
+
+			
+				<label for="source_name">Your Name</label>
+				<input type="text" name="source_name" id="source_name" value="" />
+
+				<label for="source_email">Your Email Address</label>
+				<input type="email" name="source_email" id="source_email" value="" />
+
+						<input type="text" id="jetpack-source_f_name" name="source_f_name" class="input" value="" size="25" autocomplete="off" title="This field is for validation and should not be changed" />
+			
+			<img style="float: right; display: none" class="loading" src="https://techblog.constantcontact.com/wp-content/plugins/jetpack/modules/sharedaddy/images/loading.gif" alt="loading" width="16" height="16" />
+			<input type="submit" value="Send Email" class="sharing_send" />
+			<a rel="nofollow" href="#cancel" class="sharing_cancel" role="button">Cancel</a>
+
+			<div class="errors errors-1" style="display: none;">
+				Post was not sent - check your email addresses!			</div>
+
+			<div class="errors errors-2" style="display: none;">
+				Email check failed, please try again			</div>
+
+			<div class="errors errors-3" style="display: none;">
+				Sorry, your blog cannot share posts by email.			</div>
+		</form>
+	</div>
+<script type='text/javascript' src='https://s0.wp.com/wp-content/js/devicepx-jetpack.js?ver=202134' id='devicepx-js'></script>
+<script type='text/javascript' src='https://secure.gravatar.com/js/gprofiles.js?ver=2021Augaa' id='grofiles-cards-js'></script>
+<script type='text/javascript' id='wpgroho-js-extra'>
+/* <![CDATA[ */
+var WPGroHo = {"my_hash":""};
+/* ]]> */
+</script>
+<script type='text/javascript' src='https://techblog.constantcontact.com/wp-content/plugins/jetpack/modules/wpgroho.js?ver=5.8' id='wpgroho-js'></script>
+<script type='text/javascript' src='https://techblog.constantcontact.com/wp-includes/js/comment-reply.min.js?ver=5.8' id='comment-reply-js'></script>
+<script type='text/javascript' src='https://techblog.constantcontact.com/wp-includes/js/hoverIntent.min.js?ver=1.8.1' id='hoverIntent-js'></script>
+<script type='text/javascript' src='https://techblog.constantcontact.com/wp-content/themes/frameworks/genesis/lib/js/menu/superfish.min.js?ver=1.7.5' id='superfish-js'></script>
+<script type='text/javascript' src='https://techblog.constantcontact.com/wp-content/themes/frameworks/genesis/lib/js/menu/superfish.args.min.js?ver=2.4.2' id='superfish-args-js'></script>
+<script type='text/javascript' src='https://techblog.constantcontact.com/wp-content/themes/frameworks/genesis/lib/js/menu/superfish.compat.min.js?ver=2.4.2' id='superfish-compat-js'></script>
+<script type='text/javascript' src='https://techblog.constantcontact.com/wp-content/plugins/jetpack/_inc/build/twitter-timeline.min.js?ver=4.0.0' id='jetpack-twitter-timeline-js'></script>
+<script type='text/javascript' src='https://techblog.constantcontact.com/wp-includes/js/wp-embed.min.js?ver=5.8' id='wp-embed-js'></script>
+<script type='text/javascript' src='https://techblog.constantcontact.com/wp-content/plugins/jetpack/_inc/build/spin.min.js?ver=1.3' id='spin-js'></script>
+<script type='text/javascript' src='https://techblog.constantcontact.com/wp-content/plugins/jetpack/_inc/build/jquery.spin.min.js?ver=1.3' id='jquery.spin-js'></script>
+<script type='text/javascript' id='jetpack-carousel-js-extra'>
+/* <![CDATA[ */
+var jetpackCarouselStrings = {"widths":[370,700,1000,1200,1400,2000],"is_logged_in":"","lang":"en","ajaxurl":"https:\/\/techblog.constantcontact.com\/wp-admin\/admin-ajax.php","nonce":"9282472f48","display_exif":"1","display_geo":"1","single_image_gallery":"1","single_image_gallery_media_file":"","background_color":"black","comment":"Comment","post_comment":"Post Comment","write_comment":"Write a Comment...","loading_comments":"Loading Comments...","download_original":"View full size <span class=\"photo-size\">{0}<span class=\"photo-size-times\">\u00d7<\/span>{1}<\/span>","no_comment_text":"Please be sure to submit some text with your comment.","no_comment_email":"Please provide an email address to comment.","no_comment_author":"Please provide your name to comment.","comment_post_error":"Sorry, but there was an error posting your comment. Please try again later.","comment_approved":"Your comment was approved.","comment_unapproved":"Your comment is in moderation.","camera":"Camera","aperture":"Aperture","shutter_speed":"Shutter Speed","focal_length":"Focal Length","copyright":"Copyright","comment_registration":"0","require_name_email":"1","login_url":"https:\/\/techblog.constantcontact.com\/wp-login.php?redirect_to=https%3A%2F%2Ftechblog.constantcontact.com%2Fsoftware-development%2Ftackling-tech-debt-frontend-guild%2F","blog_id":"1","meta_data":["camera","aperture","shutter_speed","focal_length","copyright"],"local_comments_commenting_as":"<fieldset><label for=\"email\">Email (Required)<\/label> <input type=\"text\" name=\"email\" class=\"jp-carousel-comment-form-field jp-carousel-comment-form-text-field\" id=\"jp-carousel-comment-form-email-field\" \/><\/fieldset><fieldset><label for=\"author\">Name (Required)<\/label> <input type=\"text\" name=\"author\" class=\"jp-carousel-comment-form-field jp-carousel-comment-form-text-field\" id=\"jp-carousel-comment-form-author-field\" \/><\/fieldset><fieldset><label for=\"url\">Website<\/label> <input type=\"text\" name=\"url\" class=\"jp-carousel-comment-form-field jp-carousel-comment-form-text-field\" id=\"jp-carousel-comment-form-url-field\" \/><\/fieldset>"};
+/* ]]> */
+</script>
+<script type='text/javascript' src='https://techblog.constantcontact.com/wp-content/plugins/jetpack/_inc/build/carousel/jetpack-carousel.min.js?ver=20190102' id='jetpack-carousel-js'></script>
+<script async="async" type='text/javascript' src='https://techblog.constantcontact.com/wp-content/plugins/akismet/_inc/form.js?ver=4.1.3' id='akismet-form-js'></script>
+<script type='text/javascript' id='sharing-js-js-extra'>
+/* <![CDATA[ */
+var sharing_js_options = {"lang":"en","counts":"1","is_stats_active":"1"};
+/* ]]> */
+</script>
+<script type='text/javascript' src='https://techblog.constantcontact.com/wp-content/plugins/jetpack/_inc/build/sharedaddy/sharing.min.js?ver=8.0.1' id='sharing-js-js'></script>
+<script type='text/javascript' id='sharing-js-js-after'>
+var windowOpen;
+			jQuery( document.body ).on( 'click', 'a.share-facebook', function() {
+				// If there's another sharing window open, close it.
+				if ( 'undefined' !== typeof windowOpen ) {
+					windowOpen.close();
+				}
+				windowOpen = window.open( jQuery( this ).attr( 'href' ), 'wpcomfacebook', 'menubar=1,resizable=1,width=600,height=400' );
+				return false;
+			});
+var windowOpen;
+			jQuery( document.body ).on( 'click', 'a.share-twitter', function() {
+				// If there's another sharing window open, close it.
+				if ( 'undefined' !== typeof windowOpen ) {
+					windowOpen.close();
+				}
+				windowOpen = window.open( jQuery( this ).attr( 'href' ), 'wpcomtwitter', 'menubar=1,resizable=1,width=600,height=350' );
+				return false;
+			});
+var windowOpen;
+			jQuery( document.body ).on( 'click', 'a.share-linkedin', function() {
+				// If there's another sharing window open, close it.
+				if ( 'undefined' !== typeof windowOpen ) {
+					windowOpen.close();
+				}
+				windowOpen = window.open( jQuery( this ).attr( 'href' ), 'wpcomlinkedin', 'menubar=1,resizable=1,width=580,height=450' );
+				return false;
+			});
+</script>
+
+		<!--[if IE]>
+		<script type="text/javascript">
+			if ( 0 === window.location.hash.indexOf( '#comment-' ) ) {
+				// window.location.reload() doesn't respect the Hash in IE
+				window.location.hash = window.location.hash;
+			}
+		</script>
+		<![endif]-->
+		<script type="text/javascript">
+			(function () {
+				var comm_par_el = document.getElementById( 'comment_parent' ),
+					comm_par = ( comm_par_el && comm_par_el.value ) ? comm_par_el.value : '',
+					frame = document.getElementById( 'jetpack_remote_comment' ),
+					tellFrameNewParent;
+
+				tellFrameNewParent = function () {
+					if ( comm_par ) {
+						frame.src = "https://jetpack.wordpress.com/jetpack-comment/?blogid=44050172&postid=4170&comment_registration=0&require_name_email=1&stc_enabled=1&stb_enabled=1&show_avatars=1&avatar_default=mystery&greeting=Leave+a+Comment&greeting_reply=Leave+a+Reply+to+%25s&color_scheme=transparent&lang=en_US&jetpack_version=8.0.1&show_cookie_consent=10&has_cookie_consent=0&token_key=%3Bnormal%3B&sig=960f80fb98097d30c449ac099a9f3a32091ddb0c#parent=https%3A%2F%2Ftechblog.constantcontact.com%2Fsoftware-development%2Ftackling-tech-debt-frontend-guild%2F" + '&replytocom=' + parseInt( comm_par, 10 ).toString();
+					} else {
+						frame.src = "https://jetpack.wordpress.com/jetpack-comment/?blogid=44050172&postid=4170&comment_registration=0&require_name_email=1&stc_enabled=1&stb_enabled=1&show_avatars=1&avatar_default=mystery&greeting=Leave+a+Comment&greeting_reply=Leave+a+Reply+to+%25s&color_scheme=transparent&lang=en_US&jetpack_version=8.0.1&show_cookie_consent=10&has_cookie_consent=0&token_key=%3Bnormal%3B&sig=960f80fb98097d30c449ac099a9f3a32091ddb0c#parent=https%3A%2F%2Ftechblog.constantcontact.com%2Fsoftware-development%2Ftackling-tech-debt-frontend-guild%2F";
+					}
+				};
+
+				
+				if ( 'undefined' !== typeof addComment ) {
+					addComment._Jetpack_moveForm = addComment.moveForm;
+
+					addComment.moveForm = function ( commId, parentId, respondId, postId ) {
+						var returnValue = addComment._Jetpack_moveForm( commId, parentId, respondId, postId ),
+							cancelClick, cancel;
+
+						if ( false === returnValue ) {
+							cancel = document.getElementById( 'cancel-comment-reply-link' );
+							cancelClick = cancel.onclick;
+							cancel.onclick = function () {
+								var cancelReturn = cancelClick.call( this );
+								if ( false !== cancelReturn ) {
+									return cancelReturn;
+								}
+
+								if ( ! comm_par ) {
+									return cancelReturn;
+								}
+
+								comm_par = 0;
+
+								tellFrameNewParent();
+
+								return cancelReturn;
+							};
+						}
+
+						if ( comm_par == parentId ) {
+							return returnValue;
+						}
+
+						comm_par = parentId;
+
+						tellFrameNewParent();
+
+						return returnValue;
+					};
+				}
+
+				
+				// Do the post message bit after the dom has loaded.
+				document.addEventListener( 'DOMContentLoaded', function () {
+					var iframe_url = "https:\/\/jetpack.wordpress.com";
+					if ( window.postMessage ) {
+						if ( document.addEventListener ) {
+							window.addEventListener( 'message', function ( event ) {
+								var origin = event.origin.replace( /^http:\/\//i, 'https://' );
+								if ( iframe_url.replace( /^http:\/\//i, 'https://' ) !== origin ) {
+									return;
+								}
+								jQuery( frame ).height( event.data );
+							});
+						} else if ( document.attachEvent ) {
+							window.attachEvent( 'message', function ( event ) {
+								var origin = event.origin.replace( /^http:\/\//i, 'https://' );
+								if ( iframe_url.replace( /^http:\/\//i, 'https://' ) !== origin ) {
+									return;
+								}
+								jQuery( frame ).height( event.data );
+							});
+						}
+					}
+				})
+
+			})();
+		</script>
+
+		<script type='text/javascript' src='https://stats.wp.com/e-202134.js' async='async' defer='defer'></script>
+<script type='text/javascript'>
+	_stq = window._stq || [];
+	_stq.push([ 'view', {v:'ext',j:'1:8.0.1',blog:'44050172',post:'4170',tz:'-4',srv:'techblog.constantcontact.com'} ]);
+	_stq.push([ 'clickTrackerInit', '44050172', '4170' ]);
+</script>
+</body></html>
