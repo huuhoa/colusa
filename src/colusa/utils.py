@@ -39,6 +39,7 @@ def get_short_hexdigest(str_value: str) -> str:
 def download_image(url_path, output_dir):
     import urllib
 
+    # logs.info(f'call download_image with url_path is {url_path}')
     result = urllib.parse.urlsplit(url_path)
     p = pathlib.PurePath(result.path)
     image_name = f'{get_hexdigest(url_path)}{p.suffix}'

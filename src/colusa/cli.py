@@ -1,6 +1,6 @@
 import argparse
 
-from colusa import Colusa, read_configuration_file, ConfigurationError, logs
+from colusa import Colusa, ConfigurationError, logs
 
 
 def main():
@@ -39,9 +39,7 @@ def init(args):
 
 def generate(args):
     try:
-        configs = read_configuration_file(args.input)
-        s = Colusa(configs)
-        s.generate()
+        Colusa.generate_book(args.input)
     except ConfigurationError as e:
         logs.error(e)
 

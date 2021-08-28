@@ -1,0 +1,149 @@
+// Team Work Made Simple with Guilds
+
+== Team Work Made Simple with Guilds
+
+by **Tauan Zimmermann** on 2016-03-24 at _link:https://tech.trivago.com/2016/03/24/team-work-made-simple-with-guilds/[tech.trivago.com]_
+
+
+How the guild structure can support the collaboration in big teams
+
+How can we organize the collaboration of more than a hundred developers on a wide range of topics? How could they decide about good practices in the company?
+Those are some questions that drove trivago to give it a try on a different structure: the guilds.
+
+A few months ago trivago institutionalized the guilds. This change was inspired by the link:https://labs.spotify.com/2014/03/27/spotify-engineering-culture-part-1/[Spotify Engineering Culture]. They did an awesome job explaining how their structure works and shared that with the world. We liked the idea and tried it ourselves. We are grateful for that.
+
+At the moment we have three guilds in place: PHP, Javascript and UI/UX.
+
+We would like to share with you some facts and lessons we learnt while adopting this structure. We will tell you how great it can be to put this in place at your own company to support collaboration within a big team.
+
+image:8163d95f05f783bc6f15c6ae697810b31ac5dc65f0599f92f15e6cadafc9312f.jpg[Guild participants,, ]
+
+=== A Little Bit of Background
+
+The usual way of making any decision about a topic was to find everyone interested, call a meeting and send the outcome by email to everyone. So far, so good. For a team with a size of twenty developers that is no big deal.
+
+The problems start to arise when there is no possibility to call a meeting with everyone anymore. There are just too many people. We are more than a hundred developers spread across different floors and offices. Each one of us has different interests, which can be used to full potential at the right place.
+
+The developers were split into two groups, Frontend and Backend. Although it worked, we realized that we could do better. The nature of web development doesn’t allow this kind of separation. Sometimes people are working for a long period writing a new Javascript module. In the next project the same developer needs to support the development of a PHP API, or change the keyframe declaration for a CSS-Animation. Often, developers wanted to collaborate on a different field as well. The structure that we had didn’t naturally facilitate this.
+
+Currently we practice scrum for product development. In the scrum teams we have people with different skill sets guided by the Product Owner. Usually the Product Owner would prioritize “what” to do next, based on the estimated user value of the features. To support this, people collaborate in the guilds to create a better understanding of “how” to support the product development.
+
+=== What Is a Guild?
+
+The word “link:http://dictionary.reference.com/browse/guild[guild]” can be defined as: “any of various medieval associations, as of merchants or artisans, organized to maintain standards and to protect the interests of its members, and that sometimes constituted a local governing body” or “an organization of persons with related interests, goals, etc., especially one formed for mutual aid or protection”. This practice comes from the middle age. Guilds were an important part of society. One of the main reasons why they existed was for the protection of workers and consumers for a specific craft.
+
+At trivago, we formulate it like this:
+
+[quote]
+____
+A group of people who have joined together to enhance the quality and understanding of their craft within our company.
+
+____
+
+In this sense, the PHP guild is responsible for maintaining the guidelines for PHP development inside our company, by proposing a code style guide, suggesting improvements to the architecture and empowering people with knowledge to improve their everyday work.
+
+=== The Guild Activities
+
+The two main activities that drive the collaboration are the guild meetings and the working groups. When part of a guild, all members are able to propose new ideas as well as take part in any on-going topic by joining a working group.
+
+==== The Meetings
+
+The guild meeting event brings everyone together, in a structure like a Deliberative Assembly, which lasts for an hour. The agenda for the meeting is built collaboratively during the weeks that precede it. This helps with the organization as well as the transparency of the topics to be discussed as well as the working groups that are currently active. Here at trivago the frequency of meetings varies between the guilds. The PHP guild meets once a month while the Javascript guild, every three weeks.
+
+We follow some principles written by Henry Martyn Robert in link:http://www.rulesonline.com/[Robert’s Rules of Order], first published in 1876. This is a great tool for facilitating discussions and group decision-making. As you might have already experienced, sometimes meetings can spawn some passionate discussions. These discussions are healthy for the team but need to be kept on track. Thus, a set of rules helps us to get the best out of our time together.
+
+Some of the rules in place are:
+
+* Have a Moderator;
+* Have a Secretary, to document the meeting;
+* Give everyone a chance to speak;
+* Strictly track time;
+* Move deeper discussions to working groups;
+* Motions. Will be explained further.
+
+These rules were agreed on by all members, not enforced. This makes it easier as everyone helps to keep the productivity of the meeting high. It should not only be the moderator’s job to do that.
+
+[quote]
+____
+The moderator’s main action is to conduct the meeting through the agenda, giving everyone the opportunity to speak, respecting the time limits.
+
+____
+
+===== The Time Tracking
+
+Usually the time tracking is made by the moderator. This could also be assigned to anyone else in the meeting. Time tracking starts with the planning of the meeting agenda by choosing a time limit for each discussion point.
+
+===== The Motions
+
+Motion is an instrument used in the meetings to allow a member to “move” or “steer” the guild to make decisions or act upon something. Usually the motions are defined in advance in the meeting’s agenda. Each member can check the agenda to see what topics will be voted on in the next meeting. At least two people are necessary to agree on a Motion so it can be voted.
+
+Let us say that, for example, John wants to introduce a new rule for the Code Style Guide. He then raises his hand and proposes it verbally during the meeting. The moderator would then ask if there is anyone who is willing to second the Motion. If so, the matter can be brought to vote immediately.
+
+One advantage of adopting such methods is the empowerment that it gives to all guild members to speak freely and propose anything that has at least a second person to support it
+
+===== The Voting
+
+We do vote on some matters in the meetings. Those decisions affect the way we work daily. The voting sessions should respect the link:https://en.wikipedia.org/wiki/Quorum[Quorum].
+
+[quote]
+____
+Quorum is the smallest number of people who must be present at a meeting in order for decisions to be made.
+
+____
+
+The Quorum needs to be defined by the group. It usually follows the average attendance amount. For example: if the average attendance is ten people, this could be a good number to be considered as the Quorum. That means that on meetings where there are less then ten people, voting would be restricted.
+
+==== The Working Groups
+
+At the prompting of any member, an official working group can be formed. The purpose of this group is to meet, discuss, research and document a specific topic to be presented to the guild members in a future guild meeting.
+
+Examples for working group topics include:
+
+* Propose a change to the code style guide;
+* Propose usage of a new language feature;
+* Propose a refactoring of a certain component.
+
+If a topic needs a decision to be made, the outcome of the working group is then presented in the guild meeting (usually short presentation). A small discussion to allow clarification is held, and the subject is brought to vote.
+
+If the discussion shows that the topic in place is not clear enough to be voted on, the working group will continue working on it in preparation for the next meeting.
+
+==== Knowledge Sharing
+
+Knowledge sharing is a pillar of the guilds. Bringing people together to discuss a topic is effective in teaching and sharing knowledge with everyone involved. Often the guild meetings will hold presentations about work that is being done on a certain component, discuss new programming language features and best practices that are used, and similar topics.
+
+=== Real Life Examples
+
+Recently in a PHP guild meeting we made a decision on “PHP Class Naming Conventions”. There was a working group thinking about the topic which was then presented to the group and we voted on it.
+
+This is our PHP guild documentation page:
+image:75698d3a1aa6d4523baf6c060d46976401c3be313f5acc44f6da4d53b8f56a2e.png[PHP guild Documentation,, ]
+
+Recently in the Javascript guild, there were discussions about automated documentation for our internal NPM packages and the adoption of ES 2015. Read more about some of their work about exporting javascript modules here.
+
+The members of the UI/UX guild have recently discussed the usage of Webpack for building the CSS assets for our application. Topics like “on-boarding of new team-members” are also discussed in these meetings.
+Read more about some of their work about large scale CSS refactoring here.
+
+=== Guilds Are Open to Everyone
+
+We use to publish the agenda for the next meetings as well as their outcome on our internal social network platform. The participation is voluntary.
+
+By supporting such structures, we naturally started to bring together people who are interested in a topic. The freedom for everyone to choose where they want to contribute was a positive side effect. A small group of people interested in a topic working together usually is more fruitful than a bigger group with some people that could collaborate somewhere else.
+
+We are still learning how to collaborate in a more effective way. There are still challenges ahead regarding remote participation in the meetings, proxy voting and scope of responsibility of the guilds, which will be handled over time. This has proven to be efficient for our team work and we will continue practicing and learning about it.
+
+==== Some of the Benefits
+
+* The knowledge sharing is precious;
+* People are happy to work together on topics they love;
+* Quality is raised in development;
+* Motivation is increased;
+* Group decision-making is easier.
+
+Perhaps guilds can benefit your organization?
+
+* link:https://tech.trivago.com//tags/collaboration/[collaboration]
+* link:https://tech.trivago.com//tags/team-work/[team work]
+* link:https://tech.trivago.com//tags/guild/[guild]
+
+image:bd7cf7f3c60f17c8390c5db3797f405d0c9a0ca67c0bf0409ed70a6040e6c558.jpg[,, ]Tauan ZimmermannSoftware developer at trivago. Supporting the coordination of communities of practice at trivago. Constantly learning about how to be a good tech lead, about people development and team work.
+

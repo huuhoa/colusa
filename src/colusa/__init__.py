@@ -21,28 +21,24 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
+from bs4 import BeautifulSoup
+import pathlib
+import json
+import yaml
+import os
 
 from colusa import _version
+from colusa import logs
+from .utils import scan, download_url, get_hexdigest, get_short_hexdigest
+from colusa import etr
+
 __author__ = _version.__author__
 __email__ = _version.__email__
 __version__ = _version.__version__
 __copyright__ = _version.__copyright__
 __license__ = _version.__license__
 
-
-import json
-import os
-import pathlib
-
-import yaml
-from bs4 import BeautifulSoup
-
-from colusa import logs
-from colusa.etr import ContentNotFoundError, Render, create_extractor, create_transformer
-
-
-def create_book_maker(config: dict):
-    return Render(config)
+__all__ = ['Colusa', 'ConfigurationError', 'logs']
 
 
 class ConfigurationError(Exception):
@@ -54,25 +50,34 @@ class ConfigurationError(Exception):
 
 
 class Colusa(object):
+    """
+    Implementation for initializing book configuration and generating book from configuration
+    """
     def __init__(self, configuration: dict):
-        from colusa.utils import scan
         scan('colusa.plugins')
         self.config = configuration
         self.output_dir = configuration.get('output_dir', '.')
-        self.book_maker = create_book_maker(configuration)
+        self.book_maker = etr.Render(configuration)
 
     @classmethod
-    def generate_new_configuration(cls, file_path):
+    def generate_new_configuration(cls, file_path: str):
+        """
+        Generate initial content for book configuration, raise ConfigurationError if
+        `file_path` is not end with supported format (json, yml)
+
+        :param file_path: path of new configuration file, must end with either .json or .yml
+        """
         template = {
-                "title": "__fill the title__",
-                "author": "__fill the author__",
-                "version": "v1.0",
-                "homepage": "__fill url to home page__",
-                "output_dir": "__fill output dir__",
-                "multi_part": False,
-                "parts": [],
-                "urls": []
-            }
+            "title": "__fill the title__",
+            "author": "__fill the author__",
+            "version": "v1.0",
+            "homepage": "__fill url to home page__",
+            "output_dir": "__fill output dir__",
+            "multi_part": False,
+            "metadata": True,
+            "parts": [],
+            "urls": []
+        }
         p = pathlib.PurePath(file_path)
         if p.suffix == '.json':
             with open(file_path, 'w') as file_out:
@@ -85,13 +90,48 @@ class Colusa(object):
         raise ConfigurationError(f'unknown configuration file format: {p.suffix}. '
                                  f'Configuration file format should be either .json or .yml')
 
-    def download_content(self, url_path):
-        from .utils import download_url, get_hexdigest, get_short_hexdigest
+    @classmethod
+    def generate_book(cls, config_file_path):
+        """
+        Generate book from existing input configuration `config_file_path`,
+        raise ConfigurationError if cannot parse configuration file
 
+        :param config_file_path: Path to input configuration
+        :return: None
+        """
+        configs = cls._read_configuration_file(config_file_path)
+        s = Colusa(configs)
+        s.generate()
+
+    @classmethod
+    def _read_configuration_file(cls, file_path: str) -> dict:
+        """
+        Read the book configuration file, raise ConfigurationError if `file_path` is unknown format
+
+        :param file_path: path to known format configuration (json, yml)
+        :return: dict for configurations
+        """
+        p = pathlib.PurePath(file_path)
+        if p.suffix == '.json':
+            with open(file_path, 'r') as file_in:
+                data = json.load(file_in)
+                return data
+        if p.suffix == '.yml':
+            with open(file_path, 'r') as file_in:
+                data = yaml.safe_load(file_in)
+                return data
+        raise ConfigurationError(f'unknown configuration file format: {p.suffix}. '
+                                 f'Configuration file format should be either .json or .yml')
+
+    def download_content(self, url_path):
+        """
+        Download html content of given `url_path` then cached in `.cached` folder of local file system
+        :param url_path: url of html article
+        :return: content of downloaded file
+        """
         output_path = pathlib.Path(self.output_dir)
         cached_file_path = output_path.joinpath('.cached', f'{get_hexdigest(url_path)}.html')
-        p = pathlib.PurePath(url_path)
-        logs.info(url_path, p.name, cached_file_path)
+        logs.info(url_path, cached_file_path)
 
         if not cached_file_path.exists():
             # download file from url_path
@@ -99,23 +139,41 @@ class Colusa(object):
 
         with open(cached_file_path, 'rt', encoding='utf-8') as file_in:
             content = file_in.read()
-        return content, f'{p.name}_{get_short_hexdigest(url_path)}'
+        return content
+
+    @staticmethod
+    def _get_saved_file_name(url_path: str) -> str:
+        """
+        calculates the name on local file system based on given article url.
+        The calculation is based on ending name of url and url's short digest
+
+        saved_file_name =  f'{pathlib.PurePath(url_path).name}_{get_short_hexdigest(url_path)}'
+
+        Args:
+            url_path (str): url
+
+        Returns:
+            str: calculated file name
+        """
+        p = pathlib.PurePath(url_path)
+        return f'{p.name}_{get_short_hexdigest(url_path)}'
 
     def ebook_generate_content(self, url_path):
-        content, file_basename = self.download_content(url_path)
+        content = self.download_content(url_path)
         bs = BeautifulSoup(content, 'html.parser')
 
         chapter_metadata = self.config.get('metadata', True)
         title_strip = self.config.get('title_prefix_trim', '')
         try:
-            extractor = create_extractor(url_path, bs)
+            extractor = etr.create_extractor(url_path, bs)
             extractor.cleanup()
-            transformer = create_transformer(url_path, extractor.get_content(), self.output_dir)
+            transformer = etr.create_transformer(url_path, extractor.get_content(), self.output_dir)
             transformer.transform()
-            self.book_maker.render_chapter(extractor, transformer, url_path, file_basename,
+            self.book_maker.render_chapter(extractor, transformer, url_path,
+                                           self._get_saved_file_name(url_path),
                                            metadata=chapter_metadata,
                                            title_strip=title_strip)
-        except ContentNotFoundError as e:
+        except etr.ContentNotFoundError as e:
             logs.error(e, url_path)
             # raise e
 
@@ -148,17 +206,3 @@ class Colusa(object):
             urls = part.get('urls', [])
             for url_path in urls:
                 self.ebook_generate_content(url_path)
-
-
-def read_configuration_file(file_path):
-    p = pathlib.PurePath(file_path)
-    if p.suffix == '.json':
-        with open(file_path, 'r') as file_in:
-            data = json.load(file_in)
-            return data
-    if p.suffix == '.yml':
-        with open(file_path, 'r') as file_in:
-            data = yaml.safe_load(file_in)
-            return data
-    raise ConfigurationError(f'unknown configuration file format: {p.suffix}. '
-                             f'Configuration file format should be either .json or .yml')

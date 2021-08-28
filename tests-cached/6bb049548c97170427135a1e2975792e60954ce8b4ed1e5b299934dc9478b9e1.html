@@ -1,0 +1,1292 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+<meta content = 'uft-8' name = 'charset'></meta>
+
+<title>Patterns of Legacy Displacement</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
+<meta content = 'summary_large_image' name = 'twitter:card'></meta>
+
+<meta content = '16665197' name = 'twitter:site:id'></meta>
+
+<meta content = '@martinfowler' name = 'twitter:site'></meta>
+
+<meta content = 'Patterns of Legacy Displacement' property = 'og:title'></meta>
+
+<meta content = 'https://martinfowler.com/articles/patterns-legacy-displacement/' property = 'og:url'></meta>
+
+<meta content = 'Patterns for the effective modernization of legacy software systems' property = 'og:description'></meta>
+
+<meta content = 'https://martinfowler.com/articles/patterns-legacy-displacement/card.png' property = 'og:image'></meta>
+
+<meta content = 'martinfowler.com' property = 'og:site_name'></meta>
+
+<meta content = 'article' property = 'og:type'></meta>
+
+<meta content = '2021-07-20' property = 'og:article:modified_time'></meta>
+
+<meta content = 'width=device-width, initial-scale=1' name = 'viewport'></meta>
+
+<link href = 'index.css' rel = 'stylesheet' type = 'text/css'></link>
+</head>
+
+<body><header id = 'banner' style = 'background-image: url("/img/zakim.png"); background-repeat: no-repeat'>
+
+<div class = 'name-logo'><a href = 'https://martinfowler.com'><img src = '/mf-name-white.png'></img></a></div>
+  <div class = 'search'>
+    <!-- SiteSearch Google -->
+    <form method='GET' action="https://www.google.com/search">
+      <input type='hidden' name='ie' value='UTF-8'/>
+      <input type='hidden' name='oe' value='UTF-8'/>
+      <input class = 'field' type='text' 
+             name='q' size='15' maxlength='255' value=""/>
+      <button class = 'button' type='submit' 
+             name='btnG' value=" " title = "Search"/>
+      <input type='hidden' name='domains' value="martinfowler.com"/>
+      <input type='hidden' name='sitesearch' value=""/> 
+      <input
+          type='hidden' name='sitesearch' value="martinfowler.com"/>
+    </form>
+  </div>
+
+<div class = 'menu-button navmenu-button'><a class = 'icon icon-bars' href = '#navmenu-bottom'></a></div>
+
+<nav class = 'top-menu'>
+<ul>
+<li><a class = '' href = 'https://refactoring.com'>Refactoring</a></li>
+
+<li><a class = '' href = '/agile.html'>Agile</a></li>
+
+<li><a class = '' href = '/architecture'>Architecture</a></li>
+
+<li><a class = '' href = '/aboutMe.html'>About</a></li>
+
+<li><a class = 'tw' href = 'https://www.thoughtworks.com'>Thoughtworks</a></li>
+
+<li><a class = 'icon icon-rss' href = '/feed.atom' title = 'feed'></a></li>
+
+<li><a class = 'icon icon-twitter' href = 'https://www.twitter.com/martinfowler' title = 'twitter stream'></a></li>
+</ul>
+</nav>
+</header>
+<nav id = 'top-navmenu'>
+<nav class = 'navmenu'>
+<div class = 'nav-head'>  <div class = 'search'>
+    <!-- SiteSearch Google -->
+    <form method='GET' action="https://www.google.com/search">
+      <input type='hidden' name='ie' value='UTF-8'/>
+      <input type='hidden' name='oe' value='UTF-8'/>
+      <input class = 'field' type='text' 
+             name='q' size='15' maxlength='255' value=""/>
+      <button class = 'button' type='submit' 
+             name='btnG' value=" " title = "Search"/>
+      <input type='hidden' name='domains' value="martinfowler.com"/>
+      <input type='hidden' name='sitesearch' value=""/> 
+      <input
+          type='hidden' name='sitesearch' value="martinfowler.com"/>
+    </form>
+  </div>
+
+<div class = 'closediv'>
+<span class = 'close' title = 'close'></span>
+</div>
+</div>
+
+<div class = 'nav-body'>
+<div class = 'topics'>
+<h2>Topics</h2>
+
+<p><a href = '/architecture'>Architecture</a></p>
+
+<p><a href = 'https://refactoring.com'>Refactoring</a></p>
+
+<p><a href = '/agile.html'>Agile</a></p>
+
+<p><a href = '/delivery.html'>Delivery</a></p>
+
+<p><a href = '/microservices'>Microservices</a></p>
+
+<p><a href = '/data'>Data</a></p>
+
+<p><a href = '/testing'>Testing</a></p>
+
+<p><a href = '/dsl.html'>DSL</a></p>
+</div>
+
+<div class = 'about'>
+<h2>about me</h2>
+
+<p><a href = '/aboutMe.html'>About</a></p>
+
+<p><a href = '/books'>Books</a></p>
+
+<p><a href = '/faq.html'>FAQ</a></p>
+</div>
+
+<div class = 'content'>
+<h2>content</h2>
+
+<p><a href = '/videos.html'>Videos</a></p>
+
+<p><a href = '/tags'>Content Index</a></p>
+
+<p><a href = '/articles/eurogames'>Board Games</a></p>
+
+<p><a href = '/photos'>Photography</a></p>
+</div>
+
+<div class = 'tw'>
+<h2>Thoughtworks</h2>
+
+<p><a href = 'https://thoughtworks.com/insights'>Insights</a></p>
+
+<p><a href = 'https://thoughtworks.com/careers'>Careers</a></p>
+
+<p><a href = 'https://thoughtworks.com/products'>Products</a></p>
+</div>
+
+<div class = 'feeds'>
+<h2>follow</h2>
+
+<p><a href = 'https://www.twitter.com/martinfowler'>Twitter</a></p>
+
+<p><a href = '/feed.atom'>RSS</a></p>
+</div>
+</div>
+</nav>
+</nav>
+
+<div class = 'contents dropdown-container'>
+<button class = 'dropdown-button'>
+<h2>Contents</h2>
+</button>
+
+<div class = 'hidden' id = 'dropdownLinks'><a href = '#TheLegacyReplacementTreadmill'>The Legacy Replacement Treadmill</a><a href = '#BreakingTheCycle'>Breaking the cycle</a>
+<ul>
+<li><a href = '#UnderstandTheOutcomesYouWantToAchieve'>Understand the outcomes you want to achieve</a>
+<ul>
+<li><a href = '#ReducingTheCostOfChange'>Reducing the cost of change</a></li>
+
+<li><a href = '#ImprovingTheBusinessProcess'>Improving the business process</a></li>
+
+<li><a href = '#RetireAnOldSystem'>Retire an old system</a></li>
+
+<li><a href = '#ImminentDisruption'>Imminent Disruption</a></li>
+
+<li><a href = '#NewerTechnology'>Newer technology</a></li>
+</ul>
+</li>
+
+<li><a href = '#DecideHowToBreakTheProblemIntoSmallerParts'>Decide how to break the problem into smaller parts</a>
+<ul>
+<li><a href = '#GettingStarted'>Getting Started</a></li>
+</ul>
+</li>
+
+<li><a href = '#SuccessfullyDeliverTheParts'>Successfully deliver the parts</a></li>
+
+<li><a href = '#ChangeTheOrganizationToAllowThisToHappenOnAnOngoingBasis'>Change the organization to allow this to happen on an ongoing basis</a></li>
+</ul>
+<a href = '#AnExampleIntegrationMiddlewareRemoval'>An example: Integration Middleware Removal</a>
+<ul>
+<li><a href = '#UnderstandingTheOutcomes'>Understanding the outcomes</a></li>
+
+<li><a href = '#BreakingTheProblemUpTheFirstSeamAndARefactoring'>Breaking the problem up:  the first seam and a refactoring</a></li>
+
+<li><a href = '#SuccessfullyDeliverThePartsBuildingOutTheFunctionalityMaintainingTheContract'>Successfully deliver the parts:  building out the functionality, maintaining the contract</a></li>
+
+<li><a href = '#SuccessfullyDeliverThePartscont.TransitioningIntoLiveService-UsingASecondSeam'>Successfully deliver the parts (cont.): transitioning into live service - using a second seam</a></li>
+
+<li><a href = '#ChangingTheOrganisationToAllowThisToHappenOnAnOngoingBasis'>Changing the organisation to allow this to happen on an ongoing basis</a></li>
+
+<li><a href = '#ClosingThoughts'>Closing thoughts</a></li>
+</ul>
+
+<h3>Sidebars</h3>
+
+<ul>
+<li><a href = '#WeWantToBeLikeNetflix'>We want to be like Netflix</a></li>
+
+<li><a href = '#EventStorming-TheSwissArmyKnifeOfModernProcessMapping'>Event Storming - The Swiss Army Knife of modern process mapping</a></li>
+
+<li><a href = '#TheHardestShiftIsTheParadigmShift'>The hardest shift is the Paradigm Shift</a></li>
+</ul>
+</div>
+</div>
+
+<main>
+<h1>Patterns of Legacy Displacement</h1>
+
+<p class = 'subtitle'>Effective modernization of legacy software systems</p>
+
+<section class = 'frontMatter'>
+<p class = 'abstract'><i>When faced with the need to replace existing software systems,
+  organizations often fall into a cycle of half-completed technology
+  replacements. Our experiences have taught us a series of patterns that allow
+  us to break this cycle, relying on: a deliberate recognition of the desired
+  outcomes of displacing the legacy software, breaking this displacement in
+  parts, incrementally delivering these parts, and changing the culture of the
+  organization to recognize that change is the unvarying reality.</i></p>
+
+<p class = 'date'>20 July 2021</p>
+<hr></hr>
+<div class = 'front-grid'>
+<div class = 'author-list'>
+<div class = 'author'><a href = 'https://www.linkedin.com/in/ian-cartwright-282952/ '><img alt = 'Photo of Ian Cartwright' src = 'ian.jpg' width = '80'></img></a>
+<address class = 'name'><a href = 'https://www.linkedin.com/in/ian-cartwright-282952/ ' rel = 'author'>Ian Cartwright</a></address>
+
+<div class = 'bio'>
+<p>Ian Cartwright is a Technical Director at Thoughtworks, where he
+    applies his two decades of experience as an architect and hands-on
+    developer to help clients improve their technical capabilities.</p>
+</div>
+</div>
+
+<div class = 'author'><a href = 'https://www.linkedin.com/in/rob-horn'><img alt = 'Photo of Rob Horn' src = 'rob-250x250.jpg' width = '80'></img></a>
+<address class = 'name'><a href = 'https://www.linkedin.com/in/rob-horn' rel = 'author'>Rob Horn</a></address>
+
+<div class = 'bio'>
+<p>Rob Horn is a Technical Director at Thoughtworks.  An experienced and passionate technical consultant and agile practitioner, he has spent around 15 of his 25+ year career working with clients on legacy modernization challenges in the financial, social, travel and public sectors.</p>
+</div>
+</div>
+
+<div class = 'author'><a href = 'https://bovon.org/'><img alt = 'Photo of James Lewis' src = 'jlewis.jpg' width = '80'></img></a>
+<address class = 'name'><a href = 'https://bovon.org/' rel = 'author'>James Lewis</a></address>
+
+<div class = 'bio'>
+<p>James Lewis is a Technical Director at Thoughtworks and a member of the Technology Advisory Board. He spends his time advising clients on distributed systems architecture and organisational design when he isn't speaking at conferences on the same topics.</p>
+</div>
+</div>
+</div>
+
+<div class = 'tags'>
+<p class = 'tag-link'><a href = /tags/enterprise%20architecture.html>enterprise architecture</a></p>
+
+<p class = 'tag-link'><a href = /tags/evolutionary%20design.html>evolutionary design</a></p>
+</div>
+
+<div class = 'contents'>
+<h2>Contents</h2>
+
+<ul>
+<li><a href = '#TheLegacyReplacementTreadmill'>The Legacy Replacement Treadmill</a></li>
+
+<li><a href = '#BreakingTheCycle'>Breaking the cycle</a>
+<ul>
+<li><a href = '#UnderstandTheOutcomesYouWantToAchieve'>Understand the outcomes you want to achieve</a>
+<ul>
+<li><a href = '#ReducingTheCostOfChange'>Reducing the cost of change</a></li>
+
+<li><a href = '#ImprovingTheBusinessProcess'>Improving the business process</a></li>
+
+<li><a href = '#RetireAnOldSystem'>Retire an old system</a></li>
+
+<li><a href = '#ImminentDisruption'>Imminent Disruption</a></li>
+
+<li><a href = '#NewerTechnology'>Newer technology</a></li>
+</ul>
+</li>
+
+<li><a href = '#DecideHowToBreakTheProblemIntoSmallerParts'>Decide how to break the problem into smaller parts</a>
+<ul>
+<li><a href = '#GettingStarted'>Getting Started</a></li>
+</ul>
+</li>
+
+<li><a href = '#SuccessfullyDeliverTheParts'>Successfully deliver the parts</a></li>
+
+<li><a href = '#ChangeTheOrganizationToAllowThisToHappenOnAnOngoingBasis'>Change the organization to allow this to happen on an ongoing basis</a></li>
+</ul>
+</li>
+
+<li><a href = '#AnExampleIntegrationMiddlewareRemoval'>An example: Integration Middleware Removal</a>
+<ul>
+<li><a href = '#UnderstandingTheOutcomes'>Understanding the outcomes</a></li>
+
+<li><a href = '#BreakingTheProblemUpTheFirstSeamAndARefactoring'>Breaking the problem up:  the first seam and a refactoring</a></li>
+
+<li><a href = '#SuccessfullyDeliverThePartsBuildingOutTheFunctionalityMaintainingTheContract'>Successfully deliver the parts:  building out the functionality, maintaining the contract</a></li>
+
+<li><a href = '#SuccessfullyDeliverThePartscont.TransitioningIntoLiveService-UsingASecondSeam'>Successfully deliver the parts (cont.): transitioning into live service - using a second seam</a></li>
+
+<li><a href = '#ChangingTheOrganisationToAllowThisToHappenOnAnOngoingBasis'>Changing the organisation to allow this to happen on an ongoing basis</a></li>
+
+<li><a href = '#ClosingThoughts'>Closing thoughts</a></li>
+</ul>
+</li>
+</ul>
+
+<h3>Sidebars</h3>
+
+<ul>
+<li><a href = '#WeWantToBeLikeNetflix'>We want to be like Netflix</a></li>
+
+<li><a href = '#EventStorming-TheSwissArmyKnifeOfModernProcessMapping'>Event Storming - The Swiss Army Knife of modern process mapping</a></li>
+
+<li><a href = '#TheHardestShiftIsTheParadigmShift'>The hardest shift is the Paradigm Shift</a></li>
+</ul>
+</div>
+
+<div class = 'pattern-list'>
+<h2>Patterns</h2>
+
+<ul>
+<li><a href = 'extract-product-lines.html'>Extract Product Lines</a></li>
+
+<li><a href = 'feature-parity.html'>Feature Parity</a></li>
+</ul>
+</div>
+
+<div class = 'card'><a href = '.'><img src = 'card.png'></img></a></div>
+</div>
+<hr></hr></section>
+
+<div class = 'paperBody deep'>
+<p>We have spent most of the last couple of decades helping large
+  organizations overhaul their legacy systems. In doing this we've learned a
+  great deal about what works and seen many paths that lead to failure. We've
+  decided to set aside some time to writing down what we've learned in the form
+  of various patterns that we've seen used.</p>
+
+<p>This article acts as the hub for these patterns. Too often we've seen
+  organizations stuck on a treadmill of half-done legacy replacement efforts. We
+  think the key to breaking this cycle requires four activities done somewhat in
+  sequence but mostly iteratively over a company's life. We use these activities
+  as our primary structure for organising the patterns that we describe.</p>
+
+<p>We've always believed that effective software development involves gradual
+  release of valuable features, and we think the same is true of writing -
+  <a href = '/bliki/EvolvingPublication.html'>especially in the age of the
+  web</a>. We've started with this narrative article and will gradually
+  add patterns as we write up their details, as well as other examples that show
+  how they combine. We can't promise any dates, since our priority is our client
+  work, which is not short of legacies to displace. If you are interested in
+  hearing about more parts of this work as they appear, they will be announced
+  on <a href = 'https://www.twitter.com/martinfowler'>Martin's twitter feed</a>,
+  and this site's <a href = 'https://martinfowler.com/feed.atom'>RSS
+  feed</a>.</p>
+
+<section id = 'TheLegacyReplacementTreadmill'>
+<h2>The Legacy Replacement Treadmill</h2>
+
+<p>We have worked with many organizations who have made multiple attempts at
+    removing legacy systems. In one fairly typical organization
+    they had been through a whole series
+    of 3-5 year long modernization programmes. Each time they would define a new
+    tech approach, and then work towards that new approach as part of a large
+    multi year modernization programme.</p>
+
+<p>At some point during each programme they hit a crisis point where changing
+    business needs would overtake their current tech strategy and hence trigger
+    the need to start over. Where they had taken a waterfall "big bang" approach to the
+    programme this meant abandoning the majority of the work. In other cases
+    with more incremental delivery approaches, the approach taken was to just add a
+    layer of slightly newer technologies on top of an already complex
+    landscape. For both scenarios they were unable to decommission any of their
+    legacy stack, key business goals for cost savings and risk reduction remained
+    unmet, an all too common outcome for many legacy replacement efforts.</p>
+
+<p>Several key factors were in play in their repeated failures.</p>
+
+<p>Firstly the poor outcomes they were seeing were largely a product of
+    the organization; specifically it's leadership, structure and ways of working.
+    They thought by just selecting newer technologies, but leaving everything
+    else more or less unchanged, that they would get different outcomes from the
+    past. In hindsight this was clearly unrealistic.</p>
+
+<p>Secondly the modernization was to be delivered by a large change programme,
+    itself comprising a series of projects and teams. These projects were treated
+    as orthogonal to any BAU (Business As-Usual) efforts. So BAU delivery of business requirements
+    continued against the existing systems while the new project teams delivered
+    against a set of requirements agreed at the beginning of the replacement
+    programme.</p>
+
+<p>Over time they saw a widening gap between what the business actually
+    needed and what was actually signed off at the start of the programme. The longer each
+    programme ran for, the more acute this gap between the programme plan
+    vs. BAU and future needs. While change control processes were
+    in place to add new requirements to a programme, these were hugely
+    time-consuming and, due to upfront supplier contracts, prohibitively expensive.</p>
+
+<p>A third key factor in several of the failures was the desire for
+    <a href = 'feature-parity.html'>Feature Parity</a> with the existing set of systems and business processes.
+    These attempts began by promising to give the business exactly what they
+    had today with somehow, behind the covers, the technology having been
+    "improved". Having by then seen multiple failures and being concerned about
+    disruption, the business leaders felt this was a lower risk strategy.
+    The challenge here was even defining and agreeing current "as is"
+    functionality was a huge effort and it led to a plan for a large single
+    "big bang" cut-over release.</p>
+
+<p>Our observations from this and many other organizations is that
+      technology is at most only 50% of the legacy problem, ways of working,
+      organization structure and leadership are just as important to
+      success.</p>
+</section>
+
+<section id = 'BreakingTheCycle'>
+<h2>Breaking the cycle</h2>
+
+<p>Clearly there is a need to break out of the cycle of "technology replacement
+    programmes". In short organizations need to be able to continue to deliver
+    business needs while at the same time replacing outdated technology, all
+    against a background of accelerating technological change and a tougher
+    competitive climate.</p>
+
+<p>There are a series of approaches we have found can help with these challenges.
+    They aid with the challenge of breaking the problem into smaller parts to
+    allow delivery of new requirements in parallel with improved technology.
+    Broadly speaking they fit into four categories: </p>
+
+<ol>
+<li>Understand the outcomes you want to achieve</li>
+
+<li>Decide how to break the problem up into smaller parts</li>
+
+<li>Successfully deliver the parts</li>
+
+<li>Change the organization to allow this to happen on an ongoing basis</li>
+</ol>
+
+<section id = 'UnderstandTheOutcomesYouWantToAchieve'>
+<h3>Understand the outcomes you want to achieve</h3>
+
+<p>It is vital for an organization to agree the outcomes they want to
+    achieve when tackling legacy. While this may seem obvious, all too often
+    different parts of an organization can have quite different views on the
+    desired outcomes. Most legacy modernization initiatives involve several of
+    the outcomes we list below, but it's essential to identify which ones are
+    the priority before setting out on the journey.</p>
+
+<section id = 'ReducingTheCostOfChange'>
+<h4>Reducing the cost of change</h4>
+
+<p>A key tipping point in many organizations in deciding to tackle legacy is
+      that desired business changes start to cost far more than any anticipated
+      benefits, either due to opportunity cost (aka delay) or implementation cost.
+      An early warning sign is having to spend weeks and 10's or 100's of thousands
+      to make a change to a website that brings only a small increase in business
+      performance.</p>
+
+<p>At this point it is often no longer possible to justify making
+      any changes that don't deliver large returns on investment. In other
+      words the state of the technology has started to dictate the size of change
+      the business can make. For many organizations this means the difference
+      between making a 'BAU' change or having to instigate a larger project.
+      These larger projects then become magnets for all the small changes
+      that weren't previously justifiable thus increasing their scope, cost
+      and risk</p>
+</section>
+
+<section id = 'ImprovingTheBusinessProcess'>
+<h4>Improving the business process</h4>
+
+<p>We have seen lots of examples of where business processes have evolved
+        next to legacy systems, the processes become tightly coupled to the
+        way that system works with constraints in the system and often workarounds "off system"
+        shaping the business processes people follow to do their jobs.</p>
+
+<p>One example we saw is an airline check-in system that used "green screen"
+        terminals, due to constraints in the legacy system the process had to
+        be followed in a strict order meaning corrections or mistakes meant
+        starting the check-in process over. Also originally the airline had
+        not offered connecting flights, when this was added it had to be done
+        as a separate workflow in the legacy system due to constraints in that
+        technology. So if, at check-in, a passenger did not mention
+        they had a connecting flight the wrong process was followed
+        including printing the wrong baggage tags, only after this would the
+        system flag the connecting flight. The jobs of the check-in staff and
+        the passenger's experience could have been much improved by changing
+        the process, but this was impossible due to the legacy system.</p>
+
+<p>Given this it should be no surprise that to update and change business
+        processes in turn requires changes to the how the supporting technology works.
+        Trying to change working processes without altering the technology often
+        results in "off system" working where people resort to extracting data
+        into spreadsheets or similar, working on it there, before importing the
+        data back into the legacy system.</p>
+
+<p>In one organization the whole stock ordering process was actually done
+        on a Microsoft Access DB running on the team managers PC. They had
+        become frustrated as the legacy system could not support the
+        newer working practices of their suppliers. They would do an import
+        and export of the data a few times per week, in the meantime the rest
+        of the organization would see out of date figures as no one realized
+        what was going on.</p>
+
+<p>It is worth noting here that requirements for a replacement system to
+        support import and export of data can often have a root cause in this
+        kind of workaround.</p>
+</section>
+
+<section id = 'RetireAnOldSystem'>
+<h4>Retire an old system</h4>
+
+<p>The need to retire an old system is a common reason for legacy modernization.
+        This is often driven by challenges in supporting older hardware or software,
+        with issues such as escalating support costs and reaching end-of-life
+        on support contracts for both hardware and software.</p>
+
+<p>We've found it useful to view the retirement of old systems through the lens of
+        the business. So a system being built on old technology is not in of itself
+        sufficient reason for replacement. Instead we need to look at the business
+        impact this creates such escalating run costs or the risk created by lack of
+        support or knowledge of the system.</p>
+
+<p>While some organizations do plan well for obsolescence of older technologies,
+        many seem to ignore the issue until it reaches crisis point. In turn, this
+        tends to drive organizations towards modernization approaches that seem like
+        low disruption options or quick wins, these are usually anti-patterns
+        and we describe some of these pitfalls later.</p>
+
+<p>We've been shocked over the years at how many large organizations are
+        running their businesses on unsupported hardware and software, buying
+        spare parts on eBay is surprisingly common story to hear. If you have
+        legacy tech it is well worth doing a proper survey and creating a calendar
+        featuring the various end-of-life support dates.</p>
+
+<p>While many organizations give retirement of old systems as a key outcome
+        for legacy modernization it is not uncommon to find this doesn't actually
+        happen, the legacy is still being used at the end with the associated
+        business goals remaining unmet.</p>
+</section>
+
+<section id = 'ImminentDisruption'>
+<h4>Imminent Disruption</h4>
+
+<p>For some organizations the actual tipping point on tackling legacy can
+      arise due to an external factor such as a regulatory change, a new "start up"
+      competitor or a significant change by an existing competitor. It's often
+      at this point when faced with a "must do" change it becomes clear the money
+      and the time required to respond has grown too large.</p>
+
+<p>The external event is the thing that makes clear to an organization's
+      leadership that they no longer have the ability to make changes for a
+      Proportionate Cost. </p>
+</section>
+
+<section id = 'NewerTechnology'>
+<h4>Newer technology</h4>
+
+<p>Adoption of newer technology should not be the reason for legacy
+      modernization, just having newer tech for it's own sake is rarely a
+      key goal for any organization. Rather it should be selected and chosen in
+      ways that best meet the current and future needs of the business. A challenge
+      here is that pace of technological change is accelerating, the "useful"
+      lifetime of technology is getting shorter. The actual definition
+      of "useful" depends on the organization, but in general we need to
+      consider things such as:</p>
+
+<aside class = 'sidebar' id = 'WeWantToBeLikeNetflix'>
+<h4>We want to be like Netflix</h4>
+
+<p>One issue we have seen multiple times is what we call "Netflix Envy".
+          This is where the technology leaders of an organization fixate on
+          being like Netflix or some other large successful technology company.
+          This means they try to emulate the ways of working or choose the same
+          technology solutions. While this might be appropriate if they are also
+          in the business of streaming movies often times this leads to the
+          selection of inappropriate technologies. These technologies often come
+          with the ability to scale, but also a higher degree of complexity and cost
+          that simply isn't needed for most businesses.</p>
+</aside>
+
+<ul>
+<li>Allows a competitive advantage</li>
+
+<li>Match competitor or market offerings</li>
+
+<li>Allows a Faster pace of change</li>
+
+<li>Cheaper to change</li>
+
+<li>Has a lower run cost</li>
+</ul>
+
+<p>The choices we make today about the best and most useful technology will
+      likely be overtaken by better alternatives in a relatively short timeframe.
+      This makes getting the decision right on finding technology to meet future
+      needs potentially very risky.</p>
+
+<p>A good approach here is to not make any choices that cannot easily be
+      "done over" with 2-3 years. This has implications for both technology
+      selection but also for overall design and approach. Selecting a huge
+      platform with a 5-10 years pay back time is hard to justify when we
+      acknowledge this accelerating pace of change.</p>
+</section>
+</section>
+
+<section id = 'DecideHowToBreakTheProblemIntoSmallerParts'>
+<h3>Decide how to break the problem into smaller parts</h3>
+
+<p>Broadly speaking this involves finding the right "seams" in the current
+      business and technical architecture. Importantly, you have to consider how
+      elements of the current solution map to different business capabilities. For
+      legacy systems this usually means discovering how one large technical
+      solution meets multiple business needs and then seeing if it is possible
+      to extract individual needs for independent delivery using a new solution. Ideally these
+      should be deliverable with minimal dependencies on each other.</p>
+
+<p>A common objection is that finding these seams is too difficult. While we
+      agree it is challenging at first, we have found it to be a better approach than
+      the alternatives which all too often result in Feature Parity and Big Bang releases.
+      We've also observed that many organizations rule out such an approach because
+      they are looking at the technology, or the business processes, in isolation.
+      Changing just one part of the technology, or updating just one business
+      process independently is likely to fail, but if we can consider and then
+      implement the two together there are ways to "eat the elephant".</p>
+
+<section id = 'GettingStarted'>
+<h4>Getting Started</h4>
+
+<p>Legacy modernization can seem a most daunting proposition at the start of the journey. Like any journey, we
+        must first try and understand the initial direction to take. Also, like all journeys, you must start from
+        where you are. One common problem we encounter is that we often seem to start in a forest with no view of the
+        landscape ahead and therefore no idea of the direction to take. The first step, then, is to climb a tree and
+        take a good look around! This means getting as good an understanding of the current systems and architecture
+        as possible in the shortest amount of time. This is often super hard to do and it's easy to get bogged down in
+        too much detail.
+      </p>
+
+<aside class = 'sidebar' id = 'EventStorming-TheSwissArmyKnifeOfModernProcessMapping'>
+<h4>Event Storming - The Swiss Army Knife of modern process mapping</h4>
+
+<p>Much has been written on the technique and the authors find it a very
+        versatile tool which can be used in multiple contexts. Indeed the
+        authors have used it for value stream mapping and to visualise the path
+        to production in addtion to mapping out business processes and domains.
+        </p>
+</aside>
+
+<p>
+        Fortunately there are a number of really useful tools that can be used collaboratively
+        to get a good enough understanding to proceed. These tools are discussed
+        in detail elsewhere but a summary list would include
+        <a href = 'http://ziobrando.blogspot.com/2013/11/introducing-event-storming.html'>Event Storming</a>,
+        <a href = 'https://blog.gardeviance.org/2015/02/an-introduction-to-wardley-value-chain.html'>Wardley Mapping</a>,
+        Business Capability Mapping and Domain Mapping.
+        Notice in this list that we are primarily looking at how business concepts
+        are mapping into the systems architecture, and in turn understanding
+        how that
+        <a href = 'https://martinfowler.com/articles/value-architectural-attribute.html'>architecture supports value generation</a>.
+        This is a view that is often missing especially for legacy systems.
+      </p>
+
+<table class = 'dark-head'>
+<caption>Patterns for Understanding the Problem</caption>
+
+<tr><td><a href = 'value-stream-map.html'>Value Stream Map</a> †</td><td>Artefact that describes how users accomplish their work</td></tr>
+
+<tr><td><a href = 'event-storming.html'>Event Storm</a> †</td><td>Technique used to understand business processes</td></tr>
+</table>
+
+<p class = 'pattern-table-footnote'>† currently only a stub</p>
+
+<p>
+        Specifically we find people often stop discovery style activities at the
+        boundaries of the legacy systems, "here be dragons", go no further.
+        Without crossing the boundary and uncovering how legacy systems support
+        (or hinder) business process and activities it is challenging to find
+        and extract thin slices to deliver.
+      </p>
+
+<p>Another oft overlooked and very valuable source of information are the users of the systems themselves. In
+        fact, in the authors experience this is often where you can find the surprising amounts of useful stuff and
+        especially expose the many workarounds and shadow IT ecosystem that usually builds up around older systems -
+        that is, the Access Databases and versioned Excel Spreadsheets that <i>actually</i> run the business.  Customer
+      Journey Mapping, creating Service Blueprints and Value Stream Mapping are tools that have been used to good effect
+        to surface this kind of detail.</p>
+
+<table class = 'dark-head'>
+<caption>Patterns for Breaking Up the Problem</caption>
+
+<tr><td><a href = 'extract-product-lines.html'>Extract Product Lines</a></td><td>Identify and separate systems by product line.</td></tr>
+
+<tr><td><a href = 'extract-value-streams.html'>Extract Value Streams</a> †</td><td>Identify and separate key value streams</td></tr>
+
+<tr><td><a href = 'feature-parity.html'>Feature Parity</a></td><td>
+    Replicate existing functionality of a legacy system using a new technology stack.
+  </td></tr>
+
+<tr><td><a href = 'one-true-ring.html'>The One True Ring</a> †</td><td>Segment the problem by identifying unique and shared business capabilities</td></tr>
+</table>
+
+<p class = 'pattern-table-footnote'>† currently only a stub</p>
+</section>
+</section>
+
+<section id = 'SuccessfullyDeliverTheParts'>
+<h3>Successfully deliver the parts</h3>
+
+<p>The need for faster change and the ability to incrementally deliver and
+      independently change elements of the business without large dependencies often
+      leads to "agile" delivery approaches alongside a microservices based architecture.
+      Continuous Delivery becomes a must have for these individually deployable components.
+      What makes this challenging beyond just a normal piece of software delivery is finding
+      strategies for cut over from, co-existence with and, ultimately replacement of
+      elements of an existing large solution. Several successful strategies exist
+      including parallel run, fork on ingress and diversion of flow.</p>
+
+<table class = 'dark-head'>
+<caption>Patterns for Delivery</caption>
+
+<tr><td><a href = 'canary-release.html'>Canary Release</a> †</td><td>Roll out a change to a subset of users</td></tr>
+
+<tr><td><a href = 'stop-the-world.html'>Stop the World cutover</a> †</td><td>Suspend normal business activities while cutting over to new system</td></tr>
+
+<tr><td><a href = 'revert-to-source.html'>Revert to Source</a> †</td><td>Identify the originating source of data and integrate to that</td></tr>
+
+<tr><td><a href = 'divert-the-flow.html'>Divert the Flow</a> †</td><td>Divert key business activities and processes away from legacy first</td></tr>
+
+<tr><td><a href = 'dark-launching.html'>Dark Launching</a> †</td><td>Call a new back end feature without using results in order to assess
+  its performance impact.</td></tr>
+
+<tr><td><a href = 'legacy-mimic.html'>Legacy Mimic</a> †</td><td>New system interacts with legacy system in such a way that the old system is not aware of any changes.</td></tr>
+
+<tr><td><a href = 'event-interception.html'>Event Interception</a> †</td><td>Intercept any updates to system state and route some of them to a new
+  component</td></tr>
+</table>
+
+<p class = 'pattern-table-footnote'>† currently only a stub</p>
+</section>
+
+<section id = 'ChangeTheOrganizationToAllowThisToHappenOnAnOngoingBasis'>
+<h3>Change the organization to allow this to happen on an ongoing basis</h3>
+
+<p>If we step back and look at the whole process of delivering new business
+      requirements we can quickly see this is only partly a technology problem. If
+      we use newer technology to cut time and cost of building solutions we will
+      then highlight any issues around agreeing requirements and getting the change
+      into production. </p>
+
+<aside class = 'sidebar' id = 'TheHardestShiftIsTheParadigmShift'>
+<h3>The hardest shift is the Paradigm Shift</h3>
+
+<p>20 years after Eli Goldratt, the legendary management consultant,
+          published <a href = 'https://en.wikipedia.org/wiki/The_Goal_(novel)'>"The Goal"</a> he participated in an interview
+          for Fortune Small Business where he was asked why it was so many organizations
+          are slow to change. His response was to explain that most people will do
+          anything they can to avoid as fundamental a change as the Theory of
+          Constraints was at the time. He goes on to explain they'll do most
+          anything they can to avoid shifting paradigm.</p>
+
+<p>He goes on to suggest that in order to successfully change paradigm
+          three things are needed.</p>
+
+<ol>
+<li>There must be real pressure to improve results</li>
+
+<li>Everything else within the same paradigm has already been tried and,</li>
+
+<li>They had help with the first step to get going</li>
+</ol>
+</aside>
+
+<p>We need organization structure and process changes to take
+      full advantage of the better technology, and by "Conway's Law" we
+      also need an architecture for our technology that facilitates this. If
+      teams and their communications are organized around the existing legacy
+      solution and processes we may need to reorganize them using the
+      <a href = 'https://www.thoughtworks.com/radar/techniques/inverse-conway-maneuver'>Inverse Conway Maneuver</a> to match the new
+      solution and it's architecture.</p>
+
+<p>Legacy systems can constrain and limit the ability to adopt more
+        modern engineering practices especially those associated with eXtreme
+        Programming and Continuous Delivery. When replacing legacy systems it
+        is important to make sure ways of working are changed to ensure we
+        don't end up back with a system that is slow, difficult and expensive
+        to change.</p>
+
+<p>Legacy is also the product of an organizations
+      culture and leadership, without broader change you should expect the
+      same outcomes as seen previously.
+        We have observed many legacy modernization efforts fail due to
+        "corporate antibodies" which spot something new happening and act to
+        reject it from the organization.</p>
+
+<p>To give just one example of the way a broad organization can reject
+        change; we worked with a very large telecommunications company who wanted
+        to build software for mobile phones. The leadership all understood this
+        meant much faster feedback cycles and more frequent changes than they
+        saw with existing programmes which were focused on fixed infrastructure.</p>
+
+<p>While the leadership understood this no changes were made to existing
+        working practice or to the middle management who ran those processes. So
+        existing change control processes were rigorously applied. In the end
+        the software teams were spending more time filling in change control
+        forms and attending change control meetings than they were producing
+        software. The "corporate antibodies" worked successfully to reject the
+        new way of working. </p>
+
+<p>Organizational change is a big topic with much literature already available,
+      the key challenge with legacy is often time related. Few organizations can
+      afford to delay legacy modernization while they rework (or rebuild, for
+      outsourcing victims) their whole delivery approach along side their
+      organization structure and key business processes. While the broader topic
+      of organization transformation is beyond our scope we do recommend some
+      strategies for applying and protecting new ways of working in the context of
+      legacy. If you just change the legacy and do nothing else it is fair to
+    expect you'll replacing legacy again with a few years.</p>
+
+<table class = 'dark-head'>
+<caption>Patterns for ongoing organisational change</caption>
+
+<tr><td><a href = 'build-as-you-mean-to-continue.html'>Start as you mean to continue</a> †</td><td>Create your legacy replacement in the way you need to continue once it is live.</td></tr>
+
+<tr><td><a href = 'protected-pilot.html'>Protected Pilot</a> †</td><td>Create a pilot program for new work and detach it from the normal
+  corporate governance process</td></tr>
+
+<tr><td><a href = 'new-co.html'>New Co</a> †</td><td>Form a brand new company to pursue a market disruption</td></tr>
+</table>
+
+<p class = 'pattern-table-footnote'>† currently only a stub</p>
+
+<p>There are definitely other strategies and approaches to organization
+        transformation, we just highlighted these two as to some degree they
+        allow work to be started on the legacy modernization sooner rather than
+        later.</p>
+</section>
+</section>
+
+<section id = 'AnExampleIntegrationMiddlewareRemoval'>
+<h2>An example: Integration Middleware Removal</h2>
+
+<p>This example describes how one of our teams used a number of Legacy
+    Modernization Patterns to successfully replace integration middleware
+    critical to the operation of their client's business as part of a larger
+    legacy modernization programme. They combined patterns and refactorings to
+    successfully manage risk to the business, and facilitate eating this
+    particularly gristly part of the elephant.</p>
+
+<section id = 'UnderstandingTheOutcomes'>
+<h3>Understanding the outcomes</h3>
+
+<p>The challenge faced by our team was how to replace integration middleware
+    that was out of support, hard to change and very costly with a new
+    supportable, flexible solution for the business. Without disrupting or
+    putting at risk existing business operations. The middleware in question was
+    used to integrate between a backend end system and a store front. Together
+    these systems were responsible for selling high value unique products worth
+    tens of millions of pounds every day.</p>
+
+<p>This work was a high priority part of a larger programme. The entirety of
+    the backend systems supporting the business were being replaced, and the
+    store front was also going to be subject to a modernization programme within
+    a couple of years.</p>
+
+<p>So, as per step 1 above, the business outcomes the team needed to achieve were defined:
+      
+<ol>
+<li>Improve the business process</li>
+
+<p>How?  This particular integration middleware solution contained a significant amount of logic including rules
+          core to the business, like which channel to sell a product on, or how and when to present a product for sale
+          within the store front.  This existing system was very hard to change, stifling business innovation, and flaws
+        in the logic resulted in issues like having periods when a product was not even on sale!</p>
+
+<li>
+          Retire old system as soon as possible</li>
+
+<p>Why?  To reduce existing (and increasing) license and support costs.  Additionally, to mitigate the risk to
+          the business created by operating critical functions on aged out of support middleware and database
+          technologies.</p>
+</ol>
+</p>
+
+<div class = 'figure ' id = 'IntegrationMiddleWareRemoval_1.png' style = 'width: 900px;'><img alt = 'Integration Middleware Removal Example' class = 'full-size' src = 'IntegrationMiddleWareRemoval_1.png' width = '900'></img>
+<p class = 'photoCaption'></p>
+</div>
+
+<div class = 'clear'></div>
+
+<aside class = 'inflow sidebar'>
+<p>High level system processing: Users individually managed the pricing
+      and publishing of products using screens within the legacy backend system.
+      For each published product, that system would place a message onto a SwiftMQ
+      queue. The integration middleware would consume that message, create its own
+      view of the state of the product and call a legacy SOAP API on the store
+      front to publish it. Over time, the integration middleware would update the
+      state of the product using the API to change how the product was made
+      available to customers (e.g. change the product from "preview only" to
+      "newly available" etc). When a customer purchased a product the legacy
+      storefront would call an API provided by the integration middleware. The
+      middleware would update its own state of the product and update the legacy
+      system's master database with the sale information.</p>
+</aside>
+</section>
+
+<section id = 'BreakingTheProblemUpTheFirstSeamAndARefactoring'>
+<h3>Breaking the problem up:  the first seam and a refactoring</h3>
+
+<p>During <a href = 'https://martinfowler.com/articles/lean-inception/'>Inception</a> the team ran a workshop
+        with people who had deep knowledge of the legacy system, to collaboratively
+        visualise both the as-is and to-be software architectures.
+        Having done this, they found a technical seam that could be exploited in
+        the form of messaging based integration between the legacy backend and the Integration
+        Middleware. The Legacy backend, an aging J2EE application, placed "publish product" messages
+    onto a queue provided by a very old version of SwiftMQ. The <a href = 'event-interception.html'>Event Interception</a> pattern would be useful here,
+    and if implemented as a <a href = 'http://www.enterpriseintegrationpatterns.com/ContentBasedRouter.html'>Content-Based Router</a>
+    would allow control over how messages from the legacy backend were routed,
+    and create an option enabling messages to be routed to new systems.</p>
+
+<p>The integration middleware also handled messages coming from the Store
+    Front (e.g. for product sales), using JDBC to directly update state in the
+    Master Database behind the legacy backend. Together the asynchronous
+    messaging via SwiftMQ and the JDBC database updates formed the interface
+    between the Legacy Backend and the Integration Middleware. </p>
+
+<div class = 'figure ' id = 'BranchByAbstraction.png'><img alt = 'Branch by abstraction' src = 'BranchByAbstraction.png'></img>
+<p class = 'photoCaption'></p>
+</div>
+
+<div class = 'clear'></div>
+
+<p>Although, not spotted at the time, the team were able to use the <a href = 'https://martinfowler.com/bliki/BranchByAbstraction.html'>Branch by Abstraction</a> pattern, at a sub-system scale, as
+    the strategy to enable the replacement of the legacy middleware. The
+    abstraction layer being the queues and the JDBC. By ensuring that the new
+    implementation adhered to that abstraction layer it could be swapped for the
+    "flawed supplier" without impacting the business operations.</p>
+
+<p>The first thing the team did was to implement event interception by
+    adding an Event Router via a refactoring. </p>
+
+<div class = 'figure ' id = 'IntegrationMiddleWareRemoval_2.png'><img alt = '(P)Refactoring to add Event Interceptor' src = 'IntegrationMiddleWareRemoval_2.png'></img>
+<p class = 'photoCaption'></p>
+</div>
+
+<div class = 'clear'></div>
+
+<p>The Event Router (1) was created with three main capabilities in
+    mind:</p>
+
+<aside class = 'inflow sidebar'>
+<p>High level system processing: The term
+      <a href = 'https://martinfowler.com/books/refactoring.html'>Refactoring</a> was chosen
+      here, as the structure of the system was changed without any observable
+      change to behaviour. Now, when a product is published by a user the legacy
+      backend system still places a publish message onto a SwiftMQ queue. Instead
+      of the integration middleware consuming it, the Event Router now consumes the
+      message from that queue and enqueues it, unchanged, onto an alternative
+      SwiftMQ queue. The integration middleware consumes the message from this
+      alternative queue, a change that was possible via a trivial configuration
+      setting.</p>
+</aside>
+
+<ol>
+<li>To de-queue messages from one SwiftMQ queue and en-queue them onto
+      another SwiftMQ queue (2). A trivial change of some config enabled the
+      Integration Middleware to consume messages from this new queue(2).</li>
+
+<p>Overall the refactoring left the observable system behaviour unchanged,
+      but the Event Router was now part of the Transitional Architecture,
+      having been inserted into the message processing pipeline.</p>
+
+<li>The vision for the Event Router was to enable, through configuration,
+      routing of messages to an alternative destination - enabling the new
+      implementation to process the publish messages. <a href = 'https://www.martinfowler.com/bliki/EventInterception.html'>Event Interception</a></li>
+
+<li>The Event Router would also provide a bridge from the old SwiftMQ
+      technology to the new ActiveMQ technology chosen for the target
+      architecture.</li>
+</ol>
+
+<p>Implementing the Event router was not as straight forward as it could
+    have been. Integrating with SwiftMQ was problematic due to lack of available
+    drivers / libraries and the approach was challenged a number of times. The
+    team understood the value of the options that this approach would unlock,
+    and completed the work and released into production. They monitored the new
+    component in the wild and were set to incrementally enhance its capability
+    using new <a href = 'https://martinfowler.com/bliki/ContinuousDelivery.html'>Continuous Delivery</a> pipelines.</p>
+</section>
+
+<section id = 'SuccessfullyDeliverThePartsBuildingOutTheFunctionalityMaintainingTheContract'>
+<h3>Successfully deliver the parts:  building out the functionality, maintaining the contract</h3>
+
+<div class = 'figure ' id = 'IntegrationMiddleWareRemoval_3.png'><img alt = 'New Implementation and Rollout' src = 'IntegrationMiddleWareRemoval_3.png'></img>
+<p class = 'photoCaption'></p>
+</div>
+
+<div class = 'clear'></div>
+
+<p>The new Store Front Manager(1) was now iteratively built out by the team
+    . Relevant to this example, that build included the Master Database
+    Adapter (2) implementing the Legacy Mimic pattern. This was required as part
+    of the abstraction layer, to update the Master Database with sales
+    information received from the Store Front. As the Event Router did not
+    transform messages, a Legacy Event Adapter (3) (<a href = 'http://www.enterpriseintegrationpatterns.com/MessageTranslator.html'>Message Translator</a>) was created to transform messages
+    into a new format, not exposing the legacy world to the new, and aligning to
+    the principles of the new architecture. The Legacy Storefront <a href = 'https://martinfowler.com/bliki/RequiredInterface.html'>Adapter</a>(4) was also implemented between the new Store
+    Front Manager(1) and the Legacy Store Front to isolate the new
+    implementation from future changes that would be coming when the store front
+    was replaced.</p>
+
+<p>A new API was introduced on the Legacy Store Front (5) that the new Store
+    Front Manager was to use. Additionally, a feature was added enabling call
+    backs for products published on the new API to be sent to the new Store
+    Front Manager's adapter (4). Critically, this enabled the legacy
+    implementation and the new implementation to be run in parallel.</p>
+</section>
+
+<section id = 'SuccessfullyDeliverThePartscont.TransitioningIntoLiveService-UsingASecondSeam'>
+<h3>Successfully deliver the parts (cont.): transitioning into live service - using a second seam</h3>
+
+<p>With all of the pieces in place the business were able to test the new
+      solution, but how to roll it out into live service <b>in a risk managed way</b>.</p>
+
+<p>To do this they took advantage of another seam - this time using the
+    Segment by Product pattern. The Event Router was enhanced to add
+    configurable routing (6) by product type as well as by unique
+    product IDs. The team were able to test the publishing, management and sale
+    of individual products by ID, and then over time configure the router with
+    progressively more and more product types, essentially increasing the
+    percentage of products handled by the new solution.</p>
+
+<p>When all products were being handled by the new systems, the legacy
+    Integration Middleware was decommissioned, realising the significant &#xA3;
+    saving in license, support and datacenter hosting fees.</p>
+
+<div class = 'figure ' id = 'IntegrationMiddleWareRemoval_5.png'><img alt = 'Legacy Gone' src = 'IntegrationMiddleWareRemoval_5.png'></img>
+<p class = 'photoCaption'></p>
+</div>
+
+<div class = 'clear'></div>
+
+<aside class = 'inflow sidebar'>
+<p>High level system processing: Unless the business had specified otherwise,
+        processing of a given product proceeded as before. For products where the
+        business were happy to route them through the new system the processing was
+        now as follows. A publish message was placed on a SwiftMQ queue. The event
+        router would check the message payload and inspect the product manufacturer.
+        If configured the Event Router would place this message unaltered onto an
+        ActiveMQ queue. The Legacy Event Adapter transformed the message into a
+        business event aligned to principles from the target architecture. The New
+        Storefront Manager application would store its own representation of the
+        product and forward a command message via a queue for the product to be
+        published. The Legacy Storefront Adapter consumes that command, and calls
+        the new v2 API on the Legacy Storefront. </p>
+
+<p>As required by the business,
+        users can now manipulate how the products are presented on the storefront in
+        addition to the manager changing this overtime by issuing new commands.</p>
+
+<p> When a product (published via the v2 API) is sold, the Legacy Store Front
+        calls back to an API provided by the Legacy Storefront Adapter, which
+        transforms the call into a business event and places that event onto an
+        ActiveMQ queue. The New Storefront Manager, and Master Database Adapter
+        consume these events. The new storefront manager updating its internal state
+        of the product, and the Master Database Adapter updating the legacy Master
+        Database with the sale information.</p>
+</aside>
+</section>
+
+<section id = 'ChangingTheOrganisationToAllowThisToHappenOnAnOngoingBasis'>
+<h3>Changing the organisation to allow this to happen on an ongoing basis</h3>
+
+<p>Our teams had already been working with the client, in another part of the organisation and had already
+        successfully displaced a different legacy system.</p>
+
+<p>At an engineering level across the organisation continuous delivery and good supporting quality practices
+        were now the established norm, and a microservices style architecture enabled regular and independent deployment
+        of containerised services onto a cloud based platform.</p>
+
+<p>The teams on the new programme, working with new stakeholders, needed to take this other part of the business
+        on the same "agile and CD" journey, and early risk managed releases enabled trust to be earned.  Over time it
+        was possible to demonstrate how new engineering and quality practices including CD were mitigating the same
+        risks that had historically resulted in higher levels of bureaucracy and governance.  So less frequent,
+        larger scope releases were also displaced by smaller, more frequent, higher confidence deployments, and
+        toggled releases to the business when they were ready to take on the changes.
+      </p>
+</section>
+
+<section id = 'ClosingThoughts'>
+<h3>Closing thoughts</h3>
+
+<p>Of course there was significantly more complexity and
+        integration requirements than implied by the simplified story above. An example
+        of the need for Archeology introduced itself shortly after testing the
+        new implementation in production. A number of business critical management
+        information reports did not tally - products were "getting lost". </p>
+
+<p>After much digging the team found that the database used by the
+        Integration Middleware (for storing the state of long running business
+        transactions) was replicated to the organisation's data warehouse. Via a number
+        batch jobs, stored procedures and views this data was made available for use
+        within the business critical KPI reports. </p>
+
+<div class = 'figure ' id = 'LegacyModernisationExample_Archeology.png'><img alt = 'LegacyModernizationExample_Archeology' src = 'LegacyModernisationExample_Archeology.png'></img>
+<p class = 'photoCaption'></p>
+</div>
+
+<div class = 'clear'></div>
+
+<p>Additional Legacy mimics were required to ensure that these reports
+        did not break. The team used a
+        <a href = 'http://www.enterpriseintegrationpatterns.com/WireTap.html'>Wire Tap</a> on
+        sales messages coming from the Store Front and using JDBC injected the data into
+        appropriate tables within the data warehouse. These additional mimics
+        also became part of the transitional architecture, and would be removed when
+        possible. </p>
+
+<p>The approach of branch by abstraction, and use of patterns and practices
+    described above was one intended to lower risk. </p>
+
+<p>Using Event Interception (technical seam), Legacy Mimics and Transitional Architecture
+      enabled the client to break the problem up.  Then segmenting by product (business seam),
+      in this case product type, enabled fine control of the wider rollout and further management of risk.
+      Overall the approach allowed the business to proceed with the system replacement at the pace that was
+    comfortable to them.</p>
+
+<p>The approach allowed risk to be managed, but came at a cost.  A question to consider is therefore
+      "What value does the business place on this risk mitigation?" Being explicit and quantifying it, will allow
+      a team to track investments against it.
+      The event router and legacy mimics were part of an investment in a transitional architecture intended to manage
+      risk. Their roles were to create options enabling risk to be managed. It can be very easy for such work to be
+      seen as "throw away" - and as such a cost to be avoided wherever possible. Be explicit and transparent in this
+    "value of risk mitigation" vs "cost of transitional architecture" trade-off.</p>
+</section>
+</section>
+
+<hr class = 'bodySep'></hr>
+</div>
+
+<div class = 'appendix'>
+<section id = 'Acknowledgements'>
+<h2>Acknowledgements</h2>
+
+<p>Bill Codding, Chris Ford, James Emmott, Kief Morris, Mark Taylor, Meaghan Waters, Peter Gillard-Moss, Rebecca
+      Parsons, and Simon Brunning
+
+    discussed drafts of these patterns on our internal mailing
+      lists. James Emmott suggested "displacing" in the title.</p>
+
+<p>The photo of the new and old Manchester trams used in the card
+      illustration is by <a href = 'https://commons.wikimedia.org/wiki/File:T68_and_M5000.JPG'>Picasa</a>,
+      cropped and color treated.</p>
+</section>
+</div>
+
+<div class = 'appendix'>
+<details id = 'SignificantRevisions'>
+<summary>Significant Revisions</summary>
+
+<p><i>20 July 2021: </i>Published</p>
+</details>
+</div>
+</main>
+
+<nav id = 'bottom-navmenu'>
+<nav class = 'navmenu'>
+<div class = 'nav-head'>  <div class = 'search'>
+    <!-- SiteSearch Google -->
+    <form method='GET' action="https://www.google.com/search">
+      <input type='hidden' name='ie' value='UTF-8'/>
+      <input type='hidden' name='oe' value='UTF-8'/>
+      <input class = 'field' type='text' 
+             name='q' size='15' maxlength='255' value=""/>
+      <button class = 'button' type='submit' 
+             name='btnG' value=" " title = "Search"/>
+      <input type='hidden' name='domains' value="martinfowler.com"/>
+      <input type='hidden' name='sitesearch' value=""/> 
+      <input
+          type='hidden' name='sitesearch' value="martinfowler.com"/>
+    </form>
+  </div>
+
+<div class = 'closediv'>
+<span class = 'close' title = 'close'></span>
+</div>
+</div>
+
+<div class = 'nav-body'>
+<div class = 'topics'>
+<h2>Topics</h2>
+
+<p><a href = '/architecture'>Architecture</a></p>
+
+<p><a href = 'https://refactoring.com'>Refactoring</a></p>
+
+<p><a href = '/agile.html'>Agile</a></p>
+
+<p><a href = '/delivery.html'>Delivery</a></p>
+
+<p><a href = '/microservices'>Microservices</a></p>
+
+<p><a href = '/data'>Data</a></p>
+
+<p><a href = '/testing'>Testing</a></p>
+
+<p><a href = '/dsl.html'>DSL</a></p>
+</div>
+
+<div class = 'about'>
+<h2>about me</h2>
+
+<p><a href = '/aboutMe.html'>About</a></p>
+
+<p><a href = '/books'>Books</a></p>
+
+<p><a href = '/faq.html'>FAQ</a></p>
+</div>
+
+<div class = 'content'>
+<h2>content</h2>
+
+<p><a href = '/videos.html'>Videos</a></p>
+
+<p><a href = '/tags'>Content Index</a></p>
+
+<p><a href = '/articles/eurogames'>Board Games</a></p>
+
+<p><a href = '/photos'>Photography</a></p>
+</div>
+
+<div class = 'tw'>
+<h2>Thoughtworks</h2>
+
+<p><a href = 'https://thoughtworks.com/insights'>Insights</a></p>
+
+<p><a href = 'https://thoughtworks.com/careers'>Careers</a></p>
+
+<p><a href = 'https://thoughtworks.com/products'>Products</a></p>
+</div>
+
+<div class = 'feeds'>
+<h2>follow</h2>
+
+<p><a href = 'https://www.twitter.com/martinfowler'>Twitter</a></p>
+
+<p><a href = '/feed.atom'>RSS</a></p>
+</div>
+</div>
+</nav>
+</nav>
+<footer id='page-footer'>
+<div class='tw-logo'>
+<a href='http://www.thoughtworks.com'>
+<img src='/thoughtworks_white.png'>
+</a>
+</div>
+<div class='menu-button'>
+<div class='icon-bars navmenu-button'></div>
+</div>
+<div class='copyright'>
+<p>© Martin Fowler | <a href="http://www.thoughtworks.com/privacy-policy">Privacy Policy</a> | <a href="/aboutMe.html#disclosures">Disclosures</a></p>
+</div>
+</footer>
+<!-- Google Analytics -->
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-17005812-1', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+<!-- End Google Analytics -->
+
+
+
+<script src = '/jquery-1.11.3.min.js' type = 'text/javascript'></script>
+
+<script src = '/mfcom.js' type = 'text/javascript'></script>
+</body>
+</html>
