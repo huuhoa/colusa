@@ -135,3 +135,8 @@ dmypy.json
 .cached/
 output/
 temp/
+
+# colusa test generated
+tests-dist/*.asciidoc
+tests-dist/Makefile
+tests-dist/images

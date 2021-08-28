@@ -1,0 +1,219 @@
+// Tackling Tech Debt with the Frontend Guild | Constant Contact Tech Blog
+
+== Tackling Tech Debt with the Frontend Guild | Constant Contact Tech Blog
+
+on 2018-09-18 at _link:https://techblog.constantcontact.com/software-development/tackling-tech-debt-frontend-guild/[techblog.constantcontact.com]_
+
+
+
+=== Tackling Tech Debt with the Frontend Guild
+
+September 18, 2018  by link:https://techblog.constantcontact.com/author/bcentra/[Ben Centra] link:https://techblog.constantcontact.com/software-development/tackling-tech-debt-frontend-guild/#respond[Leave a Comment] 
+
+I love working at link:https://www.constantcontact.com/index.jsp[Constant Contact]. But like any engineering group — especially at a mid-sized, 20-year old startup-gone-public — technology can easily lag over time, drift between teams, and generally become a hassle. This time last year I wanted to do something about it, specifically for frontend tooling since that’s what I work with every day.
+
+image:445b397582df49dd18279223684f315f90500cf6a7bdff9de7827e484e6a724f.gif[Your team trying to keep up with tech debt,320, 240]Your team trying to keep up with tech debt
+
+Fast-forward one year. I’ve been leading a group of fellow engineers that we call the **Frontend Guild**. Together we’re making tech debt reduction and tooling improvements a full-time effort, not an afterthought. We still have a long way to go, but our work is already impacting teams across the company. Keeping up with changing technology is tough, but we’re more ready for it than ever.
+
+Leading and organizing this group has been an incredible learning experience. Here’s the short version of how I ran the group, the successes we had, and the challenges we faced.
+
+=== Before The Guild
+
+It all began with some friendly complaining between coworkers. When overall you enjoy your work environment the negatives really stand out. For us it was frontend tech debt that we continued to gripe about, the stuff that kept us from doing our best work.
+
+image:dfd38fc7685461c951a4c05174f8f585653becd56964b216f5b349c6abf76b31.gif[Shouting alone doesn't get us anywhere,500, 365]Shouting alone doesn’t get us anywhere
+
+After talking it through a number of times, we identified some key issues:
+
+* **How do we keep frontend tech up-to-date?** We’re not talking about hopping on the latest framework hotness. We mean tools and techniques that can simplify writing and shipping JavaScript: ES2015+, link:https://babeljs.io/[Babel], link:https://webpack.js.org/[Webpack], modular code, etc.
+
+* **How do we bridge the gap between teams?** We’re pretty good at coordinating work across teams. But our build tools became out-of-date and ownerless, so no team had stepped up to fix them in a few years.
+
+* **How do we do this with as few resources as possible?** We were still adjusting from some link:https://www.forbes.com/sites/greatspeculations/2016/02/19/endurance-finalizes-constant-contact-acquisition-lays-off-15-of-the-staff/#508ebf1518ff[major company changes] last year. So having the engineering group drop everything to support a tooling modernization wasn’t gonna happen.
+
+We’ve formed specialized groups before. For instance, Constant Contact has a “Continuous Delivery” team who develops tooling and standards, but their expertise is in backend apps and deploy processes. By this point the frontend teams that cared about dev tooling had all separately begun to upgrade their build setups independently. This of course resulted in several different implementations instead of a single standard.
+
+Previous attempts to get teams working together on tech debt had fizzled out without making progress. But for whatever reason, my coworkers and I thought we could do better! I talked to my manager and our director about forming another group to tackle our tech debt. They both supported the idea — it was a low-stakes way of changing and improving a very busy engineering organization.
+
+With management’s blessing and a quorum of eager engineers on board, we could begin. We called ourselves the “Frontend Guild,” held our first meeting, and wrote up a mission statement:
+
+[quote]
+____
+The Frontend Guild is a group of engineers who want to push for Stability, Maintainability, and Modernization on frontend projects across the organization. We will do this by providing shared tools, patterns, and resources for teams across the company. Together we will make tech enablement a dedicated effort at Constant Contact.
+
+____
+
+**Right away…**
+
+* **Success:** The Guild exists!
+
+* **Challenge:** Turning constraints into a constructive plan
+
+* **Challenge:** Had to advocate for it ourselves – the company wasn’t gonna do it for us
+
+=== Knowledge Gathering
+
+And so the Guild came into existence. There was no shortage of challenges, but we didn’t know where to begin. How would we know what issues were really important?
+
+Simple: just ask! We came up with a “Tech Inventory” survey for all teams to fill out, with about 25 questions regarding the state of their projects and tooling: library versions (jQuery, underscore, etc.), Node versions (for tooling), ES6 or ES5, etc. We also gathered opinions such as “how happy are you with your build setup” or “do you find your UI automation reliable.”
+
+After some nagging we got nearly 30 responses, representing most frontend apps created over the last 10 years. Even if the Guild idea were to fall apart here we would have done something useful — in taking a rough inventory of technology across the company, we can provide awareness for both engineering and management.
+
+image:c384d9cb05dfd4a201647c48a164ed9c0cbe732e469c721ce820a88d69618578.gif[We learned a lot, very quickly,500, 381]We learned a lot, very quickly
+
+We followed this up by asking each team to give a presentation about their projects to the Guild to get some more in-depth info than the survey. They reiterated their tech stack, shared some “pride points” (things they do well), and listed some major technical challenges or blockers.
+
+We kept our meetings bi-weekly so as not to overwhelm anyone. Each team was represented and so awareness of the Guild spread. Attendance was good in these early days, too, since everyone came out to support their team’s speaker. The presentations rounded out our knowledge from the survey and got us ready for the next exciting phase…
+
+**In the first month…**
+
+* **Success:** Described the state of frontend tech at the company
+
+* **Success:** Started holding regular meetings
+
+* **Success:** Spread awareness of the Guild
+
+* **Challenge:** Had to repeatedly bug people to fill out the Tech Inventory
+
+=== Backlog Grooming
+
+Okay, no one __really__ finds backlog grooming exciting. Our meeting attendance began to slip pretty heavily, from a rotating group of 20+ people to a core group of around 8. But we had sufficient cross-team representation that one team wouldn’t be making decisions for the whole company (or lead to unnecessary fights later on). And someone had to turn all our gathered knowledge into something useful!
+
+image:47f4e1185bd3c06a989fc7c71b81f55ed553fdec7ec82f11961a176f0ab431e5.gif[Backlog grooming? Let’s look at cats instead!,500, 281]Backlog grooming? Let’s look at cats instead!
+
+After pouring over the survey we came up with a bunch of categories such as:
+
+* **Enable ES6, Sass, ESLint, ESDoc, etc.:**Upgrade our build tooling to enable the latest tech for developing and testing.
+
+* **Webpack and “Modularize” Code:**Enable proper link:https://blog.softwaremill.com/it-depends-the-art-of-dependency-management-in-javascript-f1f9c3cde3f7[dependency resolution], simplify link:https://www.sitepoint.com/beginners-guide-webpack-module-bundling/[code bundling], and enable the development of smaller, sharable code modules.
+
+* **App/Component Generators:**Allow developers to create new projects – and upgrade existing ones – using a command-line tool.
+
+image:b8aeab1d0b03e5f3641150738a17c0c8af065ba5adb6c6272363a27c55d10ae1.jpg[Potential topics for the Guild to tackle,1021,]Potential topics for the Guild to tackle
+
+Using these categories as a guide we began to form them into epics, each with several specific implementation stories. A pattern began to emerge: demo a build tool, integrate it into a new project, test it in an existing project, and wait for adoption. One tool at a time, it seemed like we could slowly bring about a large number of improvements. But moving slowly doesn’t get developers excited, and it certainly doesn’t improve meeting attendance.
+
+**In the first three months…**
+
+* **Success:** Over a dozen high-level “epics” groomed
+
+* **Success:** Several epics groomed into a few dozen workable stories
+
+* **Challenge:** Reduced meeting attendance
+
+* **Challenge:** No tangible progress, people getting antsy
+
+=== The Task Force
+
+And so a backlog was forming but we had no one to do the work! We tried asking for a full-time engineer to work on it, but that idea got no traction with management this early on. And I didn’t want to rely on the Guild being just a side project – when push comes to shove sprint work will always come first, leaving Guild work to fall to the wayside.
+
+We discussed this predicament during Guild meetings, and we came up with a compromise: a rotating “Task Force” consisting of two volunteers from different teams for one month at a time. This would provide a constant work force without sacrificing too much from any single team. By pairing, they would be able to solve problems together. And if they come from different teams, knowledge from the Guild would be able to spread to more teams more quickly.
+
+image:cfccc08e135947255166a4d771859b6933338de66f354b56662252331eb40d2b.gif[How well we hoped Task Force members would work together,480, 360]How well we hoped Task Force members would work together
+
+This plan quickly fell apart. We started with a short list of interested engineers, enough to last a few months. But some engineers felt uncomfortable leaving their teams to make up for them during a busy sprint. Others simply lost interest and wanted to focus on their own work. After some lineup changes we only ever got one pair of engineers together, but we did get four back-to-back months of volunteers, mostly one engineer at a time.
+
+Those of us not actively volunteering helped by reviewing code. We required two reviewers — both from different teams — to approve a pull request before merging. This was to ensure a wider variety of opinion, since we’ve found teammates tend to think somewhat alike (for better or worse). The small group of developers who provided code review continued the core of our meetings and discussions as well.
+
+**After about five months…**
+
+* **Success:** A temporary Task Force to get work done
+
+* **Success:** Code review from across the org
+
+* **Success:** A dedicated core of active participants
+
+* **Challenge:** Less Task Force engagement than we anticipated
+
+* **Challenge:** Few newcomers to meetings
+
+=== A Yeoman Generator
+
+Our first engineer on the Task Force made the smart choice to focus on the “App Generator” work first. This would be the vehicle for all other tooling changes. And so he made a custom link:http://yeoman.io/[Yeoman] generator for scaffolding new JavaScript projects, both “apps” (link:https://en.wikipedia.org/wiki/Single-page_application[single-page applications]) and “libraries” (smaller, sharable components). He set it up to create new projects built using Webpack with plugins for Babel, Sass, EJS templates, and more. We continued to use link:https://gruntjs.com/[Grunt] to tie together all our tools and commands, including Webpack.
+
+image:97c51c16141a0f978eb4592d7e4d968c8bd842bc0d3f9a81e8c64277d4d0c738.jpg[CTCT <3's Yeoman,200,]CTCT <3’s Yeoman
+
+The next few Task Force engineers built upon the initial progress – unit testing (with code coverage) via Karma, UI automation testing with link:https://www.protractortest.org/#/[Protractor], sample link:https://marionettejs.com/[Marionette] code for new projects, and more. Most importantly, we built in the ability to “extend” core config files – package.json, .eslintrc, and Webpack configs to name a few. This would enable us to deliver a “base” config that could change over time while maintaining the ability for teams to provide overrides to those files.
+
+image:a33958b9837e1bfadf8269e5e1ab10cc4cf24c99e401b32bb53a4cab1045aab5.png[Some of the directory structure produced by the generator,706,]Some of the directory structure produced by the generator
+
+In order to further spread the word about our work, I had begun sending out link:https://conta.cc/2HbbUW4[monthly emails] (made with Constant Contact, of course!) describing our progress on the Generator and other news from our meetings. Beyond information, I encouraged people to stay involved by coming to Guild meetings. We also used our HipChat room as a place for tech support, which our regular members graciously helped provide.
+
+**After about seven months…**
+
+* **Success:** A working Yeoman generator for creating and upgrading JavaScript apps
+
+* **Success:** Email updates to keep the organization informed of our progress
+
+* **Challenge:** Only a few teams contributing directly
+
+=== Showing Off
+
+We had run out of willing volunteers, and a few weeks went by with no active Task Force. I had been running meetings and doing code review thus far, so I stepped up to do active development on the Generator for a short time. A few final PRs later and we were ready to show off work!
+
+image:2a4916d71e22d7a98f140b45007ea2683d7f9dd8712a3a5859e78475f9b61c6b.gif[It’s OK to show off once in a while,480, 247]It’s OK to show off once in a while
+
+Along with the Task Force volunteers, we presented our progress to the company over several engineering meetings. We outlined the new “company standards” for frontend tech — Babel, Webpack, ESLint, etc. — and touted the benefits of modular code. This and a little in-person badgering led to a few teams adopting the Generator for new projects. Early reviews were positive, especially in regards to daily development — with the link:https://webpack.js.org/guides/development/#using-webpack-dev-server[Webpack dev server], changes built nearly instantly and local pages would auto-reload!
+
+Now that teams were beginning to use our tool our meetings had become weekly. Though attendance remained fairly regular at 6-10 people, this helped us keep up with bug reports and remain as open to the organization as possible. We had to find time to do the work in between normal sprint work, but our managers were supportive — The Generator and the modular approach it supports were key to some upcoming initiatives.
+
+**After about ten months…**
+
+* **Success:** Several teams using our tools to create new apps and update them on a regular basis
+
+* **Success:** More exposure to the org, leading to more adopters
+
+* **Challenge:** More pressure to keep things working
+
+* **Challenge:** Cutting into regular work to keep up with demand
+
+=== A Real Full-Time Effort
+
+Coming up on a year since starting the Guild a lot had changed. We were making a big push for new product features, with several new projects and redesigns of existing ones underway (and link:https://jobs.endurance.com/search-jobs/ALL?orgIds=17854-6226&alp=ALL&alt=0&ascf=%5B%7B%22Key%22:%22travel%22,%22Value%22:%22Constant%20Contact%22%7D%5D&[lots of new positions open] to get the work done). The tooling provided by the Generator simplified the setup and continued development of those projects. Senior engineers had continued to push for broad frontend architecture changes to reduce costs and minimize future tech debt. The Generator was central to this plan and the standardization system and delivery mechanism for future changes. And the Guild’s ability to groom a backlog and get work done demonstrated that this group effort was supported by teams and sustainable if given the resources. But of course without a dedicated Task Force, our ability to multitask would eventually falter.
+
+image:e2951627d3ad885133ef530f55e9ae1ae9eb560739ba7374b551cf6a4dc9a9cb.gif[Resources were getting stretched a bit thin...,480, 360]Resources were getting stretched a bit thin…
+
+Luckily management had taken notice of our good work and we finally got what we needed: a full-time engineering position for the Guild! One of the past Task Force volunteers, a relatively recent hire, transitioned into the new role. Embedded in our Continuous Delivery team he began to integrate the Generator more closely with our existing link:https://jenkins.io/[Jenkins]-based tooling for building and deploying JavaScript apps, in addition to feature development. The Guild continued to own the backlog of work, which we happily struggled to keep up with at our meetings.
+
+**After about a year…**
+
+* **Success:** Lots of new work enabled by the Generator
+
+* **Success:** A permanent engineer working on the Frontend Guild backlog
+
+* **Challenge:** Lots of activity led to busier meetings
+
+* **Challenge:** Guild backlog ownership and responsibility
+
+=== Further Progress
+
+The Generator is out in the wild but our work is far from over. Of course there are many more improvements to make, especially in ensuring the quality of the Generator itself. We primarily test by generating new apps, so identifying issues when upgrading from __any__ old version to the latest is tricky. We’re looking into doing more manual regression testing before each release to try and catch more bugs before our users do. If the manual process helps, we’ll try to automate the process to speed things up and test a wider variety of cases.
+
+As more teams adopt the Generator — and therefore Webpack and modular JavaScript — we’ll begin testing the limits of our approach. For each individual project, how do we best ensure that they rerun the generator regularly to stay up to date? As projects become intertwined, how will we deal with dependency conflicts? How will we properly split up our testing? How will these new apps play with our legacy projects? We have some answers and guesses for now, and we’ll keep working towards the best solutions.
+
+image:66668bf41488d8b902065d4f6075dc6170c55251cc41244d44ccbc4c8320bf29.gif[We still have lots of questions,500, 281]We still have lots of questions
+
+Whatever changes may come there will be a lot of work coming up. After only three months we’re seeing that a single full-time engineer might not be enough to keep up with bug fixes, features, and tech support. Though the “Task Force” never officially ended, finding new volunteers has been a fruitless effort after the first group that stepped up. We’re starting to discuss whether to formalize the program — have managers assign engineers every so often — or hire another engineer, but it’s too soon to tell what we’ll end up with.
+
+We know our immediate future lies in the Generator, but I also want to get an idea of what might come after. And so we’ve also begun a second round of knowledge gathering. Instead of getting every single team involved, we’re targeting project leads and critical apps/services. Our goal this time is to identify the next “big thing” we can tackle — after the Generator, what other ways can we improve the frontend development experience at Constant Contact?
+
+=== Conclusion
+
+image:34a404f597f6854e887bed2a02241a244b2e775e4c19dc1f0aaef6b3aee3277c.gif[Thanks to everyone for the help along the way!,500, 500]Thanks to everyone for the help along the way!
+
+But all that hard work has paid off. I’m seeing the benefits of our work every time I work on my project. Most other teams have one or more projects using the Generator as well. Now that most teams have the same, up-to-date base setup we can more easily help each other out. And when we solve a problem for one project, we’re really enabling all teams at once. Not only has tackling tech debt become a serious focus for us, we’re dealing with it faster and better than ever before.
+
+link:http://pinterest.com/pin/create/button/?url=https%3A%2F%2Ftechblog.constantcontact.com%2Fsoftware-development%2Ftackling-tech-debt-frontend-guild&media=https%3A%2F%2Ftechblog.constantcontact.com%2Fwp-content%2Fuploads%2F2018%2F09%2Fguild_flowchart_edit.jpg[Pin It]
+
+==== Share this:
+
+* link:https://techblog.constantcontact.com/software-development/tackling-tech-debt-frontend-guild/?share=facebook[Facebook]
+* link:https://techblog.constantcontact.com/software-development/tackling-tech-debt-frontend-guild/?share=twitter[Twitter]
+* link:https://techblog.constantcontact.com/software-development/tackling-tech-debt-frontend-guild/?share=pinterest[Pinterest]
+* link:https://techblog.constantcontact.com/software-development/tackling-tech-debt-frontend-guild/?share=linkedin[LinkedIn]
+* link:https://techblog.constantcontact.com/software-development/tackling-tech-debt-frontend-guild/?share=email[Email]
+* link:https://techblog.constantcontact.com/software-development/tackling-tech-debt-frontend-guild/#print[Print]
+
+Filed Under: link:https://techblog.constantcontact.com/category/software-development/[Software Development] Tagged With: link:https://techblog.constantcontact.com/tag/babel/[Babel], link:https://techblog.constantcontact.com/tag/frontend/[frontend], link:https://techblog.constantcontact.com/tag/guild/[guild], link:https://techblog.constantcontact.com/tag/javascript/[Javascript], link:https://techblog.constantcontact.com/tag/tech-debt/[Tech Debt], link:https://techblog.constantcontact.com/tag/tech-enablement/[tech enablement], link:https://techblog.constantcontact.com/tag/webpack/[webpack]
+

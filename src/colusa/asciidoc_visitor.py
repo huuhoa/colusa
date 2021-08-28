@@ -3,7 +3,7 @@ import re
 import requests
 from bs4 import Tag
 
-from .utils import download_image
+import colusa
 from .visitor import NodeVisitor
 
 
@@ -207,7 +207,7 @@ class AsciidocVisitor(NodeVisitor):
         url_path = requests.compat.urljoin(kwargs['src_url'], src)
         if not (url_path.startswith('http://') or url_path.startswith('https://')):
             return ''
-        image_name = download_image(url_path, kwargs['output_dir'])
+        image_name = colusa.utils.download_image(url_path, kwargs['output_dir'])
 
         caption = kwargs.get('caption')
         href = kwargs.get('href')
