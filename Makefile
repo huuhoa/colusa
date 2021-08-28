@@ -8,7 +8,7 @@ upload:
 	python3 -m twine upload dist/* --verbose
 
 changelog:
-	gitchangelog > CHANGELOG.md
+	gitchangelog
 
 bump_minor:
 	bump2version minor
