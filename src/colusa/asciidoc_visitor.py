@@ -181,7 +181,7 @@ class AsciidocVisitor(NodeVisitor):
     def visit_tag_figure(self, node, *args, **kwargs):
         caption_node = node.find('figcaption')
         if caption_node is not None:
-            kwargs['caption'] = caption_node.text
+            kwargs['caption'] = caption_node.text.strip()
             caption_node.extract()
         # specialized for medium
         node_to_visit = node
@@ -198,10 +198,10 @@ class AsciidocVisitor(NodeVisitor):
         alt = node.get('alt', '')
         height = node.get('height', '')
         width = node.get('width', '')
-        src = node.get('src')
+        src = node.get('src', node.get('data-src'))
         if src is None:
             return ''
-        srcset = node.get('srcset')
+        srcset = node.get('srcset', node.get('data-srcset'))
         dim = f'{width}, {height}'
         dim, src = self.get_image_from_srcset(srcset, src, dim)
         url_path = requests.compat.urljoin(kwargs['src_url'], src)
