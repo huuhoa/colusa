@@ -1,6 +1,127 @@
 # Changelog
 
 
+## v0.10.0 (2021-10-16)
+
+### Changes
+
+* Update dev requirements. [Nguyen Huu Hoa]
+
+* Improve code coverage (#21) [Huu Hoa NGUYEN]
+
+  Mock up two functions download_image and download_content
+
+  + `download_content` will return existing cached file, so that we don't have to redownload every time
+  we run the test
+  + `download_image` will just return True, do nothing, so that we don't have to download images
+
+### Other
+
+* Bump version: 0.9.0 → 0.10.0. [Nguyen Huu Hoa]
+
+* Build(deps): bump pyyaml from 5.4.1 to 6.0 (#33) [dependabot[bot]]
+
+  Bumps [pyyaml](https://github.com/yaml/pyyaml) from 5.4.1 to 6.0.
+  - [Release notes](https://github.com/yaml/pyyaml/releases)
+  - [Changelog](https://github.com/yaml/pyyaml/blob/master/CHANGES)
+  - [Commits](https://github.com/yaml/pyyaml/compare/5.4.1...6.0)
+
+  ---
+  updated-dependencies:
+  - dependency-name: pyyaml
+    dependency-type: direct:production
+    update-type: version-update:semver-major
+  ...
+
+* Build(deps): bump idna from 3.2 to 3.3 (#31) [dependabot[bot]]
+
+  Bumps [idna](https://github.com/kjd/idna) from 3.2 to 3.3.
+  - [Release notes](https://github.com/kjd/idna/releases)
+  - [Changelog](https://github.com/kjd/idna/blob/master/HISTORY.rst)
+  - [Commits](https://github.com/kjd/idna/compare/v3.2...v3.3)
+
+  ---
+  updated-dependencies:
+  - dependency-name: idna
+    dependency-type: direct:production
+    update-type: version-update:semver-minor
+  ...
+
+* Build(deps): bump certifi from 2021.5.30 to 2021.10.8 (#30) [dependabot[bot]]
+
+  Bumps [certifi](https://github.com/certifi/python-certifi) from 2021.5.30 to 2021.10.8.
+  - [Release notes](https://github.com/certifi/python-certifi/releases)
+  - [Commits](https://github.com/certifi/python-certifi/compare/2021.05.30...2021.10.08)
+
+  ---
+  updated-dependencies:
+  - dependency-name: certifi
+    dependency-type: direct:production
+    update-type: version-update:semver-minor
+  ...
+
+* Build(deps): bump setuptools from 58.0.2 to 58.2.0 (#29) [dependabot[bot]]
+
+  Bumps [setuptools](https://github.com/pypa/setuptools) from 58.0.2 to 58.2.0.
+  - [Release notes](https://github.com/pypa/setuptools/releases)
+  - [Changelog](https://github.com/pypa/setuptools/blob/main/CHANGES.rst)
+  - [Commits](https://github.com/pypa/setuptools/compare/v58.0.2...v58.2.0)
+
+  ---
+  updated-dependencies:
+  - dependency-name: setuptools
+    dependency-type: direct:production
+    update-type: version-update:semver-minor
+  ...
+
+* Build(deps-dev): bump readme-renderer from 29.0 to 30.0 (#28) [dependabot[bot]]
+
+  Bumps [readme-renderer](https://github.com/pypa/readme_renderer) from 29.0 to 30.0.
+  - [Release notes](https://github.com/pypa/readme_renderer/releases)
+  - [Changelog](https://github.com/pypa/readme_renderer/blob/main/CHANGES.rst)
+  - [Commits](https://github.com/pypa/readme_renderer/compare/29.0...30.0)
+
+  ---
+  updated-dependencies:
+  - dependency-name: readme-renderer
+    dependency-type: direct:development
+    update-type: version-update:semver-major
+  ...
+
+* Build(deps): bump urllib3 from 1.26.6 to 1.26.7 (#27) [dependabot[bot]]
+
+  Bumps [urllib3](https://github.com/urllib3/urllib3) from 1.26.6 to 1.26.7.
+  - [Release notes](https://github.com/urllib3/urllib3/releases)
+  - [Changelog](https://github.com/urllib3/urllib3/blob/1.26.7/CHANGES.rst)
+  - [Commits](https://github.com/urllib3/urllib3/compare/1.26.6...1.26.7)
+
+  ---
+  updated-dependencies:
+  - dependency-name: urllib3
+    dependency-type: direct:production
+    update-type: version-update:semver-patch
+  ...
+
+* Add: support for techtarget.com (#32) [Huu Hoa NGUYEN]
+
+  * chg(asciidoc_visitor): support parsing datasrc and data-srcset for img
+  * add(web): support for techtarget.com
+
+* Build(deps): bump setuptools from 57.4.0 to 58.0.2 (#23) [dependabot[bot]]
+
+  Bumps [setuptools](https://github.com/pypa/setuptools) from 57.4.0 to 58.0.2.
+  - [Release notes](https://github.com/pypa/setuptools/releases)
+  - [Changelog](https://github.com/pypa/setuptools/blob/main/CHANGES.rst)
+  - [Commits](https://github.com/pypa/setuptools/compare/v57.4.0...v58.0.2)
+
+  ---
+  updated-dependencies:
+  - dependency-name: setuptools
+    dependency-type: direct:production
+    update-type: version-update:semver-major
+  ...
+
+
 ## v0.9.0 (2021-08-26)
 
 ### New
@@ -13,6 +134,12 @@
 * Support parsing site xp123.com (#18) [Huu Hoa NGUYEN]
 
 ### Other
+
+* Bump version: 0.8.0 → 0.9.0. [Nguyen Huu Hoa]
+
+* Chore: update setup.cfg for version location. [Nguyen Huu Hoa]
+
+* Prepare for next release. [Nguyen Huu Hoa]
 
 * Refactor(etr): Rework on Extractor (#19) [Huu Hoa NGUYEN]
 
