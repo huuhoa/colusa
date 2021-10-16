@@ -17,8 +17,6 @@
 
 ### Other
 
-* Bump version: 0.9.0 → 0.10.0. [Nguyen Huu Hoa]
-
 * Build(deps): bump pyyaml from 5.4.1 to 6.0 (#33) [dependabot[bot]]
 
   Bumps [pyyaml](https://github.com/yaml/pyyaml) from 5.4.1 to 6.0.
@@ -135,8 +133,6 @@
 
 ### Other
 
-* Bump version: 0.8.0 → 0.9.0. [Nguyen Huu Hoa]
-
 * Chore: update setup.cfg for version location. [Nguyen Huu Hoa]
 
 * Prepare for next release. [Nguyen Huu Hoa]
@@ -192,8 +188,6 @@
 
 ### Other
 
-* Bump version: 0.7.0 → 0.8.0. [Nguyen Huu Hoa]
-
 * Prepare for bump version 0.8. [Nguyen Huu Hoa]
 
 * Add(plugins): support for scrumcrazy.wordpress.com. [Nguyen Huu Hoa]
@@ -215,8 +209,6 @@
   `by **{author}** on {published_date} at {url | domain}`
 
 ### Other
-
-* Bump version: 0.6.0 → 0.7.0. [Nguyen Huu Hoa]
 
 * Chore: refactor project's setup configurations. [Nguyen Huu Hoa]
 
@@ -264,20 +256,12 @@
 
 * Etr: improve metadata rendering for generated articles (#10) [Huu Hoa NGUYEN]
 
-### Other
-
-* Bump version: 0.5.1 → 0.6.0. [Nguyen Huu Hoa]
-
 
 ## v0.5.1 (2021-08-14)
 
 ### Changes
 
 * Update requirements for package and dev. [Nguyen Huu Hoa]
-
-### Other
-
-* Bump version: 0.5.0 → 0.5.1. [Nguyen Huu Hoa]
 
 
 ## v0.5.0 (2021-08-14)
@@ -331,8 +315,6 @@
 * Get correct image suffix by parsing url first to get only `path` in URL. [Nguyen Huu Hoa]
 
 ### Other
-
-* Bump version: 0.4.0 → 0.5.0. [Nguyen Huu Hoa]
 
 * Docs: add some documents. [Nguyen Huu Hoa]
 
