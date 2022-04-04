@@ -15,6 +15,8 @@ class TruyenFullExtractor(Extractor):
         self.remove_tag(self.main_content, 'div', attrs={'id': 'chapter-nav-bot'})
         self.remove_tag(self.main_content, 'a', attrs={'class': 'truyen-title'})
         self.remove_tag(self.main_content, 'h2', attrs={})
+        self.remove_tag(self.main_content, 'div', attrs={'class': 'group_story'})
+        
 
 
 @register_transformer('//truyenfull.vn')
