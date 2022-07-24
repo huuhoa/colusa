@@ -30,6 +30,7 @@ import os
 from colusa import _version
 from colusa import logs
 from .utils import scan, download_url, get_hexdigest, get_short_hexdigest
+from .crawlers import Crawler
 from colusa import etr
 
 __author__ = _version.__author__
@@ -38,7 +39,7 @@ __version__ = _version.__version__
 __copyright__ = _version.__copyright__
 __license__ = _version.__license__
 
-__all__ = ['Colusa', 'ConfigurationError', 'logs']
+__all__ = ['Colusa', 'ConfigurationError', 'logs', 'Crawler']
 
 
 class ConfigurationError(Exception):
@@ -206,3 +207,5 @@ class Colusa(object):
             urls = part.get('urls', [])
             for url_path in urls:
                 self.ebook_generate_content(url_path)
+
+    
