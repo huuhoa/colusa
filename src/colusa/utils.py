@@ -12,11 +12,13 @@ from colusa import logs
 def download_url(url_path: str, file_path: str):
     headers = {
         'Accept': '*/*',
-        'User-Agent': 'curl/7.64.1',
+        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15',        
     }
     req = requests.get(url_path, headers=headers, stream=True)
     if req.status_code != 200:
         logs.error(f'Cannot make request. Result: {req.status_code:d}')
+        with open(f'{file_path}.temp', 'wb') as file_out:
+            file_out.write(req.content)
         exit(1)
 
     with open(file_path, 'wb') as file_out:

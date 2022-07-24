@@ -1,4 +1,5 @@
 import argparse
+import sys
 
 from colusa import Colusa, ConfigurationError, logs
 
@@ -27,6 +28,13 @@ def parse_args():
     generate_parser.add_argument('input', type=str, help='Configuration file. '
                                                          'File extension should be either json or yml')
 
+    crawler_parse = commands.add_parser('crawl',
+                        help='Crawl an URL to generate list of URLs')
+    crawler_parse.set_defaults(func=crawl_url)
+    crawler_parse.add_argument('--url', '-u', type=str, help='URL to crawl')
+    crawler_parse.add_argument('--output_dir', '-d', type=str, help='Output folder to store cached')
+    crawler_parse.add_argument('--output', '-o', type=argparse.FileType('w'), default=sys.stdout, help='Output file (default: standard output)')
+
     return parser.parse_args()
 
 
@@ -40,6 +48,15 @@ def init(args):
 def generate(args):
     try:
         Colusa.generate_book(args.input)
+    except ConfigurationError as e:
+        logs.error(e)
+
+
+def crawl_url(args):
+    from colusa import Crawler
+    try:
+        crawler = Crawler(args.url, args.output_dir, args.output)
+        crawler.run()
     except ConfigurationError as e:
         logs.error(e)
 
