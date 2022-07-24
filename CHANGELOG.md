@@ -1,6 +1,29 @@
 # Changelog
 
 
+## v0.12.0 (2022-07-24)
+
+### New
+
+* Add new command to crawl an URL. [Nguyen Huu Hoa]
+
+  Crawl an URL (website) to help generate list of URL, mostly story chapters
+
+### Changes
+
+* Add some debug capability. [Nguyen Huu Hoa]
+
+* Add support for new websites. [Nguyen Huu Hoa]
+
+### Other
+
+* Merge branch 'main' of github.com:huuhoa/colusa. [Nguyen Huu Hoa]
+
+* Chg(plugins/truyenfull): clean ads content. [Nguyen Huu Hoa]
+
+* Chg(plugins/truyenfull): clean ads content. [Nguyen Huu Hoa]
+
+
 ## v0.11.0 (2022-02-17)
 
 ### Changes
