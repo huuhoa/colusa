@@ -17,6 +17,11 @@ Dictionary of transformer
 """
 __TRANSFORMERS = {}
 
+"""
+Dictionary of postprocessing
+"""
+__POSTPROCESSORS = {}
+
 
 def register_extractor(pattern):
     def decorator(cls):
@@ -29,6 +34,15 @@ def register_extractor(pattern):
 def register_transformer(pattern):
     def decorator(cls):
         __TRANSFORMERS[pattern] = cls
+        return cls
+
+    return decorator
+
+
+def register_postprocessor(name: str):
+    """Register post processing class"""
+    def decorator(cls):
+        __POSTPROCESSORS[name] = cls
         return cls
 
     return decorator
@@ -324,6 +338,8 @@ class Render(object):
 
             file_out.write(content.value)
 
+        return file_path
+
     def render_metadata(self, extractor: Extractor, content: Transformer, src_url):
         from urllib.parse import urlparse
 
@@ -387,3 +403,28 @@ pdf:
 '''
         with open(os.path.join(self.output_dir, 'index.asciidoc'), 'w') as index_file:
             index_file.write(content)
+
+
+class PostProcessor(object):
+    def __init__(self, file_path: str, params: list):
+        self.file_path = file_path
+        self.params = params
+
+    def run():
+        pass
+
+
+class PostProcessorNotFoundError(Exception):
+    def __init__(self, name: str, *args, **kwargs):
+        self.name = name
+
+    def __str__(self):
+        return f'Post Processor {self.name} is not registered'
+
+
+def create_postprocessor(name: str, file_path: str, params: list) -> PostProcessor:
+    cls = __POSTPROCESSORS.get(name)
+    if not cls:
+        raise PostProcessorNotFoundError(name)
+
+    return cls(file_path, params)

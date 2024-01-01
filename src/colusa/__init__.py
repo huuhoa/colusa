@@ -170,10 +170,16 @@ class Colusa(object):
             extractor.cleanup()
             transformer = etr.create_transformer(url_path, extractor.get_content(), self.output_dir)
             transformer.transform()
-            self.book_maker.render_chapter(extractor, transformer, url_path,
+            file_path = self.book_maker.render_chapter(extractor, transformer, url_path,
                                            self._get_saved_file_name(url_path),
                                            metadata=chapter_metadata,
                                            title_strip=title_strip)
+            postprocessors = self.config.get('postprocessing', [])
+            for pp in postprocessors:
+                pp_name = pp.get('processor')
+                pp_params = pp.get('params')
+                pcls = etr.create_postprocessor(pp_name, file_path, pp_params)
+                pcls.run()
         except etr.ContentNotFoundError as e:
             logs.error(e, url_path)
             # raise e

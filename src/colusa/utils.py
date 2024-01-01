@@ -51,7 +51,9 @@ def download_image(url_path, output_dir):
             download_url(url_path, image_path)
         except requests.exceptions.ConnectionError as ex:
             logs.warn(f'error while downloading image. Exception: {ex}')
-        
+        except:
+            logs.error(f'error with URL: {url_path}')
+
     return image_name
 
 
