@@ -4,7 +4,7 @@ chardet==5.2.0
 idna==3.4
 requests==2.31.0
 soupsieve==2.5
-urllib3==1.26.14
+urllib3==2.2.1
 python-dateutil~=2.8.2
 PyYAML==6.0.1
 torpy~=1.1.6
