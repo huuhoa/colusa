@@ -5,6 +5,7 @@ from bs4 import Tag
 from dateutil.parser import parse
 
 from .asciidoc_visitor import AsciidocVisitor
+from .visitor import NodeVisitor
 from .utils import slugify
 
 """
@@ -293,14 +294,27 @@ class Transformer(object):
 ''')
         return ''.join(content)
 
+    def create_visitor(self) -> NodeVisitor:
+        """
+        Create new instance of NodeVisitor, used in transform method
+        """
+        return AsciidocVisitor()
+
     def transform(self):
-        visitor = AsciidocVisitor()
+        visitor = self.create_visitor()
         # print(self.site)
         self.value = visitor.visit(self.site, src_url=self.config['src_url'], output_dir=self.config['output_dir'])
         # print(value)
         # cleanup large whitespace
-        self.value = re.sub(r'(\n\s*){3,}', '\n\n', self.value)
+        self.cleanup_after_visit()
         return self.value
+
+    def cleanup_after_visit(self):
+        """
+        Cleanup transformed text
+        """
+        self.value = re.sub(r'(\n\s*){3,}', '\n\n', self.value)
+
 
 
 class Render(object):
