@@ -19,6 +19,9 @@ class PragmaticEngineerExtractor(Extractor):
 
 
 class PEAsciidocVisitor(AsciidocVisitor):
+    visit_tag_source = AsciidocVisitor.visit_tag_fall_through
+    # visit_tag_div = AsciidocVisitor.visit_tag_fall_through
+
     def visit_tag_a(self, node, *args, **kwargs):
         href = node.get('href', '')
         # kwargs['href'] = href
