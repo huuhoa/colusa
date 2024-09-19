@@ -31,6 +31,7 @@ class AsciidocVisitor(NodeVisitor):
     visit_tag_span = visit_tag_fall_through
     visit_tag_section = visit_tag_fall_through
     visit_tag_input = visit_tag_fall_through
+    visit_tag_picture = visit_tag_fall_through
 
     visit_tag_iframe = visit_tag_ignore_content
     visit_tag_style = visit_tag_ignore_content
@@ -51,6 +52,7 @@ class AsciidocVisitor(NodeVisitor):
         m = re.match(r'https?://', href)
         if m is None:
             return text
+
         if len(node.contents) == 1:
             child = node.contents[0]
             if type(child) is Tag and child.name == 'img':
@@ -61,7 +63,7 @@ class AsciidocVisitor(NodeVisitor):
 
     def visit_tag_p(self, node, *args, **kwargs):
         text = self.generic_visit(node, *args, **kwargs)
-        return f'{text}\n\n'
+        return f'{text.strip()}\n\n'
 
     visit_tag_article = visit_tag_p
     visit_tag_div = visit_tag_p
@@ -226,7 +228,7 @@ class AsciidocVisitor(NodeVisitor):
         if srcset is None:
             return default_dim, default_src
 
-        srcs = srcset.split(',')
+        srcs = srcset.split(', ')
         imgs = {}
         for s in srcs:
             s = s.strip()
