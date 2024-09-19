@@ -378,16 +378,16 @@ class Render(object):
         article_metadata = "\n".join(lines)
         return article_metadata
 
-    def generate_makefile(self):
-        template = '''html:
-\tasciidoctor index.asciidoc -d book -b html5 -D output
+    def generate_makefile(self, make_params: dict):
+        template = f'''html:
+\tasciidoctor index.asciidoc -d book -b html5 -D output {make_params.get('html', '')}
 \tcp -r images output/
 
 epub:
-\tasciidoctor-epub3 index.asciidoc -d book -D output
+\tasciidoctor-epub3 index.asciidoc -d book -D output {make_params.get('epub', '')}
 
 pdf:
-\tasciidoctor-pdf index.asciidoc -d book -D output
+\tasciidoctor-pdf index.asciidoc -d book -D output {make_params.get('pdf', '')}
 '''
         file_path = os.path.join(self.output_dir, 'Makefile')
         with open(file_path, 'w') as out_file:

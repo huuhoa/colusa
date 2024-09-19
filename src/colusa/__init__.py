@@ -76,6 +76,12 @@ class Colusa(object):
             "output_dir": "__fill output dir__",
             "multi_part": False,
             "metadata": True,
+            "make": {
+                'html': '',
+                'epub': '',
+                'pdf': '',
+            },
+            'postprocessing': [],
             "parts": [],
             "urls": []
         }
@@ -187,7 +193,7 @@ class Colusa(object):
     def generate(self):
         os.makedirs(os.path.join(self.output_dir, ".cached"), exist_ok=True)
         os.makedirs(os.path.join(self.output_dir, "images"), exist_ok=True)
-        self.book_maker.generate_makefile()
+        self.book_maker.generate_makefile(self.config.get('make', {}))
 
         multi_part = self.config.get('multi_part', False)
         if multi_part:
