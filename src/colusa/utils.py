@@ -8,24 +8,6 @@ import re
 
 from colusa import logs
 
-
-def download_url(url_path: str, file_path: str):
-    headers = {
-        'Accept': '*/*',
-        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15',        
-    }
-    req = requests.get(url_path, headers=headers, stream=True)
-    if req.status_code != 200:
-        logs.error(f'Cannot make request. Result: {req.status_code:d}')
-        with open(f'{file_path}.temp', 'wb') as file_out:
-            file_out.write(req.content)
-        exit(1)
-
-    with open(file_path, 'wb') as file_out:
-        req.raw.decode_content = True
-        shutil.copyfileobj(req.raw, file_out)
-
-
 def get_hexdigest(str_value: str) -> str:
     m = hashlib.sha256()
     m.update(str_value.encode('utf-8'))
@@ -37,24 +19,6 @@ def get_short_hexdigest(str_value: str) -> str:
     m.update(str_value.encode('utf-8'))
     return m.hexdigest()[:8]
 
-
-def download_image(url_path, output_dir):
-    import urllib
-
-    # logs.info(f'call download_image with url_path is {url_path}')
-    result = urllib.parse.urlsplit(url_path)
-    p = pathlib.PurePath(result.path)
-    image_name = f'{get_hexdigest(url_path)}{p.suffix}'
-    image_path = os.path.join(output_dir, "images", image_name)
-    if not os.path.exists(image_path):
-        try:
-            download_url(url_path, image_path)
-        except requests.exceptions.ConnectionError as ex:
-            logs.warn(f'error while downloading image. Exception: {ex}')
-        except:
-            logs.error(f'error with URL: {url_path}')
-
-    return image_name
 
 
 def slugify(value, allow_unicode=False):
@@ -97,3 +61,4 @@ def scan(namespace):
             spec = finder.find_spec(name)
             module = importlib.util.module_from_spec(spec)
             spec.loader.exec_module(module)
+
