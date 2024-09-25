@@ -77,7 +77,7 @@ class AsciidocVisitor(NodeVisitor):
                 # empty heading
                 return '\n\n'
 
-            return f'\n{"=" * (level + 1)} {text}\n\n'
+            return f'\n{"=" * level} {text}\n\n'
 
         return visitor
 

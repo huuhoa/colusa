@@ -328,10 +328,10 @@ class Render(object):
 
     def render_book_part(self, title: str, description: str):
         file_name = f'part_{slugify(title)}.asciidoc'
-        self.file_list.append(file_name)
+        self.file_list.append((file_name, 0))
         file_path = os.path.join(self.output_dir, file_name)
         with open(file_path, 'w', encoding='utf-8') as file_out:
-            file_out.write(f'// {title}\n\n= {title}\n\n')
+            file_out.write(f'= {title}\n\n')
             if len(description) > 0:
                 file_out.write(description)
                 file_out.write('\n\n')
@@ -339,12 +339,12 @@ class Render(object):
     def render_chapter(self, extractor: Extractor, content: Transformer, src_url, basename: str,
                        metadata=True, title_strip=''):
         file_name = f'{basename}.asciidoc'
-        self.file_list.append(file_name)
+        self.file_list.append((file_name, 1))
         file_path = os.path.join(self.output_dir, file_name)
         with open(file_path, 'w', encoding='utf-8') as file_out:
             title = extractor.title
             title = title.replace(title_strip, '')
-            file_out.write(f'// {title}\n\n== {title}\n\n')
+            file_out.write(f'= {title}\n\n')
 
             if metadata:
                 article_metadata = self.render_metadata(extractor, content, src_url)
@@ -401,7 +401,7 @@ pdf:
         - etc
         - and include all generated asciidoc files from `urls`
         """
-        included_files = '\n'.join(['include::%s[]' % x for x in self.file_list])
+        included_files = '\n\n'.join([f'include::{x[0]}[leveloffset={x[1]}]' for x in self.file_list])
         book_properties = '\n'.join([x.strip() for x in self.config.get('book_properties', [])])
         content = f'''= {self.config["title"]}
 {self.config["author"]}
