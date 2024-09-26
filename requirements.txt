@@ -6,6 +6,6 @@ requests==2.32.2
 soupsieve==2.5
 urllib3==2.2.3
 python-dateutil~=2.8.2
-PyYAML==6.0.1
+PyYAML==6.0.2
 torpy~=1.1.6
 setuptools==75.1.0
