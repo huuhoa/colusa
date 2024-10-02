@@ -32,6 +32,7 @@ class Colusa(object):
             "version": "v1.0",
             "homepage": "__fill url to home page__",
             "output_dir": "__fill output dir__",
+            "book_file_name": "index.asciidoc",
             "multi_part": False,
             "metadata": True,
             "make": {

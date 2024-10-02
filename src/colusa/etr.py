@@ -379,17 +379,21 @@ class Render(object):
         return article_metadata
 
     def generate_makefile(self, make_params: dict):
+        book_file_name = self.config.get('book_file_name', 'index.asciidoc')
+        target_prefix = book_file_name
+        target_prefix = target_prefix.removesuffix('.asciidoc').replace('-', '_')
+        target_prefix = '' if target_prefix == 'index' else f'{target_prefix}_'
         template = f'''html:
-\tasciidoctor index.asciidoc -d book -b html5 -D output {make_params.get('html', '')}
+\tasciidoctor {book_file_name} -d book -b html5 -D output {make_params.get('html', '')}
 \tcp -r images output/
 
 epub:
-\tasciidoctor-epub3 index.asciidoc -d book -D output {make_params.get('epub', '')}
+\tasciidoctor-epub3 {book_file_name} -d book -D output {make_params.get('epub', '')}
 
 pdf:
-\tasciidoctor-pdf index.asciidoc -d book -D output {make_params.get('pdf', '')}
+\tasciidoctor-pdf {book_file_name} -d book -D output {make_params.get('pdf', '')}
 '''
-        file_path = os.path.join(self.output_dir, 'Makefile')
+        file_path = os.path.join(self.output_dir, f'{target_prefix}Makefile')
         with open(file_path, 'w') as out_file:
             out_file.write(template)
 
@@ -415,7 +419,8 @@ pdf:
 
 {included_files}
 '''
-        with open(os.path.join(self.output_dir, 'index.asciidoc'), 'w') as index_file:
+        book_file_name = self.config.get('book_file_name', 'index.asciidoc')
+        with open(os.path.join(self.output_dir, book_file_name), 'w') as index_file:
             index_file.write(content)
 
 
