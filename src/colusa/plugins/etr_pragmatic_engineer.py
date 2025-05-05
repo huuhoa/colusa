@@ -7,7 +7,7 @@ import requests
 import json
 
 
-@register_extractor('//newsletter.pragmaticengineer.com')
+@register_extractor('//newsletter.pragmaticengineer.com|learnings.aleixmorgadas.dev')
 class PragmaticEngineerExtractor(Extractor):
     def cleanup(self):
         self.remove_tag(self.main_content, 'div', attrs={'class': 'subscribe-widget'})
@@ -22,8 +22,7 @@ class PragmaticEngineerExtractor(Extractor):
         self.remove_tag(self.main_content, 'h1', attrs={'class': 'post-title'})
         self.remove_tag(self.main_content, 'div', attrs={'class': 'post-label'})
         self.remove_tag(self.main_content, 'div', attrs={'class': 'profile-hover-card-target'})
-        
-        
+        self.remove_tag(self.main_content, 'p', attrs={'class': 'button-wrapper'})
 
         super(PragmaticEngineerExtractor, self).cleanup()
 
@@ -52,12 +51,13 @@ class PEAsciidocVisitor(AsciidocVisitor):
 ....
 
 '''
+        img = node.find('figure')
+        if img:
+            return self.visit_tag_figure(img, *args, **kwargs)
 
-        if len(node.contents) == 1:
-            child = node.contents[0]
-            if type(child) is Tag and child.name == 'img':
-                # anchor around image, should ignore the anchor
-                return text
+        img = node.find('img')
+        if img:
+            return self.visit_tag_img(img, *args, **kwargs)
 
         if kwargs.get('figure', False):
             # parent is figure, no need to create a link
@@ -103,7 +103,7 @@ class PEAsciidocVisitor(AsciidocVisitor):
     visit_tag_h4 = visit_heading_node(4)
 
 
-@register_transformer('//newsletter.pragmaticengineer.com')
+@register_transformer('//newsletter.pragmaticengineer.com|learnings.aleixmorgadas.dev')
 class PragmaticEngineerTransformer(Transformer):
     def create_visitor(self):
         return PEAsciidocVisitor()
@@ -176,6 +176,7 @@ class SubstackFetch(Fetch):
         password=self.config.get('password')
         cookies_path=self.config.get('cookies_path')
         base_url=self.config.get('base_url')
+        self.match_url=self.config.get('match_url', r'https://newsletter.pragmaticengineer.com/.*')
         self.base_url = base_url or "https://substack.com/api/v1"
         renew_cookie = self.config.get('renew_cookie', False)
         self.persist_cookie = self.config.get('persist_cookie', False)
@@ -194,6 +195,12 @@ class SubstackFetch(Fetch):
             raise ValueError(
                 "Must provide email and password or cookies_path to authenticate."
             )
+
+    def can_process(self, url: str):
+        if re.match(self.match_url, url):
+            return True
+        else:
+            return False
 
     def close(self):
         """
@@ -235,7 +242,7 @@ class SubstackFetch(Fetch):
         """
         cookies = self._session.cookies.get_dict()
         with open(path, "w") as f:
-            json.dump(cookies, f)
+            json.dump(cookies, f, indent=3)
 
     @staticmethod
     def _handle_response(response: requests.Response):

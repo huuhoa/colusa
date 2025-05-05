@@ -51,7 +51,7 @@ def register_postprocessor(name: str):
 
 def create_extractor(url_path, bs):
     for p in __EXTRACTORS.keys():
-        if p in url_path:
+        if re.search(p, url_path):
             cls = __EXTRACTORS[p]
             return cls(bs)
     return Extractor(bs)
@@ -63,7 +63,7 @@ def create_transformer(url_path, content, root):
         "output_dir": root
     }
     for p in __TRANSFORMERS.keys():
-        if p in url_path:
+        if re.search(p, url_path):
             cls = __TRANSFORMERS[p]
             return cls(config, content)
 
