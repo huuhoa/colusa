@@ -8,4 +8,4 @@ urllib3==2.2.3
 python-dateutil~=2.9.0
 PyYAML==6.0.1
 torpy~=1.1.6
-setuptools==75.1.0
+setuptools==80.3.1
