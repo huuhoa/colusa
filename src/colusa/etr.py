@@ -26,15 +26,40 @@ __POSTPROCESSORS = {}
 
 def register_extractor(pattern):
     def decorator(cls):
-        __EXTRACTORS[pattern] = cls
+        __EXTRACTORS[cls.__name__] = {
+            'pattern': pattern,
+            'cls': cls,
+        }
         return cls
 
     return decorator
 
+def register_extractor_v2(id: str, pattern: str):
+    def decorator(cls):
+        __EXTRACTORS[id] = {
+            'pattern': pattern,
+            'cls': cls,
+        }
+        return cls
+
+    return decorator
 
 def register_transformer(pattern):
     def decorator(cls):
-        __TRANSFORMERS[pattern] = cls
+        __TRANSFORMERS[cls.__name__] = {
+            'pattern': pattern,
+            'cls': cls,
+        }
+        return cls
+
+    return decorator
+
+def register_transformer_v2(id: str, pattern: str):
+    def decorator(cls):
+        __TRANSFORMERS[id] = {
+            'pattern': pattern,
+            'cls': cls,
+        }
         return cls
 
     return decorator
@@ -50,21 +75,42 @@ def register_postprocessor(name: str):
 
 
 def create_extractor(url_path, bs):
-    for p in __EXTRACTORS.keys():
+    for _, ext in __EXTRACTORS.items():
+        p = ext['pattern']
+        cls = ext['cls']
         if re.search(p, url_path):
-            cls = __EXTRACTORS[p]
             return cls(bs)
     return Extractor(bs)
 
+def populate_extractor_config(config: dict):
+    """
+    Populate extract configs from external configuration file.
+    Should be called at begining before creating any extractor
+    """
+    for id, v in config.items():
+        if id in __EXTRACTORS:
+            ext = __EXTRACTORS[id]
+            ext.update(v)
+
+def populate_transformer_config(config: dict):
+    """
+    Populate transformer configs from external configuration file.
+    Should be called at begining before creating any transformer
+    """
+    for id, v in config.items():
+        if id in __TRANSFORMERS:
+            trf = __TRANSFORMERS[id]
+            trf.update(v)
 
 def create_transformer(url_path, content, root):
     config = {
         "src_url": url_path,
         "output_dir": root
     }
-    for p in __TRANSFORMERS.keys():
+    for _, trf in __TRANSFORMERS.items():
+        p = trf['pattern']
+        cls = trf['cls']
         if re.search(p, url_path):
-            cls = __TRANSFORMERS[p]
             return cls(config, content)
 
     return Transformer(config, content)
