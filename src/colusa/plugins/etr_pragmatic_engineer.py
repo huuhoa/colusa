@@ -1,4 +1,4 @@
-from colusa.etr import Extractor, Transformer, register_extractor, register_transformer
+from colusa.etr import Extractor, Transformer, register_extractor_v2, register_transformer_v2
 from colusa.asciidoc_visitor import AsciidocVisitor
 from bs4 import Tag
 import re
@@ -7,7 +7,7 @@ import requests
 import json
 
 
-@register_extractor('//newsletter.pragmaticengineer.com|learnings.aleixmorgadas.dev')
+@register_extractor_v2('substack', '//newsletter.pragmaticengineer.com|learnings.aleixmorgadas.dev')
 class PragmaticEngineerExtractor(Extractor):
     def cleanup(self):
         self.remove_tag(self.main_content, 'div', attrs={'class': 'subscribe-widget'})
@@ -103,7 +103,7 @@ class PEAsciidocVisitor(AsciidocVisitor):
     visit_tag_h4 = visit_heading_node(4)
 
 
-@register_transformer('//newsletter.pragmaticengineer.com|learnings.aleixmorgadas.dev')
+@register_transformer_v2('substack', '//newsletter.pragmaticengineer.com|learnings.aleixmorgadas.dev')
 class PragmaticEngineerTransformer(Transformer):
     def create_visitor(self):
         return PEAsciidocVisitor()

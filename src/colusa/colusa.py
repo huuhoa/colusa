@@ -12,11 +12,15 @@ class Colusa(object):
     Implementation for initializing book configuration and generating book from configuration
     """
     def __init__(self, configuration: dict):
+        from colusa.etr import populate_extractor_config, populate_transformer_config
+
         utils.scan('colusa.plugins')
         self.config = configuration
         self.output_dir = configuration.get('output_dir', '.')
         self.book_maker = etr.Render(configuration)
         self.downloader = fetch.Downloader(configuration.get('downloader', {}))
+        populate_extractor_config(configuration.get('extractors', {}))
+        populate_transformer_config(configuration.get('transformers', {}))
 
     @classmethod
     def generate_new_configuration(cls, file_path: str):
