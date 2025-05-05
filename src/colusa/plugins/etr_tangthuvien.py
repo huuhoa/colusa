@@ -5,7 +5,7 @@ from bs4 import Tag
 from colusa.etr import Extractor, Transformer, register_extractor, register_transformer
 
 
-@register_extractor('//truyen.tangthuvien.vn')
+@register_extractor(r'//truyen.tangthuvien.[vn|net]')
 class TangThuVienExtractor(Extractor):
     def _find_main_content(self):
         return self.bs.find('div', class_='content')

@@ -24,6 +24,12 @@ class Fetch:
     def __exit__(self, *args):
         self.close()
     
+    def can_process(self, url: str):
+        """
+        Determine if can handle given URL or not
+        """
+        return True
+
     def request(self, method, url, **kwargs):
         """Constructs and sends a :class:`Request <Request>`.
 
@@ -188,8 +194,10 @@ class Downloader():
 
     def get_fetch_instance(self, url_path: str) -> Fetch:
         for pattern, fetch_obj in self.clients:
-            if re.match(pattern, url_path):
+            if fetch_obj.can_process(url_path):
                 return fetch_obj
+            # if re.match(pattern, url_path):
+            #     return fetch_obj
 
     def download_url(self, url_path: str, file_path: str):
         headers = {
@@ -199,10 +207,10 @@ class Downloader():
         fetch = self.get_fetch_instance(url_path)
         req = fetch.get(url_path, headers=headers, stream=True)
         if req.status_code != 200:
-            logs.error(f'Cannot make request. Result: {req.status_code:d}')
+            logs.error(f'Cannot make request. Result: {req.status_code:d}. URL: {url_path}')
             with open(f'{file_path}.temp', 'wb') as file_out:
                 file_out.write(req.content)
-            exit(1)
+            return
 
         with open(file_path, 'wb') as file_out:
             req.raw.decode_content = True
