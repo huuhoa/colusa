@@ -2,10 +2,10 @@ import re
 
 from bs4 import Tag
 
-from colusa.etr import Extractor, Transformer, register_extractor, register_transformer
+from colusa.etr import Extractor, Transformer, register_extractor_v2, register_transformer_v2
 
 
-@register_extractor(r'//truyen.tangthuvien.[vn|net]')
+@register_extractor_v2('tangthuvien', r'//truyen.tangthuvien.[vn|net]')
 class TangThuVienExtractor(Extractor):
     def _find_main_content(self):
         return self.bs.find('div', class_='content')
@@ -22,7 +22,7 @@ class TangThuVienExtractor(Extractor):
 
         
 
-@register_transformer('//truyen.tangthuvien.vn')
+@register_transformer_v2('tangthuvien', '//truyen.tangthuvien.vn')
 class TangThuVienTransformer(Transformer):
     def transform(self):
         value = super(TangThuVienTransformer, self).transform()

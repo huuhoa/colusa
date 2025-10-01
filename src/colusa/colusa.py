@@ -99,6 +99,9 @@ class Colusa(object):
         :param url_path: url of html article
         :return: content of downloaded file
         """
+
+        import chardet
+
         output_path = pathlib.Path(self.output_dir)
         cached_file_path = output_path.joinpath('.cached', f'{utils.get_hexdigest(url_path)}.html')
         logs.info(url_path, cached_file_path)
@@ -107,7 +110,10 @@ class Colusa(object):
             # download file from url_path
             self.downloader.download_url(url_path, str(cached_file_path))
 
-        with open(cached_file_path, 'rt', encoding='utf-8') as file_in:
+        with open(cached_file_path, 'rb') as f:
+            result = chardet.detect(f.read())
+            encoding = result['encoding']
+        with open(cached_file_path, 'rt', encoding=encoding) as file_in:
             content = file_in.read()
         return content
 
