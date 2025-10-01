@@ -33,6 +33,9 @@ class AsciidocVisitor(NodeVisitor):
     visit_tag_section = visit_tag_fall_through
     visit_tag_input = visit_tag_fall_through
     visit_tag_picture = visit_tag_fall_through
+    visit_tag_font = visit_tag_fall_through
+    visit_tag_center = visit_tag_fall_through
+    visit_tag_sup = visit_tag_fall_through
 
     visit_tag_iframe = visit_tag_ignore_content
     visit_tag_style = visit_tag_ignore_content
@@ -107,6 +110,7 @@ class AsciidocVisitor(NodeVisitor):
         return self.tag_wrap_around(text, '__')
 
     visit_tag_i = visit_tag_em
+    visit_tag_u = visit_tag_em
 
     def tag_wrap_around(self, text, w):
         if not text:

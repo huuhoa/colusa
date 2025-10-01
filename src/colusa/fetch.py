@@ -200,6 +200,13 @@ class Downloader():
             #     return fetch_obj
 
     def download_url(self, url_path: str, file_path: str):
+        if url_path.startswith('file://'):
+            # handle support for local file
+            url_path = url_path.removeprefix('file://')
+            shutil.copyfile(url_path, file_path)
+            return
+
+        # handle download from internet
         headers = {
             'Accept': '*/*',
             'User-Agent': self.UserAgent,

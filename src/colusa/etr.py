@@ -1,7 +1,7 @@
 import os
 import re
 
-from bs4 import Tag
+from bs4 import Tag, BeautifulSoup
 from dateutil.parser import parse
 
 from .asciidoc_visitor import AsciidocVisitor
@@ -126,7 +126,7 @@ class ContentNotFoundError(Exception):
 
 class Extractor(object):
     """Extractor extract real article content from sea of other contents"""
-    def __init__(self, bs):
+    def __init__(self, bs: BeautifulSoup):
         self.bs = bs
         self.content = None
         self.author = None
