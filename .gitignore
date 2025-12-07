@@ -141,3 +141,5 @@ temp/
 tests-dist/*.asciidoc
 tests-dist/Makefile
 tests-dist/images
+
+tests/test_pe.py

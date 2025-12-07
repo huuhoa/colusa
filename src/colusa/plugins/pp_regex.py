@@ -8,7 +8,7 @@ class RegexReplaceProcessor(PostProcessor):
             data = fd.read()
 
         for kv in self.params:
-            data = re.sub(kv.get('s'), kv.get('r'), data, flags=re.MULTILINE)
+            data = re.sub(kv.get('s'), kv.get('r'), data, flags=re.MULTILINE | re.DOTALL)
 
         with open(self.file_path, 'wt') as fd:
             fd.write(data)
