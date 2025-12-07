@@ -1,0 +1,111 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "colusa"
+version = "0.14.0"
+description = "Render website to ebook to make it easier to read on devices"
+readme = "README.md"
+license = "MIT"
+authors = [
+    {name = "Huu Hoa NGUYEN", email = "huuhoa@gmail.com"}
+]
+maintainers = [
+    {name = "Huu Hoa NGUYEN", email = "huuhoa@gmail.com"}
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Operating System :: OS Independent",
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Topic :: Text Processing :: Markup",
+    "Topic :: Utilities",
+]
+keywords = ["ebook", "web", "converter", "asciidoc", "epub"]
+requires-python = ">=3.8"
+
+dependencies = [
+    "beautifulsoup4>=4.9",
+    "certifi>=2025.8.3",
+    "chardet>=5.2.0",
+    "idna==3.10",
+    "requests>=2.32.4",
+    "soupsieve>=2.7",
+    "urllib3>=2.5.0",
+    "python-dateutil~=2.9.0",
+    "PyYAML>=6.0.1",
+    "torpy~=1.1.6",
+    "setuptools>=80.3.1",
+    "importlib-metadata; python_version<'3.10'",
+]
+
+[project.optional-dependencies]
+dev = [
+    "bump2version>=1.0.1",
+    "gitchangelog>=3.0.4",
+    "readme-renderer>=44.0",
+    "twine>=6.1.0",
+]
+test = [
+    "pytest",
+    "pytest-cov",
+]
+all = [
+    "bump2version>=1.0.1",
+    "gitchangelog>=3.0.4",
+    "readme-renderer>=44.0",
+    "twine>=6.1.0",
+    "pytest",
+    "pytest-cov",
+]
+
+[project.urls]
+Homepage = "http://github.com/huuhoa/colusa"
+Repository = "http://github.com/huuhoa/colusa"
+"Bug Tracker" = "http://github.com/huuhoa/colusa/issues"
+
+[project.scripts]
+colusa = "colusa.cli:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["colusa*"]
+namespaces = false
+
+[tool.bumpversion]
+current_version = "0.14.0"
+commit = true
+tag = true
+allow_dirty = false
+
+[[tool.bumpversion.files]]
+filename = "src/colusa/_version.py"
+search = "__version__ = '{current_version}'"
+replace = "__version__ = '{new_version}'"
+
+[[tool.bumpversion.files]]
+filename = "pyproject.toml"
+search = "version = \"{current_version}\""
+replace = "version = \"{new_version}\""
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = [
+    "--verbose",
+    "--cov=colusa",
+    "--cov-report=term-missing",
+    "--cov-report=html",
+]
