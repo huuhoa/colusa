@@ -1,15 +1,16 @@
 import argparse
 import sys
+from typing import Any
 
 from colusa import Colusa, ConfigurationError, logs
 
 
-def main():
+def main() -> None:
     args = parse_args()
     args.func(args)
 
 
-def parse_args():
+def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
 
     commands = parser.add_subparsers(dest='command')
@@ -38,21 +39,21 @@ def parse_args():
     return parser.parse_args()
 
 
-def init(args):
+def init(args: argparse.Namespace) -> None:
     try:
         Colusa.generate_new_configuration(args.output)
     except ConfigurationError as e:
         logs.error(e)
 
 
-def generate(args):
+def generate(args: argparse.Namespace) -> None:
     try:
         Colusa.generate_book(args.input)
     except ConfigurationError as e:
         logs.error(e)
 
 
-def crawl_url(args):
+def crawl_url(args: argparse.Namespace) -> None:
     from colusa import Crawler
     try:
         crawler = Crawler(args.url, args.output_dir, args.output)

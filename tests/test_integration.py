@@ -66,7 +66,7 @@ class ColusaIntegrationTestCase(unittest.TestCase):
         mock_download_content.assert_called_once_with("https://staffeng.com/guides/overview-overview")
 
     @patch('colusa.Colusa.download_content')
-    @patch('colusa.utils.download_image')
+    @patch('colusa.fetch.download_image')
     def test_whole_program(self, mock_download_image, mock_download_content):
         urls = [
             "https://staffeng.com/guides/overview-overview",

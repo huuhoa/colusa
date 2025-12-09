@@ -1,13 +1,9 @@
-// Building a Better Ops Runbook
-
-== Building a Better Ops Runbook
+= Building a Better Ops Runbook
 
 by **Shawn Stafford** on 2018-11-12 at _link:https://medium.com/@shawnstafford/ops-runbook-16017fa78733[medium.com]_
 
 
-
-
-=== Building a Better Ops Runbook
+== Building a Better Ops Runbook
 
 image:29ec6c863c93fdfbbba3b6a7c487e2b62b50822667d4131d94cfffb963cbf746.jpeg[Shawn Stafford,28, 28]
 
@@ -23,7 +19,7 @@ A runbook is an operational reference which is used to describe an application i
 
 It doesn’t matter where you store your runbooks, just make sure they are easy to find, read, and edit. Usually that means putting them in whatever wiki your team or organization currently uses. However, any tool that fits your regular workflow is usually the right tool for the job. __I have provided a__ link:https://github.com/sstafford/ops_runbook/blob/master/runbook.md[__sample runbook__] __in Markdown format and hosted on GitHub.__ This will give you a complete example that you can print out or reference later. The rest of this post will discuss each section of the runbook in detail.
 
-=== Runbook Inventory
+== Runbook Inventory
 
 Knowing __where__ to look is half the battle. A runbook inventory page provides a landing page with links to each runbook and a summary of whether each class of requirements is documented by the runbook. Having an overview makes it easy to locate all of the runbooks for the entire organization and also calls attention to any gaps in the infrastructure that might require extra attention.
 
@@ -39,11 +35,11 @@ image:76e4a52d64936f5cf8cb1749249ae3b316f21ed9bbdbb4b3c42658b4360b32cd.png[,570,
 
 And now, let’s get into the details of a runbook…
 
-=== Anatomy of a Runbook
+== Anatomy of a Runbook
 
 Each section listed below describes a section of the runbook. Refer to the link:https://github.com/sstafford/ops_runbook/blob/master/runbook.md[sample runbook] to get a better idea of how it looks when completed.
 
-=== Support Contacts
+== Support Contacts
 
 A runbook should have contact information for at least one primary contact at each level of support. That “contact” might be a team of people or it might be a single individual, but the contact list should contain enough information to make initial contact or look up the full contact information in a company directory. If the application is supported by the team, contact information might be an e-mail alias, a ticket queue, or a support hotline. For individuals, it might be their cell phone. The table below is one example of a simple contact table.
 
@@ -54,7 +50,7 @@ Support is often provided in tiers or levels. For example, Level 1 support might
 
 In addition to providing support, members of the contact list are also users of the runbook and should be responsible for reviewing it for correctness. Each member of the contact list should review the runbook on a regular basis (perhaps yearly) and sign-off to confirm that the information is correct and sufficient to allow other members of support to handle incidents.
 
-=== Overview
+== Overview
 
 The overview section provides a general description of the application. It provides enough information for someone unfamiliar with the application to understand what it is used for and how to find additional information if necessary. It should provide additional links such as:
 
@@ -63,7 +59,7 @@ The overview section provides a general description of the application. It provi
 * General license information and renewal dates
 * Links to any internal documentation or project pages
 
-=== Architecture
+== Architecture
 
 The architecture diagram shows the hosts and services which compose the application environment. It should provide enough information to be useful for audiences such as system administrators, network administrators, or anyone who might need to troubleshoot an alert or outage.
 
@@ -72,28 +68,28 @@ image:7964476b29d6171232007ceb8a78b5ef91d59326c0f09300f178efc8f9ff000f.png[,532,
 .Architecture Diagram
 image:5d2dbd6ac2571c86d5aa73e7ddec2933faab67fdd641c8048db1773eb2ebd517.png[,960, 720]
 
-=== Hosts
+== Hosts
 
 The host list contains all hosts that make up each application environment. This will allow the reader to know exactly what role each hosts plays, which are required for the application to function, and any external aliases that might be used by clients. It also helps to group the entries by environment so it’s clear which hosts are used for production, test, or development.
 
 .List of Application Hosts
 image:0d35c12e30597f6894930bdc9424a03e02263b6700ae06fbd7e7f7d7e3cfb2cc.png[,689, 258]
 
-=== Network
+== Network
 
 The network table describes all of the network ports that are used by the application. At a minimum this should be provide a list of services and the ports and protocols that they listen on. This can be useful when working with the network team to define firewall rules, or when establishing external monitoring to check application health.
 
 .List of Network Ports and Protocols
 image:d4b850c381df604c2ebd445cff9581c4b4d0c29d9c0d12a140f32c90dcd7d388.png[,696,]
 
-=== Directory Locations
+== Directory Locations
 
 When troubleshooting an application issue, investigation usually involves reviewing the logs and checking the application configuration. For applications which store data on the filesystem, it is also useful to know where the data files are located. This can help the operations team identify where cleanup may need to be performed or storage increased when a monitoring alert is received.
 
 .List of Key Application Directories
 image:f10005a30e7848d969e440ad92db7688fbe5716edca3883cf4be296985305384.png[,696,]
 
-=== Monitoring
+== Monitoring
 
 The monitoring section should define all of the services and resources that need to be monitored and what actions to take if an alert is triggered. This can be used to ensure that monitoring is complete and that resolution steps have been documented.
 
@@ -104,7 +100,7 @@ Hosts should be grouped by function, with direct links into the monitoring syste
 
 The severity classifications may have specific meaning or a service level agreement (SLA) within your organization, so it’s generally best to use the agreed upon terminology within the runbook and then provide links to the internally recognized definition for the novice reader.
 
-=== Metrics
+== Metrics
 
 This section of the runbook describes how metrics are being collected, along with links to the appropriate dashboard(s). In particular it is important to document what metrics collection agents are in use and where or how they ship their data. It may be beneficial do document this as an additional service entry in the __Network__ and __Directory__ sections mentioned above, or to provide links to generic internal documentation if the collection is standard across all hosts in the organization.
 
@@ -113,7 +109,7 @@ image:2bb4b9a7d28e37f28b98e5a2bc73a56a413dbd03a3237e6ad1def5b512874ac2.jpeg[,598
 
 It’s worth noting that metrics and monitoring may not be the same thing. Although you may use a system like Prometheus to provide both metrics and monitoring, it is also possible that the long term storage of these metrics are handled by a separate time series database. For example, data may be collected by Prometheus, but then shipped off to TimescaleDB/Grafana for long term (aggregated) storage to be used for capacity planning and budgeting.
 
-=== Log Aggregation
+== Log Aggregation
 
 Similar to metrics, log aggregation is often a common function that is implemented across all serves in an organization. Enough information about the collection agent, destination, and application log formats should be included.
 
@@ -122,25 +118,25 @@ image:1a6d7dffc2a6edda6da8d2bebc98672c9941831e11e82f25e8a810ec78f2dc59.png[,700,
 
 Direct links to the log aggregation web interface should be provided whenever possible, including links to commonly used saved searches. Any commonly run queries should be documented here, along with a brief description of how and when they can be used. Anything that makes it easier for Operations to identify issues or narrow their investigation will save time during an outage.
 
-=== Access Control
+== Access Control
 
 Most applications will implement some sort of authentication and access control to ensure that only valid users have access to information that is appropriate for their role. At a minimum, this section should describe how the application is configured to perform access control. For example, it might provide the LDAP connection information, location of the configuration, and any special roles or permissions required for administration of the application.
 
 The objective of this section is to make it quick and easy for Operations to identify what could have gone wrong with the system if someone complains that they are not able to authenticate or do not have access to the necessary resources. It should also identify what group of administrative users can be contacted if special permissions are needed to investigate an issue.
 
-=== Backup and Recovery
+== Backup and Recovery
 
 This runbook section describes the disaster recovery (DR) processes that are in place to ensure the system or data can be recovered in the event of an unexpected failure. At a minimum it should describe any automated backup procedures, the frequency and times they run, and the data retention policies for archived data. Be sure to provide links to any detailed DR plans which will be used to restore the system during a catastrophic outage or data loss.
 
 How to establish a disaster recovery plan is beyond the scope of this article, but there are plenty of resources available which describe such documents. Refer to link:https://solutionsreview.com/backup-disaster-recovery/top-10-free-disaster-recovery-plans-online/[Top 10 Free Disaster Recovery Plans] or type “Disaster Recovery Plan” into your favorite search engine to get more information.
 
-=== Maintenance and Cleanup
+== Maintenance and Cleanup
 
 Applications which receive or produce data often have automated cleanup processes that remove obsolete data to ensure that the system continues to perform well over time. For example, a time series database might have a process which deletes data older than 30 days, or a binary repository might purge artifacts that conform to a specific set of rules. This section should describe those automated processes and the rules that determine what they delete.
 
 When a disk alert is received from your monitoring system, this section should provide instructions about what actions can be taken to provide immediate short-term relief. If the filesystem is 100% full it may be necessary to take immediate action to cleanly shut down the application, increase the storage, and bring the application back on-line. In other cases, it may be possible to clear caches or execute cleanup scripts to bring disk, memory, or CPU usage back under control. Documenting how and when these cleanup activities should be executed will save critical time when responding to system alerts.
 
-=== Application Tuning
+== Application Tuning
 
 Application tuning can take many forms. In the Java world, it is typically a set of JVM arguments that define the memory limits or the garbage collection strategy. In the database world it may be a set of configuration parameters that define the number of concurrent network connections, long running query restrictions, or other characteristics. This section should provide enough information for the reader to understand where and how those parameters can be changed, as well as any rules of thumb for how they can be tuned for this application to resolve common issues.
 

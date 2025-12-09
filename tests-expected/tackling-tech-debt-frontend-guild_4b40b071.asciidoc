@@ -1,14 +1,11 @@
-// Tackling Tech Debt with the Frontend Guild | Constant Contact Tech Blog
-
-== Tackling Tech Debt with the Frontend Guild | Constant Contact Tech Blog
+= Tackling Tech Debt with the Frontend Guild | Constant Contact Tech Blog
 
 on 2018-09-18 at _link:https://techblog.constantcontact.com/software-development/tackling-tech-debt-frontend-guild/[techblog.constantcontact.com]_
 
 
+== Tackling Tech Debt with the Frontend Guild
 
-=== Tackling Tech Debt with the Frontend Guild
-
-September 18, 2018  by link:https://techblog.constantcontact.com/author/bcentra/[Ben Centra] link:https://techblog.constantcontact.com/software-development/tackling-tech-debt-frontend-guild/#respond[Leave a Comment] 
+September 18, 2018  by link:https://techblog.constantcontact.com/author/bcentra/[Ben Centra] link:https://techblog.constantcontact.com/software-development/tackling-tech-debt-frontend-guild/#respond[Leave a Comment]
 
 I love working at link:https://www.constantcontact.com/index.jsp[Constant Contact]. But like any engineering group — especially at a mid-sized, 20-year old startup-gone-public — technology can easily lag over time, drift between teams, and generally become a hassle. This time last year I wanted to do something about it, specifically for frontend tooling since that’s what I work with every day.
 
@@ -18,7 +15,7 @@ Fast-forward one year. I’ve been leading a group of fellow engineers that we c
 
 Leading and organizing this group has been an incredible learning experience. Here’s the short version of how I ran the group, the successes we had, and the challenges we faced.
 
-=== Before The Guild
+== Before The Guild
 
 It all began with some friendly complaining between coworkers. When overall you enjoy your work environment the negatives really stand out. For us it was frontend tech debt that we continued to gripe about, the stuff that kept us from doing our best work.
 
@@ -52,7 +49,7 @@ ____
 
 * **Challenge:** Had to advocate for it ourselves – the company wasn’t gonna do it for us
 
-=== Knowledge Gathering
+== Knowledge Gathering
 
 And so the Guild came into existence. There was no shortage of challenges, but we didn’t know where to begin. How would we know what issues were really important?
 
@@ -76,7 +73,7 @@ We kept our meetings bi-weekly so as not to overwhelm anyone. Each team was repr
 
 * **Challenge:** Had to repeatedly bug people to fill out the Tech Inventory
 
-=== Backlog Grooming
+== Backlog Grooming
 
 Okay, no one __really__ finds backlog grooming exciting. Our meeting attendance began to slip pretty heavily, from a rotating group of 20+ people to a core group of around 8. But we had sufficient cross-team representation that one team wouldn’t be making decisions for the whole company (or lead to unnecessary fights later on). And someone had to turn all our gathered knowledge into something useful!
 
@@ -104,7 +101,7 @@ Using these categories as a guide we began to form them into epics, each with se
 
 * **Challenge:** No tangible progress, people getting antsy
 
-=== The Task Force
+== The Task Force
 
 And so a backlog was forming but we had no one to do the work! We tried asking for a full-time engineer to work on it, but that idea got no traction with management this early on. And I didn’t want to rely on the Guild being just a side project – when push comes to shove sprint work will always come first, leaving Guild work to fall to the wayside.
 
@@ -128,7 +125,7 @@ Those of us not actively volunteering helped by reviewing code. We required two 
 
 * **Challenge:** Few newcomers to meetings
 
-=== A Yeoman Generator
+== A Yeoman Generator
 
 Our first engineer on the Task Force made the smart choice to focus on the “App Generator” work first. This would be the vehicle for all other tooling changes. And so he made a custom link:http://yeoman.io/[Yeoman] generator for scaffolding new JavaScript projects, both “apps” (link:https://en.wikipedia.org/wiki/Single-page_application[single-page applications]) and “libraries” (smaller, sharable components). He set it up to create new projects built using Webpack with plugins for Babel, Sass, EJS templates, and more. We continued to use link:https://gruntjs.com/[Grunt] to tie together all our tools and commands, including Webpack.
 
@@ -148,7 +145,7 @@ In order to further spread the word about our work, I had begun sending out lin
 
 * **Challenge:** Only a few teams contributing directly
 
-=== Showing Off
+== Showing Off
 
 We had run out of willing volunteers, and a few weeks went by with no active Task Force. I had been running meetings and doing code review thus far, so I stepped up to do active development on the Generator for a short time. A few final PRs later and we were ready to show off work!
 
@@ -168,7 +165,7 @@ Now that teams were beginning to use our tool our meetings had become weekly. Th
 
 * **Challenge:** Cutting into regular work to keep up with demand
 
-=== A Real Full-Time Effort
+== A Real Full-Time Effort
 
 Coming up on a year since starting the Guild a lot had changed. We were making a big push for new product features, with several new projects and redesigns of existing ones underway (and link:https://jobs.endurance.com/search-jobs/ALL?orgIds=17854-6226&alp=ALL&alt=0&ascf=%5B%7B%22Key%22:%22travel%22,%22Value%22:%22Constant%20Contact%22%7D%5D&[lots of new positions open] to get the work done). The tooling provided by the Generator simplified the setup and continued development of those projects. Senior engineers had continued to push for broad frontend architecture changes to reduce costs and minimize future tech debt. The Generator was central to this plan and the standardization system and delivery mechanism for future changes. And the Guild’s ability to groom a backlog and get work done demonstrated that this group effort was supported by teams and sustainable if given the resources. But of course without a dedicated Task Force, our ability to multitask would eventually falter.
 
@@ -186,7 +183,7 @@ Luckily management had taken notice of our good work and we finally got what we 
 
 * **Challenge:** Guild backlog ownership and responsibility
 
-=== Further Progress
+== Further Progress
 
 The Generator is out in the wild but our work is far from over. Of course there are many more improvements to make, especially in ensuring the quality of the Generator itself. We primarily test by generating new apps, so identifying issues when upgrading from __any__ old version to the latest is tricky. We’re looking into doing more manual regression testing before each release to try and catch more bugs before our users do. If the manual process helps, we’ll try to automate the process to speed things up and test a wider variety of cases.
 
@@ -198,7 +195,7 @@ Whatever changes may come there will be a lot of work coming up. After only thre
 
 We know our immediate future lies in the Generator, but I also want to get an idea of what might come after. And so we’ve also begun a second round of knowledge gathering. Instead of getting every single team involved, we’re targeting project leads and critical apps/services. Our goal this time is to identify the next “big thing” we can tackle — after the Generator, what other ways can we improve the frontend development experience at Constant Contact?
 
-=== Conclusion
+== Conclusion
 
 image:34a404f597f6854e887bed2a02241a244b2e775e4c19dc1f0aaef6b3aee3277c.gif[Thanks to everyone for the help along the way!,500, 500]Thanks to everyone for the help along the way!
 
@@ -206,7 +203,7 @@ But all that hard work has paid off. I’m seeing the benefits of our work every
 
 link:http://pinterest.com/pin/create/button/?url=https%3A%2F%2Ftechblog.constantcontact.com%2Fsoftware-development%2Ftackling-tech-debt-frontend-guild&media=https%3A%2F%2Ftechblog.constantcontact.com%2Fwp-content%2Fuploads%2F2018%2F09%2Fguild_flowchart_edit.jpg[Pin It]
 
-==== Share this:
+=== Share this:
 
 * link:https://techblog.constantcontact.com/software-development/tackling-tech-debt-frontend-guild/?share=facebook[Facebook]
 * link:https://techblog.constantcontact.com/software-development/tackling-tech-debt-frontend-guild/?share=twitter[Twitter]
