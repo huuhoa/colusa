@@ -30,7 +30,16 @@ __version__ = _version.__version__
 __copyright__ = _version.__copyright__
 __license__ = _version.__license__
 
-__all__ = ['Colusa', 'ConfigurationError', 'logs', 'Crawler']
+__all__ = [
+    'Colusa',
+    'ConfigurationError',
+    'logs',
+    'Crawler',
+    'BookConfig',
+    'MakeConfig',
+    'PartConfig',
+    'PostProcessingConfig',
+]
 
 
 from colusa import logs
@@ -39,3 +48,9 @@ from colusa import etr as etr
 from colusa.exceptions import ConfigurationError as ConfigurationError
 from colusa import utils as utils
 from colusa.colusa import Colusa as Colusa
+from colusa.config import (
+    BookConfig as BookConfig,
+    MakeConfig as MakeConfig,
+    PartConfig as PartConfig,
+    PostProcessingConfig as PostProcessingConfig,
+)

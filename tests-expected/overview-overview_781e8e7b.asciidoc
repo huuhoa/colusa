@@ -1,6 +1,4 @@
-// Introduction
-
-== Introduction
+= Introduction
 
 at _link:https://staffeng.com/guides/overview-overview[staffeng.com]_
 

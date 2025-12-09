@@ -1,3 +1,4 @@
+from typing import Any, Optional, Union
 from bs4 import BeautifulSoup
 import pathlib
 import json
@@ -5,25 +6,32 @@ import yaml
 import os
 
 from colusa import logs, etr, utils, fetch, ConfigurationError
+from colusa.config import BookConfig, MakeConfig
 
 
-class Colusa(object):
+class Colusa:
     """
     Implementation for initializing book configuration and generating book from configuration
     """
-    def __init__(self, configuration: dict):
+    def __init__(self, configuration: Union[dict[str, Any], BookConfig]) -> None:
         from colusa.etr import populate_extractor_config, populate_transformer_config
 
         utils.scan('colusa.plugins')
-        self.config = configuration
-        self.output_dir = configuration.get('output_dir', '.')
-        self.book_maker = etr.Render(configuration)
-        self.downloader = fetch.Downloader(configuration.get('downloader', {}))
-        populate_extractor_config(configuration.get('extractors', {}))
-        populate_transformer_config(configuration.get('transformers', {}))
+        
+        # Support both dict and BookConfig for backward compatibility
+        if isinstance(configuration, BookConfig):
+            self.config = configuration
+        else:
+            self.config = BookConfig.from_dict(configuration)
+        
+        self.output_dir = self.config.output_dir
+        self.book_maker = etr.Render(self.config)
+        self.downloader = fetch.Downloader(self.config.downloader)
+        populate_extractor_config(self.config.extractors)
+        populate_transformer_config(self.config.transformers)
 
     @classmethod
-    def generate_new_configuration(cls, file_path: str):
+    def generate_new_configuration(cls, file_path: str) -> None:
         """
         Generate initial content for book configuration, raise ConfigurationError if
         `file_path` is not end with supported format (json, yml)
@@ -61,7 +69,7 @@ class Colusa(object):
                                  f'Configuration file format should be either .json or .yml')
 
     @classmethod
-    def generate_book(cls, config_file_path):
+    def generate_book(cls, config_file_path: str) -> None:
         """
         Generate book from existing input configuration `config_file_path`,
         raise ConfigurationError if cannot parse configuration file
@@ -74,26 +82,26 @@ class Colusa(object):
             s.generate()
 
     @classmethod
-    def _read_configuration_file(cls, file_path: str) -> dict:
+    def _read_configuration_file(cls, file_path: str) -> BookConfig:
         """
         Read the book configuration file, raise ConfigurationError if `file_path` is unknown format
 
         :param file_path: path to known format configuration (json, yml)
-        :return: dict for configurations
+        :return: BookConfig instance
         """
         p = pathlib.PurePath(file_path)
         if p.suffix == '.json':
             with open(file_path, 'r') as file_in:
                 data = json.load(file_in)
-                return data
+                return BookConfig.from_dict(data)
         if p.suffix == '.yml':
             with open(file_path, 'r') as file_in:
                 data = yaml.safe_load(file_in)
-                return data
+                return BookConfig.from_dict(data)
         raise ConfigurationError(f'unknown configuration file format: {p.suffix}. '
                                  f'Configuration file format should be either .json or .yml')
 
-    def download_content(self, url_path):
+    def download_content(self, url_path: str) -> str:
         """
         Download html content of given `url_path` then cached in `.cached` folder of local file system
         :param url_path: url of html article
@@ -134,21 +142,21 @@ class Colusa(object):
         p = pathlib.PurePath(url_path)
         return f'{p.name}_{utils.get_short_hexdigest(url_path)}'
 
-    def __enter__(self):
+    def __enter__(self) -> 'Colusa':
         return self
 
-    def __exit__(self, *args):
+    def __exit__(self, *args: Any) -> None:
         self.close()
     
-    def close(self):
+    def close(self) -> None:
         self.downloader.close()
 
-    def ebook_generate_content(self, url_path):
+    def ebook_generate_content(self, url_path: str) -> None:
         content = self.download_content(url_path)
         bs = BeautifulSoup(content, 'html.parser')
 
-        chapter_metadata = self.config.get('metadata', True)
-        title_strip = self.config.get('title_prefix_trim', '')
+        chapter_metadata = self.config.metadata
+        title_strip = self.config.title_prefix_trim
         try:
             extractor = etr.create_extractor(url_path, bs)
             extractor.cleanup()
@@ -158,44 +166,39 @@ class Colusa(object):
                                            self._get_saved_file_name(url_path),
                                            metadata=chapter_metadata,
                                            title_strip=title_strip)
-            postprocessors = self.config.get('postprocessing', [])
-            for pp in postprocessors:
-                pp_name = pp.get('processor')
-                pp_params = pp.get('params')
+            for pp in self.config.postprocessing:
+                pp_name = pp.processor
+                pp_params = pp.params
                 pcls = etr.create_postprocessor(pp_name, file_path, pp_params)
                 pcls.run()
         except etr.ContentNotFoundError as e:
             logs.error(e, url_path)
             # raise e
 
-    def generate(self):
+    def generate(self) -> None:
         os.makedirs(os.path.join(self.output_dir, ".cached"), exist_ok=True)
         os.makedirs(os.path.join(self.output_dir, "images"), exist_ok=True)
-        self.book_maker.generate_makefile(self.config.get('make', {}))
+        self.book_maker.generate_makefile(self.config.make)
 
-        multi_part = self.config.get('multi_part', False)
-        if multi_part:
+        if self.config.multi_part:
             self._generate_book_multi_part()
         else:
             self._generate_book_single_part()
 
         self.book_maker.ebook_generate_master_file()
 
-    def _generate_book_single_part(self):
-        paths = self.config.get('urls', [])
+    def _generate_book_single_part(self) -> None:
+        paths = self.config.urls
         if len(paths) == 0:
             raise ConfigurationError('urls field must contain at least one url')
         for url_path in paths:
             self.ebook_generate_content(url_path)
 
-    def _generate_book_multi_part(self):
-        parts = self.config.get('parts', [])
+    def _generate_book_multi_part(self) -> None:
+        parts = self.config.parts
         if len(parts) == 0:
             raise ConfigurationError('parts field must contain at least one part object')
         for part in parts:
-            self.book_maker.render_book_part(part['title'], part.get('description', ''))
-            urls = part.get('urls', [])
-            for url_path in urls:
+            self.book_maker.render_book_part(part.title, part.description)
+            for url_path in part.urls:
                 self.ebook_generate_content(url_path)
-
-    

@@ -1,13 +1,11 @@
-// Patterns of Legacy Displacement
-
-== Patterns of Legacy Displacement
+= Patterns of Legacy Displacement
 
 at _link:https://martinfowler.com/articles/patterns-legacy-displacement/[martinfowler.com]_
 
 
 
 
-=== Patterns of Legacy Displacement
+== Patterns of Legacy Displacement
 
 Effective modernization of legacy software systems
 
@@ -25,26 +23,23 @@ __When faced with the need to replace existing software systems,
 
 image:8bf5dd330ad166feeb80e924f3b3a68c1c66a9b57f7b62bbae9809a504692676.jpg[Photo of Ian Cartwright,80, ]
 link:https://www.linkedin.com/in/ian-cartwright-282952/ [Ian Cartwright]
-
 Ian Cartwright is a Technical Director at Thoughtworks, where he
     applies his two decades of experience as an architect and hands-on
     developer to help clients improve their technical capabilities.
 
 image:f5f519e43278bb7c9da779433e1cddbd4ee1329124d72a5d754510f0cb9fbdf9.jpg[Photo of Rob Horn,80, ]
 link:https://www.linkedin.com/in/rob-horn[Rob Horn]
-
 Rob Horn is a Technical Director at Thoughtworks.  An experienced and passionate technical consultant and agile practitioner, he has spent around 15 of his 25+ year career working with clients on legacy modernization challenges in the financial, social, travel and public sectors.
 
 image:b5ee65f17219ff547b17f884a3ae259010bf8c2f7f48acafc472cf0781c197f6.jpg[Photo of James Lewis,80, ]
 link:https://bovon.org/[James Lewis]
-
 James Lewis is a Technical Director at Thoughtworks and a member of the Technology Advisory Board. He spends his time advising clients on distributed systems architecture and organisational design when he isn't speaking at conferences on the same topics.
 
 enterprise architecture
 
 evolutionary design
 
-=== Contents
+== Contents
 
 * The Legacy Replacement Treadmill
 
@@ -84,7 +79,7 @@ evolutionary design
 
 ** Closing thoughts
 
-==== Sidebars
+=== Sidebars
 
 * We want to be like Netflix
 
@@ -92,7 +87,7 @@ evolutionary design
 
 * The hardest shift is the Paradigm Shift
 
-=== Patterns
+== Patterns
 
 * Extract Product Lines
 
@@ -126,7 +121,7 @@ We've always believed that effective software development involves gradual
   and this site's link:https://martinfowler.com/feed.atom[RSS
   feed].
 
-=== The Legacy Replacement Treadmill
+== The Legacy Replacement Treadmill
 
 We have worked with many organizations who have made multiple attempts at
     removing legacy systems. In one fairly typical organization
@@ -182,7 +177,7 @@ Our observations from this and many other organizations is that
       organization structure and leadership are just as important to
       success.
 
-=== Breaking the cycle
+== Breaking the cycle
 
 Clearly there is a need to break out of the cycle of "technology replacement
     programmes". In short organizations need to be able to continue to deliver
@@ -193,7 +188,7 @@ Clearly there is a need to break out of the cycle of "technology replacement
 There are a series of approaches we have found can help with these challenges.
     They aid with the challenge of breaking the problem into smaller parts to
     allow delivery of new requirements in parallel with improved technology.
-    Broadly speaking they fit into four categories: 
+    Broadly speaking they fit into four categories:
 
 . Understand the outcomes you want to achieve
 
@@ -203,7 +198,7 @@ There are a series of approaches we have found can help with these challenges.
 
 . Change the organization to allow this to happen on an ongoing basis
 
-==== Understand the outcomes you want to achieve
+=== Understand the outcomes you want to achieve
 
 It is vital for an organization to agree the outcomes they want to
     achieve when tackling legacy. While this may seem obvious, all too often
@@ -212,7 +207,7 @@ It is vital for an organization to agree the outcomes they want to
     the outcomes we list below, but it's essential to identify which ones are
     the priority before setting out on the journey.
 
-===== Reducing the cost of change
+==== Reducing the cost of change
 
 A key tipping point in many organizations in deciding to tackle legacy is
       that desired business changes start to cost far more than any anticipated
@@ -230,7 +225,7 @@ At this point it is often no longer possible to justify making
       that weren't previously justifiable thus increasing their scope, cost
       and risk
 
-===== Improving the business process
+==== Improving the business process
 
 We have seen lots of examples of where business processes have evolved
         next to legacy systems, the processes become tightly coupled to the
@@ -269,7 +264,7 @@ It is worth noting here that requirements for a replacement system to
         support import and export of data can often have a root cause in this
         kind of workaround.
 
-===== Retire an old system
+==== Retire an old system
 
 The need to retire an old system is a common reason for legacy modernization.
         This is often driven by challenges in supporting older hardware or software,
@@ -299,7 +294,7 @@ While many organizations give retirement of old systems as a key outcome
         happen, the legacy is still being used at the end with the associated
         business goals remaining unmet.
 
-===== Imminent Disruption
+==== Imminent Disruption
 
 For some organizations the actual tipping point on tackling legacy can
       arise due to an external factor such as a regulatory change, a new "start up"
@@ -309,9 +304,9 @@ For some organizations the actual tipping point on tackling legacy can
 
 The external event is the thing that makes clear to an organization's
       leadership that they no longer have the ability to make changes for a
-      Proportionate Cost. 
+      Proportionate Cost.
 
-===== Newer technology
+==== Newer technology
 
 Adoption of newer technology should not be the reason for legacy
       modernization, just having newer tech for it's own sake is rarely a
@@ -322,7 +317,7 @@ Adoption of newer technology should not be the reason for legacy
       of "useful" depends on the organization, but in general we need to
       consider things such as:
 
-===== We want to be like Netflix
+==== We want to be like Netflix
 
 One issue we have seen multiple times is what we call "Netflix Envy".
           This is where the technology leaders of an organization fixate on
@@ -355,7 +350,7 @@ A good approach here is to not make any choices that cannot easily be
       platform with a 5-10 years pay back time is hard to justify when we
       acknowledge this accelerating pace of change.
 
-==== Decide how to break the problem into smaller parts
+=== Decide how to break the problem into smaller parts
 
 Broadly speaking this involves finding the right "seams" in the current
       business and technical architecture. Importantly, you have to consider how
@@ -374,7 +369,7 @@ A common objection is that finding these seams is too difficult. While we
       process independently is likely to fail, but if we can consider and then
       implement the two together there are ways to "eat the elephant".
 
-===== Getting Started
+==== Getting Started
 
 Legacy modernization can seem a most daunting proposition at the start of the journey. Like any journey, we
         must first try and understand the initial direction to take. Also, like all journeys, you must start from
@@ -384,7 +379,7 @@ Legacy modernization can seem a most daunting proposition at the start of the jo
         as possible in the shortest amount of time. This is often super hard to do and it's easy to get bogged down in
         too much detail.
 
-===== Event Storming - The Swiss Army Knife of modern process mapping
+==== Event Storming - The Swiss Army Knife of modern process mapping
 
 Much has been written on the technique and the authors find it a very
         versatile tool which can be used in multiple contexts. Indeed the
@@ -447,7 +442,7 @@ a| Segment the problem by identifying unique and shared business capabilities
 
 † currently only a stub
 
-==== Successfully deliver the parts
+=== Successfully deliver the parts
 
 The need for faster change and the ability to incrementally deliver and
       independently change elements of the business without large dependencies often
@@ -487,15 +482,15 @@ a| Intercept any updates to system state and route some of them to a new
 
 † currently only a stub
 
-==== Change the organization to allow this to happen on an ongoing basis
+=== Change the organization to allow this to happen on an ongoing basis
 
 If we step back and look at the whole process of delivering new business
       requirements we can quickly see this is only partly a technology problem. If
       we use newer technology to cut time and cost of building solutions we will
       then highlight any issues around agreeing requirements and getting the change
-      into production. 
+      into production.
 
-==== The hardest shift is the Paradigm Shift
+=== The hardest shift is the Paradigm Shift
 
 20 years after Eli Goldratt, the legendary management consultant,
           published link:https://en.wikipedia.org/wiki/The_Goal_(novel)["The Goal"] he participated in an interview
@@ -548,7 +543,7 @@ While the leadership understood this no changes were made to existing
         the software teams were spending more time filling in change control
         forms and attending change control meetings than they were producing
         software. The "corporate antibodies" worked successfully to reject the
-        new way of working. 
+        new way of working.
 
 Organizational change is a big topic with much literature already available,
       the key challenge with legacy is often time related. Few organizations can
@@ -581,7 +576,7 @@ There are definitely other strategies and approaches to organization
         allow work to be started on the legacy modernization sooner rather than
         later.
 
-=== An example: Integration Middleware Removal
+== An example: Integration Middleware Removal
 
 This example describes how one of our teams used a number of Legacy
     Modernization Patterns to successfully replace integration middleware
@@ -590,7 +585,7 @@ This example describes how one of our teams used a number of Legacy
     successfully manage risk to the business, and facilitate eating this
     particularly gristly part of the elephant.
 
-==== Understanding the outcomes
+=== Understanding the outcomes
 
 The challenge faced by our team was how to replace integration middleware
     that was out of support, hard to change and very costly with a new
@@ -636,7 +631,7 @@ High level system processing: Users individually managed the pricing
       middleware would update its own state of the product and update the legacy
       system's master database with the sale information.
 
-==== Breaking the problem up:  the first seam and a refactoring
+=== Breaking the problem up:  the first seam and a refactoring
 
 During link:https://martinfowler.com/articles/lean-inception/[Inception] the team ran a workshop
         with people who had deep knowledge of the legacy system, to collaboratively
@@ -653,7 +648,7 @@ The integration middleware also handled messages coming from the Store
     Front (e.g. for product sales), using JDBC to directly update state in the
     Master Database behind the legacy backend. Together the asynchronous
     messaging via SwiftMQ and the JDBC database updates formed the interface
-    between the Legacy Backend and the Integration Middleware. 
+    between the Legacy Backend and the Integration Middleware.
 
 image:a6a826a7d5f6f47bb710e57b9704b6c99581548fcca4203383b87c74ac26c863.png[Branch by abstraction,, ]
 
@@ -664,7 +659,7 @@ Although, not spotted at the time, the team were able to use the link:https://ma
     "flawed supplier" without impacting the business operations.
 
 The first thing the team did was to implement event interception by
-    adding an Event Router via a refactoring. 
+    adding an Event Router via a refactoring.
 
 image:75f0a82ad9b936a3a8493a9b96741db0d9d75d59e97fd08b3a40401c3effb05d.png[(P)Refactoring to add Event Interceptor,, ]
 
@@ -706,7 +701,7 @@ Implementing the Event router was not as straight forward as it could
     component in the wild and were set to incrementally enhance its capability
     using new link:https://martinfowler.com/bliki/ContinuousDelivery.html[Continuous Delivery] pipelines.
 
-==== Successfully deliver the parts:  building out the functionality, maintaining the contract
+=== Successfully deliver the parts:  building out the functionality, maintaining the contract
 
 image:7ddd00a6d5e0faed0fdd50929c410b12ceb66588755522a24354b94e1235ec80.png[New Implementation and Rollout,, ]
 
@@ -728,7 +723,7 @@ A new API was introduced on the Legacy Store Front (5) that the new Store
     Front Manager's adapter (4). Critically, this enabled the legacy
     implementation and the new implementation to be run in parallel.
 
-==== Successfully deliver the parts (cont.): transitioning into live service - using a second seam
+=== Successfully deliver the parts (cont.): transitioning into live service - using a second seam
 
 With all of the pieces in place the business were able to test the new
       solution, but how to roll it out into live service **in a risk managed way**.
@@ -758,7 +753,7 @@ High level system processing: Unless the business had specified otherwise,
         Storefront Manager application would store its own representation of the
         product and forward a command message via a queue for the product to be
         published. The Legacy Storefront Adapter consumes that command, and calls
-        the new v2 API on the Legacy Storefront. 
+        the new v2 API on the Legacy Storefront.
 
 As required by the business,
         users can now manipulate how the products are presented on the storefront in
@@ -772,7 +767,7 @@ When a product (published via the v2 API) is sold, the Legacy Store Front
         of the product, and the Master Database Adapter updating the legacy Master
         Database with the sale information.
 
-==== Changing the organisation to allow this to happen on an ongoing basis
+=== Changing the organisation to allow this to happen on an ongoing basis
 
 Our teams had already been working with the client, in another part of the organisation and had already
         successfully displaced a different legacy system.
@@ -788,19 +783,19 @@ The teams on the new programme, working with new stakeholders, needed to take th
         larger scope releases were also displaced by smaller, more frequent, higher confidence deployments, and
         toggled releases to the business when they were ready to take on the changes.
 
-==== Closing thoughts
+=== Closing thoughts
 
 Of course there was significantly more complexity and
         integration requirements than implied by the simplified story above. An example
         of the need for Archeology introduced itself shortly after testing the
         new implementation in production. A number of business critical management
-        information reports did not tally - products were "getting lost". 
+        information reports did not tally - products were "getting lost".
 
 After much digging the team found that the database used by the
         Integration Middleware (for storing the state of long running business
         transactions) was replicated to the organisation's data warehouse. Via a number
         batch jobs, stored procedures and views this data was made available for use
-        within the business critical KPI reports. 
+        within the business critical KPI reports.
 
 image:8ad5abc26e02d19d929c5dac042f3ce6c0d780bd913a821242c9ebbc67aca0fe.png[LegacyModernizationExample_Archeology,, ]
 
@@ -810,10 +805,10 @@ Additional Legacy mimics were required to ensure that these reports
         sales messages coming from the Store Front and using JDBC injected the data into
         appropriate tables within the data warehouse. These additional mimics
         also became part of the transitional architecture, and would be removed when
-        possible. 
+        possible.
 
 The approach of branch by abstraction, and use of patterns and practices
-    described above was one intended to lower risk. 
+    described above was one intended to lower risk.
 
 Using Event Interception (technical seam), Legacy Mimics and Transitional Architecture
       enabled the client to break the problem up.  Then segmenting by product (business seam),
@@ -831,7 +826,7 @@ The approach allowed risk to be managed, but came at a cost.  A question to cons
 
 '''
 
-=== Acknowledgements
+== Acknowledgements
 
 Bill Codding, Chris Ford, James Emmott, Kief Morris, Mark Taylor, Meaghan Waters, Peter Gillard-Moss, Rebecca
       Parsons, and Simon Brunning

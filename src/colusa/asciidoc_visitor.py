@@ -1,4 +1,5 @@
 import re
+from typing import Any, Callable, Optional
 
 import requests
 from bs4 import Tag
@@ -15,7 +16,7 @@ class AsciidocVisitor(NodeVisitor):
         text = re.sub(rex, ' ', text)
         return text
 
-    def visit_TagHeading(self, node, level, text, *args, **kwargs):
+    def visit_TagHeading(self, node: Tag, level: int, text: str, *args: Any, **kwargs: Any) -> str:
         text = self.text_cleanup(text)
         if not text:
             # empty heading
@@ -23,10 +24,10 @@ class AsciidocVisitor(NodeVisitor):
 
         return f'{"="*(level+1)} {text}\n\n'
 
-    def visit_tag_fall_through(self, node, *args, **kwargs):
+    def visit_tag_fall_through(self, node: Tag, *args: Any, **kwargs: Any) -> str:
         return self.generic_visit(node, *args, **kwargs)
 
-    def visit_tag_ignore_content(self, node, *args, **kwargs):
+    def visit_tag_ignore_content(self, node: Tag, *args: Any, **kwargs: Any) -> str:
         return ''
 
     visit_tag_span = visit_tag_fall_through
@@ -46,7 +47,7 @@ class AsciidocVisitor(NodeVisitor):
     visit_tag_form = visit_tag_ignore_content
     visit_tag_script = visit_tag_ignore_content
 
-    def visit_tag_a(self, node, *args, **kwargs):
+    def visit_tag_a(self, node: Tag, *args: Any, **kwargs: Any) -> str:
         href = node.get('href', '')
         # kwargs['href'] = href
         text = self.generic_visit(node, *args, **kwargs)
@@ -65,15 +66,15 @@ class AsciidocVisitor(NodeVisitor):
 
         return f'link:{href}[{text}]'
 
-    def visit_tag_p(self, node, *args, **kwargs):
+    def visit_tag_p(self, node: Tag, *args: Any, **kwargs: Any) -> str:
         text = self.generic_visit(node, *args, **kwargs)
         return f'{text.strip()}\n\n'
 
     visit_tag_article = visit_tag_p
     visit_tag_div = visit_tag_p
 
-    def visit_heading_node(level):
-        def visitor(self, node, *args, **kwargs):
+    def visit_heading_node(level: int) -> Callable[['AsciidocVisitor', Tag, Any, Any], str]:
+        def visitor(self: 'AsciidocVisitor', node: Tag, *args: Any, **kwargs: Any) -> str:
             text = self.generic_visit(node, *args, **kwargs)
             text = self.text_cleanup(text)
             if not text:
@@ -89,7 +90,7 @@ class AsciidocVisitor(NodeVisitor):
     visit_tag_h3 = visit_heading_node(3)
     visit_tag_h4 = visit_heading_node(4)
 
-    def visit_tag_h5(self, node, *args, **kwargs):
+    def visit_tag_h5(self, node: Tag, *args: Any, **kwargs: Any) -> str:
         text = self.generic_visit(node, *args, **kwargs)
         text = self.text_cleanup(text)
         if not text:
@@ -99,20 +100,20 @@ class AsciidocVisitor(NodeVisitor):
         return f'\n\n**{text}**\n\n'
     visit_tag_h6 = visit_tag_h5
 
-    def visit_tag_strong(self, node, *args, **kwargs):
+    def visit_tag_strong(self, node: Tag, *args: Any, **kwargs: Any) -> str:
         text = self.generic_visit(node, *args, **kwargs)
         return self.tag_wrap_around(text, '**')
 
     visit_tag_b = visit_tag_strong
 
-    def visit_tag_em(self, node, *args, **kwargs):
+    def visit_tag_em(self, node: Tag, *args: Any, **kwargs: Any) -> str:
         text = self.generic_visit(node, *args, **kwargs)
         return self.tag_wrap_around(text, '__')
 
     visit_tag_i = visit_tag_em
     visit_tag_u = visit_tag_em
 
-    def tag_wrap_around(self, text, w):
+    def tag_wrap_around(self, text: str, w: str) -> str:
         if not text:
             return ''
         new_text = text.strip()
@@ -121,9 +122,9 @@ class AsciidocVisitor(NodeVisitor):
         begin, t, end = text.partition(new_text)
         return f'{begin}{w}{t}{w}{end}'
 
-    def visit_tag_blockquote(self, node, *args, **kwargs):
+    def visit_tag_blockquote(self, node: Tag, *args: Any, **kwargs: Any) -> str:
         cite_node = node.find('cite')
-        cite = None
+        cite: Optional[str] = None
         if cite_node is not None:
             cite_node.extract()
             cite = cite_node.text
@@ -133,10 +134,10 @@ class AsciidocVisitor(NodeVisitor):
         else:
             return f'[quote, {cite}]\n____\n{text}\n____\n\n'
 
-    def visit_tag_hr(self, node, *args, **kwargs):
+    def visit_tag_hr(self, node: Tag, *args: Any, **kwargs: Any) -> str:
         return "\n'''\n\n"
 
-    def visit_tag_br(self, node, *args, **kwargs):
+    def visit_tag_br(self, node: Tag, *args: Any, **kwargs: Any) -> str:
         pre = kwargs.get('pre')
         if len(node.contents) > 0:
             text = self.generic_visit(node, *args, **kwargs)
@@ -148,16 +149,16 @@ class AsciidocVisitor(NodeVisitor):
         else:
             return f"\n{text}"
 
-    def visit_tag_ol(self, node, *args, **kwargs):
+    def visit_tag_ol(self, node: Tag, *args: Any, **kwargs: Any) -> str:
         return self.wrapper_list(node, 'ol', *args, **kwargs)
 
-    def visit_tag_ul(self, node, *args, **kwargs):
+    def visit_tag_ul(self, node: Tag, *args: Any, **kwargs: Any) -> str:
         return self.wrapper_list(node, 'ul', *args, **kwargs)
 
-    def wrapper_list(self, node, list_type, *args, **kwargs):
-        indent = kwargs.get('indent', 0)
+    def wrapper_list(self, node: Tag, list_type: str, *args: Any, **kwargs: Any) -> str:
+        indent: int = kwargs.get('indent', 0)
         indent = indent + 1
-        indent_stack = kwargs.get('indent_stack', [])
+        indent_stack: list[str] = kwargs.get('indent_stack', [])
         indent_stack.append(list_type)
         kwargs['indent'] = indent
         kwargs['indent_stack'] = indent_stack
@@ -168,13 +169,13 @@ class AsciidocVisitor(NodeVisitor):
         kwargs['indent_stack'] = indent_stack
         return f'{text}\n\n'
 
-    def visit_tag_li(self, node, *args, **kwargs):
+    def visit_tag_li(self, node: Tag, *args: Any, **kwargs: Any) -> str:
         text = self.generic_visit(node, *args, **kwargs)
         if not text:
             return ''
 
-        indent = kwargs.get('indent', 1)
-        indent_stack = kwargs.get('indent_stack', [])
+        indent: int = kwargs.get('indent', 1)
+        indent_stack: list[str] = kwargs.get('indent_stack', [])
         if len(indent_stack) == 0:
             # something wrong, ignore data
             return ''
@@ -185,7 +186,7 @@ class AsciidocVisitor(NodeVisitor):
             sep = '.'
         return f'{sep*indent} {text}\n'
 
-    def visit_tag_figure(self, node, *args, **kwargs):
+    def visit_tag_figure(self, node: Tag, *args: Any, **kwargs: Any) -> str:
         caption_node = node.find('figcaption')
         if caption_node is not None:
             kwargs['caption'] = caption_node.text.strip()
@@ -201,7 +202,7 @@ class AsciidocVisitor(NodeVisitor):
             del kwargs['caption']
         return f'{text}\n\n'
 
-    def visit_tag_img(self, node, *args, **kwargs):
+    def visit_tag_img(self, node: Tag, *args: Any, **kwargs: Any) -> str:
         alt = node.get('alt', '')
         height = node.get('height', '')
         width = node.get('width', '')
@@ -216,8 +217,8 @@ class AsciidocVisitor(NodeVisitor):
             return ''
         image_name = colusa.fetch.download_image(url_path, kwargs['output_dir'])
 
-        caption = kwargs.get('caption')
-        href = kwargs.get('href')
+        caption: Optional[str] = kwargs.get('caption')
+        href: Optional[str] = kwargs.get('href')
         if not href:
             href_str = ''
         else:
@@ -227,14 +228,14 @@ class AsciidocVisitor(NodeVisitor):
         else:
             return f'.{caption}\n{href_str}image:{image_name}[{alt},{dim}]\n'
 
-    def get_image_from_srcset(self, srcset, default_src, default_dim):
+    def get_image_from_srcset(self, srcset: Optional[str], default_src: str, default_dim: str) -> tuple[str, str]:
         import re
 
         if srcset is None:
             return default_dim, default_src
 
         srcs = srcset.split(', ')
-        imgs = {}
+        imgs: dict[str, str] = {}
         for s in srcs:
             s = s.strip()
             ss = s.split(' ')
@@ -254,7 +255,7 @@ class AsciidocVisitor(NodeVisitor):
 
         return dim, src
 
-    def visit_tag_pre(self, node, *args, **kwargs):
+    def visit_tag_pre(self, node: Tag, *args: Any, **kwargs: Any) -> str:
         kwargs['pre'] = True
         text = self.generic_visit(node, *args, **kwargs)
         del kwargs['pre']
@@ -265,12 +266,12 @@ class AsciidocVisitor(NodeVisitor):
 
 '''
 
-    def visit_tag_code(self, node, *args, **kwargs):
+    def visit_tag_code(self, node: Tag, *args: Any, **kwargs: Any) -> str:
         text = self.generic_visit(node, *args, **kwargs)
         if '\n' in text:
             # multiline code
-            lang = node.get('class', ['text'])
-            lang = lang[0]
+            lang_list = node.get('class', ['text'])
+            lang = lang_list[0] if lang_list else 'text'
             lang = lang.replace('language-', '')
             ascii_content = f'''[source, {lang}]
 ----
@@ -282,13 +283,13 @@ class AsciidocVisitor(NodeVisitor):
             # inline
             return f'`{text}`'
 
-    def visit_tag_table(self, node, *args, **kwargs):
+    def visit_tag_table(self, node: Tag, *args: Any, **kwargs: Any) -> str:
         all_tr = node.find_all('tr')
-        table = []
-        headers = []
+        table: list[list[str]] = []
+        headers: list[str] = []
         num_cols = 0
         for tr in all_tr:
-            all_td = []
+            all_td: list[str] = []
             for td in tr.contents:
                 if td.name == 'td':
                     text = self.generic_visit(td, *args, **kwargs)
@@ -307,7 +308,7 @@ class AsciidocVisitor(NodeVisitor):
 
         table_preamble = '|==='
         table_close = '|==='
-        r_table = [f'[{option_header},cols="{option_cols}"]', table_preamble]
+        r_table: list[str] = [f'[{option_header},cols="{option_cols}"]', table_preamble]
         if len(headers) > 0:
             r_header = '\n'.join([f'| {h}' for h in headers]) + '\n'
             r_table.append(r_header)

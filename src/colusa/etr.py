@@ -1,5 +1,6 @@
 import os
 import re
+from typing import Any, Callable, Optional, Type, Union
 
 from bs4 import Tag, BeautifulSoup
 from dateutil.parser import parse
@@ -7,25 +8,26 @@ from dateutil.parser import parse
 from .asciidoc_visitor import AsciidocVisitor
 from .visitor import NodeVisitor
 from .utils import slugify
+from .config import BookConfig, MakeConfig
 
 """
 Dictionary of extractor
 """
-__EXTRACTORS = {}
+__EXTRACTORS: dict[str, dict[str, Any]] = {}
 
 """
 Dictionary of transformer
 """
-__TRANSFORMERS = {}
+__TRANSFORMERS: dict[str, dict[str, Any]] = {}
 
 """
 Dictionary of postprocessing
 """
-__POSTPROCESSORS = {}
+__POSTPROCESSORS: dict[str, Type['PostProcessor']] = {}
 
 
-def register_extractor(pattern):
-    def decorator(cls):
+def register_extractor(pattern: str) -> Callable[[Type['Extractor']], Type['Extractor']]:
+    def decorator(cls: Type['Extractor']) -> Type['Extractor']:
         __EXTRACTORS[cls.__name__] = {
             'pattern': pattern,
             'cls': cls,
@@ -34,8 +36,9 @@ def register_extractor(pattern):
 
     return decorator
 
-def register_extractor_v2(id: str, pattern: str):
-    def decorator(cls):
+
+def register_extractor_v2(id: str, pattern: str) -> Callable[[Type['Extractor']], Type['Extractor']]:
+    def decorator(cls: Type['Extractor']) -> Type['Extractor']:
         __EXTRACTORS[id] = {
             'pattern': pattern,
             'cls': cls,
@@ -44,8 +47,9 @@ def register_extractor_v2(id: str, pattern: str):
 
     return decorator
 
-def register_transformer(pattern):
-    def decorator(cls):
+
+def register_transformer(pattern: str) -> Callable[[Type['Transformer']], Type['Transformer']]:
+    def decorator(cls: Type['Transformer']) -> Type['Transformer']:
         __TRANSFORMERS[cls.__name__] = {
             'pattern': pattern,
             'cls': cls,
@@ -54,8 +58,9 @@ def register_transformer(pattern):
 
     return decorator
 
-def register_transformer_v2(id: str, pattern: str):
-    def decorator(cls):
+
+def register_transformer_v2(id: str, pattern: str) -> Callable[[Type['Transformer']], Type['Transformer']]:
+    def decorator(cls: Type['Transformer']) -> Type['Transformer']:
         __TRANSFORMERS[id] = {
             'pattern': pattern,
             'cls': cls,
@@ -65,24 +70,25 @@ def register_transformer_v2(id: str, pattern: str):
     return decorator
 
 
-def register_postprocessor(name: str):
+def register_postprocessor(name: str) -> Callable[[Type['PostProcessor']], Type['PostProcessor']]:
     """Register post processing class"""
-    def decorator(cls):
+    def decorator(cls: Type['PostProcessor']) -> Type['PostProcessor']:
         __POSTPROCESSORS[name] = cls
         return cls
 
     return decorator
 
 
-def create_extractor(url_path, bs):
+def create_extractor(url_path: str, bs: BeautifulSoup) -> 'Extractor':
     for _, ext in __EXTRACTORS.items():
-        p = ext['pattern']
-        cls = ext['cls']
+        p: str = ext['pattern']
+        cls: Type['Extractor'] = ext['cls']
         if re.search(p, url_path):
             return cls(bs)
     return Extractor(bs)
 
-def populate_extractor_config(config: dict):
+
+def populate_extractor_config(config: dict[str, Any]) -> None:
     """
     Populate extract configs from external configuration file.
     Should be called at begining before creating any extractor
@@ -92,7 +98,8 @@ def populate_extractor_config(config: dict):
             ext = __EXTRACTORS[id]
             ext.update(v)
 
-def populate_transformer_config(config: dict):
+
+def populate_transformer_config(config: dict[str, Any]) -> None:
     """
     Populate transformer configs from external configuration file.
     Should be called at begining before creating any transformer
@@ -102,14 +109,15 @@ def populate_transformer_config(config: dict):
             trf = __TRANSFORMERS[id]
             trf.update(v)
 
-def create_transformer(url_path, content, root):
-    config = {
+
+def create_transformer(url_path: str, content: Tag, root: str) -> 'Transformer':
+    config: dict[str, str] = {
         "src_url": url_path,
         "output_dir": root
     }
     for _, trf in __TRANSFORMERS.items():
-        p = trf['pattern']
-        cls = trf['cls']
+        p: str = trf['pattern']
+        cls: Type['Transformer'] = trf['cls']
         if re.search(p, url_path):
             return cls(config, content)
 
@@ -117,24 +125,24 @@ def create_transformer(url_path, content, root):
 
 
 class ContentNotFoundError(Exception):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
         pass
 
-    def __str__(self):
+    def __str__(self) -> str:
         return 'cannot detect content of the site'
 
 
-class Extractor(object):
+class Extractor:
     """Extractor extract real article content from sea of other contents"""
-    def __init__(self, bs: BeautifulSoup):
-        self.bs = bs
-        self.content = None
-        self.author = None
-        self.published = None
-        self.title = None
-        self.extra_metadata = ''
+    def __init__(self, bs: BeautifulSoup) -> None:
+        self.bs: BeautifulSoup = bs
+        self.content: Optional[Tag] = None
+        self.author: Optional[str] = None
+        self.published: Optional[str] = None
+        self.title: Optional[str] = None
+        self.extra_metadata: str = ''
 
-        self.main_content = self._find_main_content()
+        self.main_content: Optional[Tag] = self._find_main_content()
         if self.main_content is None:
             raise ContentNotFoundError()
 
@@ -184,13 +192,15 @@ class Extractor(object):
         return ''
 
     @classmethod
-    def remove_tag(cls, site, tag, attrs):
+    def remove_tag(cls, site: Optional[Tag], tag: str, attrs: dict[str, Any]) -> None:
+        if site is None:
+            return
         elements = site.find_all(tag, attrs=attrs)
         if elements is not None:
             for e in elements:
                 e.extract()
 
-    def cleanup(self):
+    def cleanup(self) -> None:
         """
         Cleanup extra content (mostly ads) within main content
         """
@@ -204,13 +214,13 @@ class Extractor(object):
         self.remove_tag(self.main_content, 'nav', attrs={'class': 'post-navigation'})
         self.remove_tag(self.main_content, 'header', attrs={'id': 'masthead'})
 
-    def get_content(self):
+    def get_content(self) -> Optional[Tag]:
         """
         :return: handle to main content of website
         """
         return self.main_content
 
-    def _find_main_content(self) -> Tag:
+    def _find_main_content(self) -> Optional[Tag]:
         """
         The purpose of internal_init is to find the main content of website
         and set the member self.site to handle of that content
@@ -220,7 +230,7 @@ class Extractor(object):
 
         :return: Tag of main content
         """
-        def is_content_class(css_class):
+        def is_content_class(css_class: Optional[str]) -> bool:
             return css_class is not None and css_class in [
                 'postcontent',
                 'entry-content',
@@ -252,8 +262,9 @@ class Extractor(object):
         tag = self.bs.find('main')
         if tag is not None:
             return tag
+        return None
 
-    def _parse_yoast_data(self) -> dict:
+    def _parse_yoast_data(self) -> dict[str, str]:
         """
         Parse yoast json data to get some metadata such as author, published date
         :return: dict of metadata found in yoast data
@@ -263,7 +274,7 @@ class Extractor(object):
             'class': "yoast-schema-graph",
         })
 
-        return_data = {}
+        return_data: dict[str, str] = {}
         if yoast_data is None:
             return return_data
 
@@ -271,8 +282,8 @@ class Extractor(object):
         from dateutil import parser
         data = json.loads(yoast_data.string)
         graph = data.get('@graph', [])
-        persons = {}
-        author = None
+        persons: dict[str, str] = {}
+        author: Optional[str] = None
         for g in graph:
             if type(g) is not dict:
                 continue
@@ -296,7 +307,7 @@ class Extractor(object):
 
         return return_data
 
-    def _parse_metadata(self):
+    def _parse_metadata(self) -> None:
         """
         Parse existing web metadata to get value for `title`, `author`, `published`
         """
@@ -310,18 +321,18 @@ class Extractor(object):
         self.published = data.get('published', self.published)
 
 
-class Transformer(object):
+class Transformer:
     """Transformer transform some html tags into asciidoc syntax"""
-    def __init__(self, config, site):
-        self.value = ''
-        self.config = config
-        self.site = site
+    def __init__(self, config: dict[str, str], site: Tag) -> None:
+        self.value: str = ''
+        self.config: dict[str, str] = config
+        self.site: Tag = site
 
     @classmethod
-    def tag_wrapper_pre(cls, tag: Tag, text: str, indent: int):
+    def tag_wrapper_pre(cls, tag: Tag, text: str, indent: int) -> str:
         code_pattern = r"^\[code\s+lang=(?P<lang>.*)\](?P<content>.*)\[\/code\]$"
         matches = re.finditer(code_pattern, tag.text, re.MULTILINE | re.DOTALL)
-        content = []
+        content: list[str] = []
         for matchNum, match in enumerate(matches, start=1):
             ascii_content = f'''[source, {match.group('lang')}]
 ----
@@ -346,7 +357,7 @@ class Transformer(object):
         """
         return AsciidocVisitor()
 
-    def transform(self):
+    def transform(self) -> str:
         visitor = self.create_visitor()
         # print(self.site)
         self.value = visitor.visit(self.site, src_url=self.config['src_url'], output_dir=self.config['output_dir'])
@@ -355,24 +366,27 @@ class Transformer(object):
         self.cleanup_after_visit()
         return self.value
 
-    def cleanup_after_visit(self):
+    def cleanup_after_visit(self) -> None:
         """
         Cleanup transformed text
         """
         self.value = re.sub(r'(\n\s*){3,}', '\n\n', self.value)
 
 
-
-class Render(object):
+class Render:
     """
         Render book metadata, structure
     """
-    def __init__(self, config: dict):
-        self.output_dir = config.get('output_dir', '.')
-        self.config = config
-        self.file_list = []
+    def __init__(self, config: Union[dict[str, Any], BookConfig]) -> None:
+        # Support both dict and BookConfig for backward compatibility
+        if isinstance(config, BookConfig):
+            self._config = config
+        else:
+            self._config = BookConfig.from_dict(config)
+        self.output_dir: str = self._config.output_dir
+        self.file_list: list[tuple[str, int]] = []
 
-    def render_book_part(self, title: str, description: str):
+    def render_book_part(self, title: str, description: str) -> None:
         file_name = f'part_{slugify(title)}.asciidoc'
         self.file_list.append((file_name, 0))
         file_path = os.path.join(self.output_dir, file_name)
@@ -382,13 +396,13 @@ class Render(object):
                 file_out.write(description)
                 file_out.write('\n\n')
 
-    def render_chapter(self, extractor: Extractor, content: Transformer, src_url, basename: str,
-                       metadata=True, title_strip=''):
+    def render_chapter(self, extractor: Extractor, content: Transformer, src_url: str, basename: str,
+                       metadata: bool = True, title_strip: str = '') -> str:
         file_name = f'{basename}.asciidoc'
         self.file_list.append((file_name, 1))
         file_path = os.path.join(self.output_dir, file_name)
         with open(file_path, 'w', encoding='utf-8') as file_out:
-            title = extractor.title
+            title = extractor.title or ''
             title = title.replace(title_strip, '')
             file_out.write(f'= {title}\n\n')
 
@@ -400,11 +414,11 @@ class Render(object):
 
         return file_path
 
-    def render_metadata(self, extractor: Extractor, content: Transformer, src_url):
+    def render_metadata(self, extractor: Extractor, content: Transformer, src_url: str) -> str:
         from urllib.parse import urlparse
 
         author = extractor.author
-        data = []
+        data: list[str] = []
         if author:
             author_fmt = f'by **{author}**'
             data.append(author_fmt)
@@ -416,7 +430,7 @@ class Render(object):
         domain = urlparse(src_url).netloc
         data.append(f'at _link:{src_url}[{domain}]_')
         first_line = ' '.join(data)
-        lines = [f"{first_line}\n"]
+        lines: list[str] = [f"{first_line}\n"]
         extra = extractor.extra_metadata
         if extra:
             lines.append(extra)
@@ -424,26 +438,36 @@ class Render(object):
         article_metadata = "\n".join(lines)
         return article_metadata
 
-    def generate_makefile(self, make_params: dict):
-        book_file_name = self.config.get('book_file_name', 'index.asciidoc')
+    def generate_makefile(self, make_params: Union[dict[str, str], MakeConfig]) -> None:
+        # Support both dict and MakeConfig
+        if isinstance(make_params, MakeConfig):
+            html_params = make_params.html
+            epub_params = make_params.epub
+            pdf_params = make_params.pdf
+        else:
+            html_params = make_params.get('html', '')
+            epub_params = make_params.get('epub', '')
+            pdf_params = make_params.get('pdf', '')
+        
+        book_file_name = self._config.book_file_name
         target_prefix = book_file_name
         target_prefix = target_prefix.removesuffix('.asciidoc').replace('-', '_')
         target_prefix = '' if target_prefix == 'index' else f'{target_prefix}_'
         template = f'''html:
-\tasciidoctor {book_file_name} -d book -b html5 -D output {make_params.get('html', '')}
+\tasciidoctor {book_file_name} -d book -b html5 -D output {html_params}
 \tcp -r images output/
 
 epub:
-\tasciidoctor-epub3 {book_file_name} -d book -D output {make_params.get('epub', '')}
+\tasciidoctor-epub3 {book_file_name} -d book -D output {epub_params}
 
 pdf:
-\tasciidoctor-pdf {book_file_name} -d book -D output {make_params.get('pdf', '')}
+\tasciidoctor-pdf {book_file_name} -d book -D output {pdf_params}
 '''
         file_path = os.path.join(self.output_dir, f'{target_prefix}Makefile')
         with open(file_path, 'w') as out_file:
             out_file.write(template)
 
-    def ebook_generate_master_file(self):
+    def ebook_generate_master_file(self) -> None:
         """ Generate master index.asciidoc to include all book related information such as
         - book title
         - book author
@@ -452,42 +476,42 @@ pdf:
         - and include all generated asciidoc files from `urls`
         """
         included_files = '\n\n'.join([f'include::{x[0]}[leveloffset={x[1]}]' for x in self.file_list])
-        book_properties = '\n'.join([x.strip() for x in self.config.get('book_properties', [])])
-        content = f'''= {self.config["title"]}
-{self.config["author"]}
-{self.config["version"]}
+        book_properties = '\n'.join([x.strip() for x in self._config.book_properties])
+        content = f'''= {self._config.title}
+{self._config.author}
+{self._config.version}
 :doctype: book
 :partnums:
 :toc:
 :imagesdir: images
-:homepage: {self.config["homepage"]}
+:homepage: {self._config.homepage}
 {book_properties}
 
 {included_files}
 '''
-        book_file_name = self.config.get('book_file_name', 'index.asciidoc')
+        book_file_name = self._config.book_file_name
         with open(os.path.join(self.output_dir, book_file_name), 'w') as index_file:
             index_file.write(content)
 
 
-class PostProcessor(object):
-    def __init__(self, file_path: str, params: list):
-        self.file_path = file_path
-        self.params = params
+class PostProcessor:
+    def __init__(self, file_path: str, params: list[Any]) -> None:
+        self.file_path: str = file_path
+        self.params: list[Any] = params
 
-    def run():
+    def run(self) -> None:
         pass
 
 
 class PostProcessorNotFoundError(Exception):
-    def __init__(self, name: str, *args, **kwargs):
-        self.name = name
+    def __init__(self, name: str, *args: Any, **kwargs: Any) -> None:
+        self.name: str = name
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f'Post Processor {self.name} is not registered'
 
 
-def create_postprocessor(name: str, file_path: str, params: list) -> PostProcessor:
+def create_postprocessor(name: str, file_path: str, params: list[Any]) -> PostProcessor:
     cls = __POSTPROCESSORS.get(name)
     if not cls:
         raise PostProcessorNotFoundError(name)

@@ -2,35 +2,37 @@ import hashlib
 import os
 import pathlib
 import shutil
+from typing import Any, Optional
 
 import requests
+import requests.sessions
 import re
 
 from colusa import logs, utils
 
-_FETCH_MAP = {
-}
+_FETCH_MAP: dict[str, tuple[str, type]] = {}
+
 
 class Fetch:
-    def __init__(self, config={}) -> None:
-        self.config = config
+    def __init__(self, config: dict[str, Any] = {}) -> None:
+        self.config: dict[str, Any] = config
 
-    def close(self):
+    def close(self) -> None:
         pass
 
-    def __enter__(self):
+    def __enter__(self) -> 'Fetch':
         return self
 
-    def __exit__(self, *args):
+    def __exit__(self, *args: Any) -> None:
         self.close()
     
-    def can_process(self, url: str):
+    def can_process(self, url: str) -> bool:
         """
         Determine if can handle given URL or not
         """
         return True
 
-    def request(self, method, url, **kwargs):
+    def request(self, method: str, url: str, **kwargs: Any) -> requests.Response:
         """Constructs and sends a :class:`Request <Request>`.
 
         :param method: method for the new :class:`Request` object: ``GET``, ``OPTIONS``, ``HEAD``, ``POST``, ``PUT``, ``PATCH``, or ``DELETE``.
@@ -77,8 +79,7 @@ class Fetch:
         with requests.sessions.Session() as session:
             return session.request(method=method, url=url, **kwargs)
 
-
-    def get(self, url, params=None, **kwargs):
+    def get(self, url: str, params: Optional[dict[str, Any]] = None, **kwargs: Any) -> requests.Response:
         r"""Sends a GET request.
 
         :param url: URL for the new :class:`Request` object.
@@ -91,7 +92,7 @@ class Fetch:
 
         return self.request("get", url, params=params, **kwargs)
 
-    def options(self, url, **kwargs):
+    def options(self, url: str, **kwargs: Any) -> requests.Response:
         r"""Sends an OPTIONS request.
 
         :param url: URL for the new :class:`Request` object.
@@ -102,7 +103,7 @@ class Fetch:
 
         return self.request("options", url, **kwargs)
 
-    def head(self, url, **kwargs):
+    def head(self, url: str, **kwargs: Any) -> requests.Response:
         r"""Sends a HEAD request.
 
         :param url: URL for the new :class:`Request` object.
@@ -116,8 +117,7 @@ class Fetch:
         kwargs.setdefault("allow_redirects", False)
         return self.request("head", url, **kwargs)
 
-
-    def post(self, url, data=None, json=None, **kwargs):
+    def post(self, url: str, data: Optional[Any] = None, json: Optional[Any] = None, **kwargs: Any) -> requests.Response:
         r"""Sends a POST request.
 
         :param url: URL for the new :class:`Request` object.
@@ -131,7 +131,7 @@ class Fetch:
 
         return self.request("post", url, data=data, json=json, **kwargs)
 
-    def put(self, url, data=None, **kwargs):
+    def put(self, url: str, data: Optional[Any] = None, **kwargs: Any) -> requests.Response:
         r"""Sends a PUT request.
 
         :param url: URL for the new :class:`Request` object.
@@ -145,7 +145,7 @@ class Fetch:
 
         return self.request("put", url, data=data, **kwargs)
 
-    def patch(self, url, data=None, **kwargs):
+    def patch(self, url: str, data: Optional[Any] = None, **kwargs: Any) -> requests.Response:
         r"""Sends a PATCH request.
 
         :param url: URL for the new :class:`Request` object.
@@ -159,7 +159,7 @@ class Fetch:
 
         return self.request("patch", url, data=data, **kwargs)
 
-    def delete(self, url, **kwargs):
+    def delete(self, url: str, **kwargs: Any) -> requests.Response:
         r"""Sends a DELETE request.
 
         :param url: URL for the new :class:`Request` object.
@@ -170,36 +170,40 @@ class Fetch:
 
         return self.request("delete", url, **kwargs)
 
-class Downloader():
-    UserAgent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15'
-    def __init__(self, downloader_config = {}) -> None:
-        self.clients = []
+
+class Downloader:
+    UserAgent: str = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15'
+    
+    def __init__(self, downloader_config: dict[str, Any] = {}) -> None:
+        self.clients: list[tuple[str, Fetch]] = []
         for key, config in downloader_config.items():
-            pattern, fetcher_cls = _FETCH_MAP.get(key, (None, None))
-            if pattern is None or fetcher_cls is None:
+            result = _FETCH_MAP.get(key)
+            if result is None:
                 continue
+            pattern, fetcher_cls = result
             self.clients.append((pattern, fetcher_cls(config)))
 
         self.clients.append((r'.*', Fetch({})))
 
-    def close(self):
+    def close(self) -> None:
         for _, ins in self.clients:
             ins.close()
 
-    def __enter__(self):
+    def __enter__(self) -> 'Downloader':
         return self
 
-    def __exit__(self, *args):
+    def __exit__(self, *args: Any) -> None:
         self.close()
 
-    def get_fetch_instance(self, url_path: str) -> Fetch:
+    def get_fetch_instance(self, url_path: str) -> Optional[Fetch]:
         for pattern, fetch_obj in self.clients:
             if fetch_obj.can_process(url_path):
                 return fetch_obj
             # if re.match(pattern, url_path):
             #     return fetch_obj
+        return None
 
-    def download_url(self, url_path: str, file_path: str):
+    def download_url(self, url_path: str, file_path: str) -> None:
         if url_path.startswith('file://'):
             # handle support for local file
             url_path = url_path.removeprefix('file://')
@@ -207,11 +211,14 @@ class Downloader():
             return
 
         # handle download from internet
-        headers = {
+        headers: dict[str, str] = {
             'Accept': '*/*',
             'User-Agent': self.UserAgent,
         }
         fetch = self.get_fetch_instance(url_path)
+        if fetch is None:
+            logs.error(f'Cannot find fetch instance for URL: {url_path}')
+            return
         req = fetch.get(url_path, headers=headers, stream=True)
         if req.status_code != 200:
             logs.error(f'Cannot make request. Result: {req.status_code:d}. URL: {url_path}')
@@ -223,7 +230,8 @@ class Downloader():
             req.raw.decode_content = True
             shutil.copyfileobj(req.raw, file_out)
 
-def download_image(url_path, output_dir):
+
+def download_image(url_path: str, output_dir: str) -> str:
     import urllib
 
     # logs.info(f'call download_image with url_path is {url_path}')
@@ -243,11 +251,9 @@ def download_image(url_path, output_dir):
     return image_name
 
 
-_FETCH_MAP = {
-}
-def register_fetch(name: str, pattern: str):
+def register_fetch(name: str, pattern: str) -> Any:
     """Register url content fetcher class"""
-    def decorator(cls):
+    def decorator(cls: type) -> type:
         _FETCH_MAP[name] = (pattern, cls)
         return cls
 
