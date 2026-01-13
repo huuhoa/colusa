@@ -159,6 +159,8 @@ class Colusa:
         title_strip = self.config.title_prefix_trim
         try:
             extractor = etr.create_extractor(url_path, bs)
+            extractor.url_path = url_path
+            extractor.parse()
             extractor.cleanup()
             transformer = etr.create_transformer(url_path, extractor.get_content(), self.output_dir)
             transformer.transform()

@@ -136,13 +136,21 @@ class Extractor:
     """Extractor extract real article content from sea of other contents"""
     def __init__(self, bs: BeautifulSoup) -> None:
         self.bs: BeautifulSoup = bs
+        self.url_path: str = None
         self.content: Optional[Tag] = None
         self.author: Optional[str] = None
         self.published: Optional[str] = None
         self.title: Optional[str] = None
         self.extra_metadata: str = ''
 
-        self.main_content: Optional[Tag] = self._find_main_content()
+        self.main_content: Optional[Tag] = None
+
+    def parse(self) -> None:
+        """
+        parse the main content of website and set to self.main_content,
+        also parse metadata such as title, author, published date
+        """
+        self.main_content = self._find_main_content()
         if self.main_content is None:
             raise ContentNotFoundError()
 
