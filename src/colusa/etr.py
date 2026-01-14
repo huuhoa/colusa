@@ -79,14 +79,20 @@ def register_postprocessor(name: str) -> Callable[[Type['PostProcessor']], Type[
     return decorator
 
 
-def create_extractor(url_path: str, bs: BeautifulSoup) -> 'Extractor':
+def create_extractor(bs: BeautifulSoup, url_path: str, cached_path: str) -> 'Extractor':
+    extractor: Extractor = None
     for _, ext in __EXTRACTORS.items():
         p: str = ext['pattern']
         cls: Type['Extractor'] = ext['cls']
         if re.search(p, url_path):
-            return cls(bs)
-    return Extractor(bs)
+            extractor = cls(bs)
+            break
+    if extractor is None:
+        extractor = Extractor(bs)
 
+    extractor.url_path = url_path
+    extractor.cached_path = cached_path
+    return extractor
 
 def populate_extractor_config(config: dict[str, Any]) -> None:
     """
@@ -137,6 +143,7 @@ class Extractor:
     def __init__(self, bs: BeautifulSoup) -> None:
         self.bs: BeautifulSoup = bs
         self.url_path: str = None
+        self.cached_path: str = None
         self.content: Optional[Tag] = None
         self.author: Optional[str] = None
         self.published: Optional[str] = None

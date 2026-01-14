@@ -158,7 +158,7 @@ class Colusa:
         chapter_metadata = self.config.metadata
         title_strip = self.config.title_prefix_trim
         try:
-            extractor = etr.create_extractor(url_path, bs)
+            extractor = etr.create_extractor(bs, url_path, os.path.join(self.output_dir, '.cached'))
             extractor.url_path = url_path
             extractor.parse()
             extractor.cleanup()
