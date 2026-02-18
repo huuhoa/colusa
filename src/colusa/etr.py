@@ -211,9 +211,10 @@ class Extractor:
         if site is None:
             return
         elements = site.find_all(tag, attrs=attrs)
-        if elements is not None:
-            for e in elements:
-                e.extract()
+        if elements is None:
+            return
+        for e in elements:
+            e.decompose()
 
     def cleanup(self) -> None:
         """
