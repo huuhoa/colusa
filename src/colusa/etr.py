@@ -79,8 +79,16 @@ def register_postprocessor(name: str) -> Callable[[Type['PostProcessor']], Type[
     return decorator
 
 
+def get_registered_extractors() -> dict:
+    return dict(__EXTRACTORS)
+
+
+def get_registered_transformers() -> dict:
+    return dict(__TRANSFORMERS)
+
+
 def create_extractor(bs: BeautifulSoup, url_path: str, cached_path: str) -> 'Extractor':
-    extractor: Extractor = None
+    extractor: Optional[Extractor] = None
     for _, ext in __EXTRACTORS.items():
         p: str = ext['pattern']
         cls: Type['Extractor'] = ext['cls']
@@ -142,8 +150,8 @@ class Extractor:
     """Extractor extract real article content from sea of other contents"""
     def __init__(self, bs: BeautifulSoup) -> None:
         self.bs: BeautifulSoup = bs
-        self.url_path: str = None
-        self.cached_path: str = None
+        self.url_path: Optional[str] = None
+        self.cached_path: Optional[str] = None
         self.content: Optional[Tag] = None
         self.author: Optional[str] = None
         self.published: Optional[str] = None

@@ -14,8 +14,8 @@ _FETCH_MAP: dict[str, tuple[str, type]] = {}
 
 
 class Fetch:
-    def __init__(self, config: dict[str, Any] = {}) -> None:
-        self.config: dict[str, Any] = config
+    def __init__(self, config: Optional[dict[str, Any]] = None) -> None:
+        self.config: dict[str, Any] = config if config is not None else {}
 
     def close(self) -> None:
         pass
@@ -174,7 +174,8 @@ class Fetch:
 class Downloader:
     UserAgent: str = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15'
     
-    def __init__(self, downloader_config: dict[str, Any] = {}) -> None:
+    def __init__(self, downloader_config: Optional[dict[str, Any]] = None) -> None:
+        downloader_config = downloader_config or {}
         self.clients: list[tuple[str, Fetch]] = []
         for key, config in downloader_config.items():
             result = _FETCH_MAP.get(key)
@@ -245,7 +246,7 @@ def download_image(url_path: str, output_dir: str) -> str:
                 fetch.download_url(url_path, image_path)
         except requests.exceptions.ConnectionError as ex:
             logs.warn(f'error while downloading image. Exception: {ex}')
-        except Exception as ex:
+        except (requests.exceptions.RequestException, OSError) as ex:
             logs.error(f'error with URL: {url_path}. Exception: {ex}')
 
     return image_name
