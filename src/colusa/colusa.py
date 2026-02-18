@@ -9,6 +9,19 @@ from colusa import logs, etr, utils, fetch, ConfigurationError
 from colusa.config import BookConfig, MakeConfig, UrlEntry, SiteRule, _parse_site_rule
 
 
+_TOOL_MAP: dict[str, str] = {
+    'html': 'asciidoctor',
+    'epub': 'asciidoctor-epub3',
+    'pdf':  'asciidoctor-pdf',
+}
+
+_TOOL_INSTALL_URL: dict[str, str] = {
+    'html': 'https://asciidoctor.org',
+    'epub': 'https://asciidoctor.org/docs/asciidoctor-epub3/',
+    'pdf':  'https://asciidoctor.org/docs/asciidoctor-pdf/',
+}
+
+
 def _resolve_extractor(url_path: str) -> tuple[str, str]:
     """Return (class_name, kind) for the extractor that would handle url_path.
     kind is 'plugin' or 'base'.
@@ -136,6 +149,20 @@ class Colusa:
         config_dir = str(pathlib.Path(config_file_path).parent)
         with Colusa(configs, config_file_dir=config_dir) as s:
             s.dry_run(config_file_path)
+
+    @classmethod
+    def build_book(cls, config_file_path: str, formats: Optional[list[str]] = None) -> None:
+        """Compile an already-generated book using asciidoctor tools.
+
+        Args:
+            config_file_path: Path to the book config file.
+            formats: List of formats to build ('html', 'epub', 'pdf').
+                     Defaults to all three if None.
+        """
+        configs = cls._read_configuration_file(config_file_path)
+        config_dir = str(pathlib.Path(config_file_path).parent)
+        with Colusa(configs, config_file_dir=config_dir) as s:
+            s._build_formats(formats or ['html', 'epub', 'pdf'])
 
     @classmethod
     def _read_configuration_file(cls, file_path: str) -> BookConfig:
@@ -309,6 +336,55 @@ class Colusa:
             for url in self._failed_urls:
                 print(f'  - {url}')
             raise SystemExit(1)
+
+    def _build_formats(self, formats: list[str]) -> None:
+        """Invoke asciidoctor tools for each requested format."""
+        import shutil
+        import subprocess
+
+        make = self.config.make
+        extra_params: dict[str, str] = {
+            'html': make.html,
+            'epub': make.epub,
+            'pdf':  make.pdf,
+        }
+        book_file = self.config.book_file_name
+        failed: list[str] = []
+
+        for fmt in formats:
+            tool = _TOOL_MAP[fmt]
+            if not shutil.which(tool):
+                logs.error(
+                    f'{tool} not found on PATH.\n'
+                    f'        Install: {_TOOL_INSTALL_URL[fmt]}'
+                )
+                failed.append(fmt)
+                continue
+
+            cmd = self._build_command(fmt, book_file, extra_params[fmt])
+            print(f'[build] Building {fmt}...')
+            result = subprocess.run(cmd, cwd=self.output_dir)
+            if result.returncode != 0:
+                logs.error(f'Build failed for format: {fmt}')
+                failed.append(fmt)
+            else:
+                stem = pathlib.PurePath(book_file).stem
+                ext_map = {'html': '.html', 'epub': '.epub', 'pdf': '.pdf'}
+                out_file = pathlib.Path(self.output_dir) / 'output' / f'{stem}{ext_map[fmt]}'
+                print(f'[build] {fmt} → {out_file}  ✓')
+
+        if failed:
+            raise SystemExit(1)
+
+    @staticmethod
+    def _build_command(fmt: str, book_file: str, extra_params: str) -> list[str]:
+        """Build the subprocess argument list for an asciidoctor invocation."""
+        cmd = [_TOOL_MAP[fmt], book_file, '-d', 'book', '-D', 'output']
+        if fmt == 'html':
+            cmd += ['-b', 'html5']
+        if extra_params:
+            cmd += extra_params.split()
+        return cmd
 
     def dry_run(self, config_file_path: str = '') -> None:
         """Print a per-URL dispatch summary. No I/O side-effects."""
