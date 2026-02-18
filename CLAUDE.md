@@ -6,6 +6,17 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **colusa** is a CLI tool that downloads web articles, extracts their content, and converts them to AsciiDoc format for compiling into ebooks (HTML, EPUB, PDF via asciidoctor).
 
+## Git Workflow
+
+Direct push to `main` is not allowed. Always work on a feature branch and open a PR:
+
+```sh
+git checkout -b my-branch
+# make changes, commit
+gh pr create
+gh pr merge <number> --squash
+```
+
 ## Development Setup
 
 ```sh
