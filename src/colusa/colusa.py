@@ -379,11 +379,12 @@ class Colusa:
     @staticmethod
     def _build_command(fmt: str, book_file: str, extra_params: str) -> list[str]:
         """Build the subprocess argument list for an asciidoctor invocation."""
+        import shlex
         cmd = [_TOOL_MAP[fmt], book_file, '-d', 'book', '-D', 'output']
         if fmt == 'html':
             cmd += ['-b', 'html5']
         if extra_params:
-            cmd += extra_params.split()
+            cmd += shlex.split(extra_params)
         return cmd
 
     def dry_run(self, config_file_path: str = '') -> None:
