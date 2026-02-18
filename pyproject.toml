@@ -16,7 +16,6 @@ maintainers = [
 ]
 classifiers = [
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
@@ -29,7 +28,7 @@ classifiers = [
     "Topic :: Utilities",
 ]
 keywords = ["ebook", "web", "converter", "asciidoc", "epub"]
-requires-python = ">=3.8"
+requires-python = ">=3.9"
 
 dependencies = [
     "beautifulsoup4>=4.9",
@@ -41,12 +40,14 @@ dependencies = [
     "urllib3>=2.5.0",
     "python-dateutil~=2.9.0",
     "PyYAML>=6.0.1",
-    "torpy~=1.1.6",
     "setuptools>=80.3.1",
     "importlib-metadata; python_version<'3.10'",
 ]
 
 [project.optional-dependencies]
+tor = [
+    "torpy~=1.1.6",
+]
 dev = [
     "bump2version>=1.0.1",
     "gitchangelog>=3.0.4",

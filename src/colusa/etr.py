@@ -409,7 +409,6 @@ class Transformer:
             content.append(ascii_content)
 
         if len(content) == 0:
-            print('PRE ====', text)
             content.append(f'''[listing]
 ....
 {text}
@@ -426,9 +425,7 @@ class Transformer:
 
     def transform(self) -> str:
         visitor = self.create_visitor()
-        # print(self.site)
         self.value = visitor.visit(self.site, src_url=self.config['src_url'], output_dir=self.config['output_dir'])
-        # print(value)
         # cleanup large whitespace
         self.cleanup_after_visit()
         return self.value
