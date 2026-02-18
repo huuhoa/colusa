@@ -454,6 +454,10 @@ class Render:
         article_metadata = "\n".join(lines)
         return article_metadata
 
+    def render_asciidoc_passthrough(self, file_name: str, title: str) -> None:
+        """Add a pre-written AsciiDoc file to the book without transformation."""
+        self.file_list.append((file_name, 1))
+
     def generate_makefile(self, make_params: Union[dict[str, str], MakeConfig]) -> None:
         # Support both dict and MakeConfig
         if isinstance(make_params, MakeConfig):

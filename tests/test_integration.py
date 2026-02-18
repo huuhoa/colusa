@@ -1,6 +1,7 @@
 import unittest
 
 from colusa import Colusa
+from colusa.config import UrlEntry
 from colusa.utils import get_short_hexdigest, get_hexdigest
 import pathlib
 import os
@@ -17,7 +18,8 @@ def download_image_mocked(url_path, *args, **kwargs):
     return image_name
 
 
-def download_content_mocked(url_path: str):
+def download_content_mocked(url_entry: UrlEntry):
+    url_path = url_entry.path
     print(f'call colusa.Colusa.download_content with path {url_path}')
     cached_file_path = os.path.join('tests-cached', f'{get_hexdigest(url_path)}.html')
     with open(cached_file_path, 'rt', encoding='utf-8') as file_in:
@@ -40,7 +42,8 @@ class ColusaIntegrationTestCase(unittest.TestCase):
 
     @patch('colusa.Colusa.download_content')
     def test_mock_download_content(self, mock_download_content):
-        def side_effect(url_path: str):
+        def side_effect(url_entry: UrlEntry):
+            url_path = url_entry.path
             print(f'call colusa.Colusa.download_content with path {url_path}')
             cached_file_path = os.path.join('tests-cached', f'{get_hexdigest(url_path)}.html')
             with open(cached_file_path, 'rt', encoding='utf-8') as file_in:
@@ -63,7 +66,7 @@ class ColusaIntegrationTestCase(unittest.TestCase):
         }
         runner = Colusa(configs)
         runner.generate()
-        mock_download_content.assert_called_once_with("https://staffeng.com/guides/overview-overview")
+        mock_download_content.assert_called_once_with(UrlEntry(path="https://staffeng.com/guides/overview-overview"))
 
     @patch('colusa.Colusa.download_content')
     @patch('colusa.fetch.download_image')

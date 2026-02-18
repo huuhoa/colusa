@@ -6,7 +6,7 @@ import yaml
 import os
 
 from colusa import logs, etr, utils, fetch, ConfigurationError
-from colusa.config import BookConfig, MakeConfig
+from colusa.config import BookConfig, MakeConfig, UrlEntry
 
 
 class Colusa:
@@ -101,12 +101,27 @@ class Colusa:
         raise ConfigurationError(f'unknown configuration file format: {p.suffix}. '
                                  f'Configuration file format should be either .json or .yml')
 
-    def download_content(self, url_path: str) -> str:
+    @staticmethod
+    def _is_local_path(path: str) -> bool:
+        return not path.startswith(('http://', 'https://'))
+
+    def download_content(self, url_entry: UrlEntry) -> str:
         """
-        Download html content of given `url_path` then cached in `.cached` folder of local file system
-        :param url_path: url of html article
-        :return: content of downloaded file
+        Return html content for the given entry.
+        For local paths, reads the file directly.
+        For remote URLs, downloads and caches as before.
+        :param url_entry: UrlEntry with path and optional metadata
+        :return: content of the file
         """
+        url_path = url_entry.path
+
+        if self._is_local_path(url_path):
+            import chardet
+            with open(url_path, 'rb') as f:
+                result = chardet.detect(f.read())
+                encoding = result['encoding']
+            with open(url_path, 'rt', encoding=encoding) as file_in:
+                return file_in.read()
 
         import chardet
 
@@ -151,8 +166,40 @@ class Colusa:
     def close(self) -> None:
         self.downloader.close()
 
-    def ebook_generate_content(self, url_path: str) -> None:
-        content = self.download_content(url_path)
+    def _process_local_asciidoc(self, url_entry: UrlEntry) -> None:
+        """Copy a local .adoc file into the output dir and register it in the book."""
+        import shutil
+        src_path = pathlib.Path(url_entry.path)
+        file_name = self._get_saved_file_name(url_entry.path) + '.asciidoc'
+        dest_path = pathlib.Path(self.output_dir) / file_name
+        shutil.copy2(src_path, dest_path)
+
+        if url_entry.title:
+            title = url_entry.title
+        else:
+            # Try to parse from first `= ...` line
+            title = src_path.stem
+            try:
+                with open(src_path, 'r', encoding='utf-8') as f:
+                    for line in f:
+                        line = line.strip()
+                        if line.startswith('= '):
+                            title = line[2:].strip()
+                            break
+            except Exception:
+                pass
+
+        self.book_maker.render_asciidoc_passthrough(file_name, title)
+
+    def ebook_generate_content(self, url_entry: UrlEntry) -> None:
+        url_path = url_entry.path
+
+        # Route local .adoc files directly — no HTML extraction needed
+        if self._is_local_path(url_path) and pathlib.PurePath(url_path).suffix in ('.adoc', '.asciidoc'):
+            self._process_local_asciidoc(url_entry)
+            return
+
+        content = self.download_content(url_entry)
         bs = BeautifulSoup(content, 'html.parser')
 
         chapter_metadata = self.config.metadata
@@ -162,6 +209,13 @@ class Colusa:
             extractor.url_path = url_path
             extractor.parse()
             extractor.cleanup()
+            # Apply per-entry metadata overrides
+            if url_entry.title:
+                extractor.title = url_entry.title
+            if url_entry.author:
+                extractor.author = url_entry.author
+            if url_entry.published:
+                extractor.published = url_entry.published
             transformer = etr.create_transformer(url_path, extractor.get_content(), self.output_dir)
             transformer.transform()
             file_path = self.book_maker.render_chapter(extractor, transformer, url_path,
@@ -190,11 +244,11 @@ class Colusa:
         self.book_maker.ebook_generate_master_file()
 
     def _generate_book_single_part(self) -> None:
-        paths = self.config.urls
-        if len(paths) == 0:
+        entries = self.config.urls
+        if len(entries) == 0:
             raise ConfigurationError('urls field must contain at least one url')
-        for url_path in paths:
-            self.ebook_generate_content(url_path)
+        for entry in entries:
+            self.ebook_generate_content(entry)
 
     def _generate_book_multi_part(self) -> None:
         parts = self.config.parts
@@ -202,5 +256,5 @@ class Colusa:
             raise ConfigurationError('parts field must contain at least one part object')
         for part in parts:
             self.book_maker.render_book_part(part.title, part.description)
-            for url_path in part.urls:
-                self.ebook_generate_content(url_path)
+            for entry in part.urls:
+                self.ebook_generate_content(entry)
