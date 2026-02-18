@@ -49,12 +49,6 @@ class PartConfig:
     urls: list[UrlEntry] = field(default_factory=list)
 
 
-@dataclass
-class DownloaderConfig:
-    """Configuration for the content downloader."""
-    # Extensible for different fetcher configs (e.g., tor, proxy, etc.)
-    pass
-
 
 @dataclass
 class SiteRule:
@@ -202,10 +196,18 @@ class BookConfig:
                 for pp in self.postprocessing
             ],
             'parts': [
-                {'title': p.title, 'description': p.description, 'urls': p.urls}
+                {
+                    'title': p.title,
+                    'description': p.description,
+                    'urls': [{'path': e.path, 'title': e.title,
+                              'author': e.author, 'published': e.published}
+                             for e in p.urls],
+                }
                 for p in self.parts
             ],
-            'urls': self.urls,
+            'urls': [{'path': e.path, 'title': e.title,
+                      'author': e.author, 'published': e.published}
+                     for e in self.urls],
             'book_properties': self.book_properties,
             'title_prefix_trim': self.title_prefix_trim,
             'downloader': self.downloader,

@@ -200,8 +200,6 @@ class Downloader:
         for pattern, fetch_obj in self.clients:
             if fetch_obj.can_process(url_path):
                 return fetch_obj
-            # if re.match(pattern, url_path):
-            #     return fetch_obj
         return None
 
     def download_url(self, url_path: str, file_path: str) -> None:
@@ -235,7 +233,6 @@ class Downloader:
 def download_image(url_path: str, output_dir: str) -> str:
     import urllib
 
-    # logs.info(f'call download_image with url_path is {url_path}')
     result = urllib.parse.urlsplit(url_path)
     p = pathlib.PurePath(result.path)
     image_name = f'{utils.get_hexdigest(url_path)}{p.suffix}'
