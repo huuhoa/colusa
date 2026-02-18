@@ -9,6 +9,28 @@ from colusa import logs, etr, utils, fetch, ConfigurationError
 from colusa.config import BookConfig, MakeConfig, UrlEntry, SiteRule, _parse_site_rule
 
 
+def _resolve_extractor(url_path: str) -> tuple[str, str]:
+    """Return (class_name, kind) for the extractor that would handle url_path.
+    kind is 'plugin' or 'base'.
+    """
+    import re
+    for _, ext in etr.get_registered_extractors().items():
+        if re.search(ext['pattern'], url_path):
+            return ext['cls'].__name__, 'plugin'
+    return 'Extractor', 'base'
+
+
+def _resolve_transformer(url_path: str) -> tuple[str, str]:
+    """Return (class_name, kind) for the transformer that would handle url_path.
+    kind is 'plugin' or 'base'.
+    """
+    import re
+    for _, trf in etr.get_registered_transformers().items():
+        if re.search(trf['pattern'], url_path):
+            return trf['cls'].__name__, 'plugin'
+    return 'Transformer', 'base'
+
+
 def _load_rules_file(path: str) -> list[SiteRule]:
     p = pathlib.PurePath(path)
     with open(path, 'r', encoding='utf-8') as f:
@@ -106,6 +128,14 @@ class Colusa:
         config_dir = str(pathlib.Path(config_file_path).parent)
         with Colusa(configs, config_file_dir=config_dir) as s:
             s.generate()
+
+    @classmethod
+    def dry_run_book(cls, config_file_path: str) -> None:
+        """Print dispatch plan without downloading or writing any files."""
+        configs = cls._read_configuration_file(config_file_path)
+        config_dir = str(pathlib.Path(config_file_path).parent)
+        with Colusa(configs, config_file_dir=config_dir) as s:
+            s.dry_run(config_file_path)
 
     @classmethod
     def _read_configuration_file(cls, file_path: str) -> BookConfig:
@@ -279,6 +309,56 @@ class Colusa:
             for url in self._failed_urls:
                 print(f'  - {url}')
             raise SystemExit(1)
+
+    def dry_run(self, config_file_path: str = '') -> None:
+        """Print a per-URL dispatch summary. No I/O side-effects."""
+        all_entries: list[tuple[UrlEntry, Optional[str]]] = []
+        if self.config.multi_part:
+            for part in self.config.parts:
+                for entry in part.urls:
+                    all_entries.append((entry, part.title))
+        else:
+            for entry in self.config.urls:
+                all_entries.append((entry, None))
+
+        print(f'[dry-run] Config: {config_file_path}')
+        print(f'[dry-run] Output dir: {self.config.output_dir}')
+        print(f'[dry-run] Total URLs: {len(all_entries)}')
+
+        for i, (entry, part_title) in enumerate(all_entries, 1):
+            url_path = entry.path
+            print(f'\n[{i}/{len(all_entries)}] {url_path}')
+
+            if part_title:
+                print(f'      Part       : {part_title}')
+
+            if self._is_local_path(url_path):
+                suffix = pathlib.PurePath(url_path).suffix.lower()
+                if suffix in ('.adoc', '.asciidoc'):
+                    print(f'      Type       : local AsciiDoc (passthrough)')
+                else:
+                    print(f'      Type       : local HTML')
+                    ext_name, ext_kind = _resolve_extractor(url_path)
+                    trf_name, trf_kind = _resolve_transformer(url_path)
+                    print(f'      Extractor  : {ext_name} ({ext_kind})')
+                    print(f'      Transformer: {trf_name} ({trf_kind})')
+            else:
+                rule = self._match_site_rule(url_path)
+                if rule:
+                    print(f'      Extractor  : DynamicExtractor (rule: {rule.pattern})')
+                    print(f'      Transformer: Transformer (base)')
+                else:
+                    ext_name, ext_kind = _resolve_extractor(url_path)
+                    trf_name, trf_kind = _resolve_transformer(url_path)
+                    print(f'      Extractor  : {ext_name} ({ext_kind})')
+                    print(f'      Transformer: {trf_name} ({trf_kind})')
+
+            overrides = {k: v for k, v in [
+                ('title', entry.title), ('author', entry.author), ('published', entry.published)
+            ] if v}
+            if overrides:
+                override_str = ', '.join(f'{k}="{v}"' for k, v in overrides.items())
+                print(f'      Overrides  : {override_str}')
 
     def _generate_book_single_part(self) -> None:
         entries = self.config.urls

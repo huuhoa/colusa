@@ -28,6 +28,8 @@ def parse_args() -> argparse.Namespace:
     generate_parser.set_defaults(func=generate)
     generate_parser.add_argument('input', type=str, help='Configuration file. '
                                                          'File extension should be either json or yml')
+    generate_parser.add_argument('--dry-run', action='store_true',
+                                 help='Print what would be done without downloading or writing any files')
 
     crawler_parse = commands.add_parser('crawl',
                         help='Crawl an URL to generate list of URLs')
@@ -61,7 +63,10 @@ def init(args: argparse.Namespace) -> None:
 
 def generate(args: argparse.Namespace) -> None:
     try:
-        Colusa.generate_book(args.input)
+        if args.dry_run:
+            Colusa.dry_run_book(args.input)
+        else:
+            Colusa.generate_book(args.input)
     except ConfigurationError as e:
         logs.error(e)
 
