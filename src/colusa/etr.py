@@ -8,7 +8,7 @@ from dateutil.parser import parse
 from .asciidoc_visitor import AsciidocVisitor
 from .visitor import NodeVisitor
 from .utils import slugify
-from .config import BookConfig, MakeConfig
+from .config import BookConfig, MakeConfig, SiteRule
 
 """
 Dictionary of extractor
@@ -335,6 +335,49 @@ class Extractor:
         self.title = data.get('title', self.title)
         self.author = data.get('author', self.author)
         self.published = data.get('published', self.published)
+
+
+class DynamicExtractor(Extractor):
+    """Extractor driven by user-supplied CSS selectors from a SiteRule."""
+    def __init__(self, bs: BeautifulSoup, rule: SiteRule) -> None:
+        super().__init__(bs)
+        self._rule = rule
+
+    def _find_main_content(self) -> Optional[Tag]:
+        if self._rule.content:
+            tag = self.bs.select_one(self._rule.content)
+            if tag is not None:
+                return tag
+        return super()._find_main_content()
+
+    def _parse_title(self) -> str:
+        if self._rule.title:
+            tag = self.bs.select_one(self._rule.title)
+            if tag is not None:
+                return tag.get_text(strip=True)
+        return super()._parse_title()
+
+    def _parse_author(self) -> str:
+        if self._rule.author:
+            tag = self.bs.select_one(self._rule.author)
+            if tag is not None:
+                return tag.get_text(strip=True)
+        return super()._parse_author()
+
+    def _parse_published(self) -> str:
+        if self._rule.published:
+            tag = self.bs.select_one(self._rule.published)
+            if tag is not None:
+                return tag.get_text(strip=True)
+        return super()._parse_published()
+
+    def cleanup(self) -> None:
+        super().cleanup()
+        if self.main_content is None:
+            return
+        for selector in self._rule.cleanup:
+            for el in self.main_content.select(selector):
+                el.decompose()
 
 
 class Transformer:

@@ -6,29 +6,37 @@ import yaml
 import os
 
 from colusa import logs, etr, utils, fetch, ConfigurationError
-from colusa.config import BookConfig, MakeConfig, UrlEntry
+from colusa.config import BookConfig, MakeConfig, UrlEntry, SiteRule, _parse_site_rule
+
+
+def _load_rules_file(path: str) -> list[SiteRule]:
+    p = pathlib.PurePath(path)
+    with open(path, 'r', encoding='utf-8') as f:
+        data = yaml.safe_load(f) if p.suffix == '.yml' else json.load(f)
+    return [_parse_site_rule(r) for r in (data or [])]
 
 
 class Colusa:
     """
     Implementation for initializing book configuration and generating book from configuration
     """
-    def __init__(self, configuration: Union[dict[str, Any], BookConfig]) -> None:
+    def __init__(self, configuration: Union[dict[str, Any], BookConfig], config_file_dir: str = '') -> None:
         from colusa.etr import populate_extractor_config, populate_transformer_config
 
         utils.scan('colusa.plugins')
-        
+
         # Support both dict and BookConfig for backward compatibility
         if isinstance(configuration, BookConfig):
             self.config = configuration
         else:
             self.config = BookConfig.from_dict(configuration)
-        
+
         self.output_dir = self.config.output_dir
         self.book_maker = etr.Render(self.config)
         self.downloader = fetch.Downloader(self.config.downloader)
         populate_extractor_config(self.config.extractors)
         populate_transformer_config(self.config.transformers)
+        self.site_rules: list[SiteRule] = self._load_site_rules(config_file_dir)
 
     @classmethod
     def generate_new_configuration(cls, file_path: str) -> None:
@@ -68,6 +76,22 @@ class Colusa:
         raise ConfigurationError(f'unknown configuration file format: {p.suffix}. '
                                  f'Configuration file format should be either .json or .yml')
 
+    def _load_site_rules(self, config_file_dir: str) -> list[SiteRule]:
+        rules = list(self.config.site_rules)
+        rules_file = self.config.site_rules_file
+        if rules_file:
+            if not os.path.isabs(rules_file) and config_file_dir:
+                rules_file = os.path.join(config_file_dir, rules_file)
+            rules.extend(_load_rules_file(rules_file))
+        return rules
+
+    def _match_site_rule(self, url_path: str) -> Optional[SiteRule]:
+        import re
+        for rule in self.site_rules:
+            if re.search(rule.pattern, url_path):
+                return rule
+        return None
+
     @classmethod
     def generate_book(cls, config_file_path: str) -> None:
         """
@@ -78,7 +102,8 @@ class Colusa:
         :return: None
         """
         configs = cls._read_configuration_file(config_file_path)
-        with Colusa(configs) as s:
+        config_dir = str(pathlib.Path(config_file_path).parent)
+        with Colusa(configs, config_file_dir=config_dir) as s:
             s.generate()
 
     @classmethod
@@ -205,8 +230,13 @@ class Colusa:
         chapter_metadata = self.config.metadata
         title_strip = self.config.title_prefix_trim
         try:
-            extractor = etr.create_extractor(bs, url_path, os.path.join(self.output_dir, '.cached'))
-            extractor.url_path = url_path
+            rule = self._match_site_rule(url_path)
+            if rule:
+                extractor = etr.DynamicExtractor(bs, rule)
+                extractor.url_path = url_path
+                extractor.cached_path = os.path.join(self.output_dir, '.cached')
+            else:
+                extractor = etr.create_extractor(bs, url_path, os.path.join(self.output_dir, '.cached'))
             extractor.parse()
             extractor.cleanup()
             # Apply per-entry metadata overrides

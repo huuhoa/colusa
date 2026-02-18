@@ -57,6 +57,28 @@ class DownloaderConfig:
 
 
 @dataclass
+class SiteRule:
+    """User-defined CSS-selector-based parsing rule for a site pattern."""
+    pattern: str
+    content: Optional[str] = None
+    title: Optional[str] = None
+    author: Optional[str] = None
+    published: Optional[str] = None
+    cleanup: list[str] = field(default_factory=list)
+
+
+def _parse_site_rule(d: dict[str, Any]) -> SiteRule:
+    return SiteRule(
+        pattern=d['pattern'],
+        content=d.get('content'),
+        title=d.get('title'),
+        author=d.get('author'),
+        published=d.get('published'),
+        cleanup=d.get('cleanup', []),
+    )
+
+
+@dataclass
 class BookConfig:
     """Main configuration for generating an ebook.
     
@@ -96,6 +118,8 @@ class BookConfig:
     downloader: dict[str, Any] = field(default_factory=dict)
     extractors: dict[str, Any] = field(default_factory=dict)
     transformers: dict[str, Any] = field(default_factory=dict)
+    site_rules: list[SiteRule] = field(default_factory=list)
+    site_rules_file: str = ''
 
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> 'BookConfig':
@@ -149,6 +173,8 @@ class BookConfig:
             downloader=data.get('downloader', {}),
             extractors=data.get('extractors', {}),
             transformers=data.get('transformers', {}),
+            site_rules=[_parse_site_rule(r) for r in data.get('site_rules', [])],
+            site_rules_file=data.get('site_rules_file', ''),
         )
 
     def to_dict(self) -> dict[str, Any]:
