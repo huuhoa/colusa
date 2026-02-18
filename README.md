@@ -95,6 +95,32 @@ $ colusa generate new_ebook.json
 
 By invoking above command, `colusa` will download webpages (specified in `urls`), parse, transform them to asciidoc format, and save them to `output_dir`. `colusa` also create a neccessary information for ebook compilating at later steps.
 
+Use `--dry-run` to preview which extractor and transformer would be selected for each URL, without downloading anything or writing any files:
+
+```bash
+$ colusa generate new_ebook.json --dry-run
+```
+
+Example output:
+
+```
+[dry-run] Config: new_ebook.json
+[dry-run] Output dir: fsblog/
+[dry-run] Total URLs: 3
+
+[1/3] https://staffeng.com/guides/overview
+      Extractor  : StaffEng (plugin)
+      Transformer: StaffEng (plugin)
+
+[2/3] https://medium.com/@user/some-article
+      Extractor  : Medium (plugin)
+      Transformer: Transformer (base)
+
+[3/3] https://unknown-site.com/article
+      Extractor  : Extractor (base)
+      Transformer: Transformer (base)
+```
+
 ## Supporting Unsupported Websites
 
 If a website is not in the supported list, you can define CSS-selector-based parsing rules directly in your book config without touching colusa's code. Dynamic rules are evaluated before built-in plugins; the first matching rule wins.

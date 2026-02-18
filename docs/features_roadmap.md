@@ -7,7 +7,7 @@
 **1. Progress reporting**
 `generate` is silent while running — add a simple `[1/42] Downloading …` counter. Long books feel like they hang.
 
-**2. `--dry-run` flag for `generate`**
+**2. ~~`--dry-run` flag for `generate`~~ ✅ Implemented**
 Print which URLs would be fetched and which extractor/transformer would be selected, without downloading anything. Useful for debugging configs.
 
 **3. ~~`colusa add-url <config> <url>`~~ ✅ Implemented**
