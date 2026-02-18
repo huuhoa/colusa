@@ -6,6 +6,27 @@ from typing import Any, Optional
 
 
 @dataclass
+class UrlEntry:
+    """A single URL or local file path entry with optional metadata overrides."""
+    path: str
+    title: Optional[str] = None
+    author: Optional[str] = None
+    published: Optional[str] = None
+
+
+def _parse_url_entry(entry: Any) -> 'UrlEntry':
+    """Convert a raw config entry (str or dict) into a UrlEntry."""
+    if isinstance(entry, str):
+        return UrlEntry(path=entry)
+    return UrlEntry(
+        path=entry['path'],
+        title=entry.get('title'),
+        author=entry.get('author'),
+        published=entry.get('published'),
+    )
+
+
+@dataclass
 class MakeConfig:
     """Configuration for makefile generation (html, epub, pdf targets)."""
     html: str = ''
@@ -25,7 +46,7 @@ class PartConfig:
     """Configuration for a book part (used in multi-part books)."""
     title: str
     description: str = ''
-    urls: list[str] = field(default_factory=list)
+    urls: list[UrlEntry] = field(default_factory=list)
 
 
 @dataclass
@@ -69,7 +90,7 @@ class BookConfig:
     make: MakeConfig = field(default_factory=MakeConfig)
     postprocessing: list[PostProcessingConfig] = field(default_factory=list)
     parts: list[PartConfig] = field(default_factory=list)
-    urls: list[str] = field(default_factory=list)
+    urls: list[UrlEntry] = field(default_factory=list)
     book_properties: list[str] = field(default_factory=list)
     title_prefix_trim: str = ''
     downloader: dict[str, Any] = field(default_factory=dict)
@@ -105,11 +126,11 @@ class BookConfig:
             PartConfig(
                 title=part.get('title', ''),
                 description=part.get('description', ''),
-                urls=part.get('urls', [])
+                urls=[_parse_url_entry(e) for e in part.get('urls', [])]
             )
             for part in data.get('parts', [])
         ]
-        
+
         return cls(
             title=data.get('title', ''),
             author=data.get('author', ''),
@@ -122,7 +143,7 @@ class BookConfig:
             make=make_config,
             postprocessing=postprocessing,
             parts=parts,
-            urls=data.get('urls', []),
+            urls=[_parse_url_entry(e) for e in data.get('urls', [])],
             book_properties=data.get('book_properties', []),
             title_prefix_trim=data.get('title_prefix_trim', ''),
             downloader=data.get('downloader', {}),
