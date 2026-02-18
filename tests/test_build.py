@@ -146,6 +146,17 @@ class BuildCommandTestCase(unittest.TestCase):
         self.assertIn('--attribute', cmd)
         self.assertIn('pdf-theme=basic', cmd)
 
+    def test_build_command_handles_quoted_values_with_spaces(self):
+        # Quoted values containing spaces (e.g. margin arrays) must not be split
+        extra = r'-a pdf-page-size=B7 -a pdf-page-margin="[0.15in, 0.17in, 0.40in, 0.17in]" -o out.pdf'
+        cmd = Colusa._build_command('pdf', 'index.asciidoc', extra)
+        self.assertIn('-a', cmd)
+        self.assertIn('pdf-page-size=B7', cmd)
+        # shlex strips quotes; the key=value pair arrives as one token (not split on commas/spaces)
+        self.assertIn('pdf-page-margin=[0.15in, 0.17in, 0.40in, 0.17in]', cmd)
+        self.assertIn('-o', cmd)
+        self.assertIn('out.pdf', cmd)
+
     def test_build_command_no_extra_params_when_empty(self):
         cmd = Colusa._build_command('epub', 'index.asciidoc', '')
         # No stray empty strings appended
