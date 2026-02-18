@@ -1,6 +1,296 @@
 # Changelog
 
 
+## Unreleased
+
+### Fix
+
+* PR A debt cleanup — prints, dead code, torpy, Python floor, to_dict (#236) [Huu Hoa NGUYEN]
+
+  * docs: update tech debt assessment after PR #235
+
+  Mark all 10 high-severity items as resolved (type safety ×3, error
+  handling ×3, test coverage ×2 fully + ×1 partially). Update summary
+  totals (HIGH 10→2, total 51→43) and reprioritise remaining work.
+
+  Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
+
+  * docs: add plan for remaining technical debt fixes
+
+  Two-PR plan covering:
+  - PR A: debug print removal, dead code, torpy→optional, Python floor >=3.9,
+    BookConfig.to_dict() UrlEntry serialisation, DownloaderConfig removal
+  - PR B: download failure tests, post-processor tests, representative
+    per-plugin extraction tests
+
+  Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
+
+  * fix: PR A debt cleanup — prints, dead code, torpy, Python floor, to_dict
+
+  - etr.py: remove live print('PRE ====') and two commented-out prints
+  - fetch.py: remove commented-out dead code in get_fetch_instance() and
+    download_image()
+  - config.py: fix BookConfig.to_dict() to serialise UrlEntry objects in
+    urls and parts[].urls as dicts instead of raw objects; remove unused
+    empty DownloaderConfig dataclass
+  - pyproject.toml: move torpy to optional [tor] extra (not used in source);
+    bump requires-python to >=3.9 (code uses 3.9+ syntax throughout);
+    remove Python 3.8 classifier
+
+* Resolve all high-severity technical debts (#235) [Huu Hoa NGUYEN]
+
+  * docs: add technical debt assessment
+
+  Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
+
+  * fix: resolve all high-severity technical debts
+
+  - Fix Optional type annotations in etr.py (create_extractor, Extractor.__init__)
+  - Add get_registered_extractors/get_registered_transformers public accessors
+  - Fix mutable default arguments in Fetch.__init__ and Downloader.__init__
+  - Narrow broad except Exception to specific types in download_image()
+  - Fix silent except Exception: pass in _process_local_asciidoc()
+  - Collect ContentNotFoundError failures and report summary at end of generate(),
+    exiting with code 1 if any URLs failed (per user decision)
+  - Add tests/test_plugin_registry.py smoke tests for plugin registration dispatch
+  - Update CLAUDE.md to document local .venv/ usage
+
+### Other
+
+* Docs: update tech debt assessment after PRs #236 and #237 (#238) [Huu Hoa NGUYEN]
+
+  PR #236 (cleanup): mark debug prints, dead code, DownloaderConfig,
+  BookConfig.to_dict(), torpy, Python floor all as resolved.
+
+  PR #237 (test coverage): mark all four HIGH test-coverage items as
+  resolved (download failures, post-processor, plugin dispatch,
+  plugin extraction).
+
+  Summary: HIGH 2→0, MEDIUM 33→23, LOW 8→5, total 43→28.
+  Reprioritise remaining work.
+
+* Test: PR B — download failures, post-processor, plugin extraction (#237) [Huu Hoa NGUYEN]
+
+  Close remaining HIGH test-coverage gaps identified in tech_debts.md:
+
+  tests/test_downloader.py (9 tests):
+  - Downloader.download_url(): non-200 writes .temp file with response body;
+    200 calls shutil.copyfileobj and sets decode_content on raw stream
+  - download_image(): ConnectionError and Timeout do not propagate;
+    cached image skips download; returns filename with correct extension
+
+  tests/test_postprocessor.py (8 tests):
+  - PostProcessor base: run() is a no-op; file_path and params stored correctly
+  - create_postprocessor(): raises PostProcessorNotFoundError for unknown names
+    with correct message format; registered processor is instantiated with
+    correct file_path and params
+
+  tests/test_plugin_extraction.py (12 tests):
+  - StaffEng: dispatches correctly; finds blog-post-content div; returns None
+    when div absent
+  - Medium: dispatches correctly; finds article tag; parses title from h1 or
+    og:title meta; returns None when no article tag
+  - Wikipedia: dispatches correctly; finds bodyContent div; parses title from
+    firstHeading h1; returns None when bodyContent absent
+
+
+## v0.16.0 (2026-02-18)
+
+### New
+
+* Dynamic site parsing rules via CSS selectors (#232) [Huu Hoa NGUYEN]
+
+  * feat: dynamic site parsing rules via CSS selectors in book config
+
+  Allow users to define per-domain content-extraction rules directly in
+  their book config (or an external YAML/JSON file) using CSS selectors,
+  without writing a Python plugin. Dynamic rules take priority over
+  built-in plugins.
+
+  - Add `SiteRule` dataclass and `_parse_site_rule()` to config.py
+  - Add `site_rules` and `site_rules_file` fields to `BookConfig`
+  - Add `DynamicExtractor` to etr.py driven by `SiteRule` selectors
+  - Update `Colusa` to load rules from config and external file, match
+    them before the plugin registry in `ebook_generate_content`
+  - Add spec and plan docs for the feature
+
+  Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
+
+  * test: add tests for dynamic site parsing rules
+
+  28 tests covering:
+  - SiteRule dataclass and _parse_site_rule() parsing (minimal, full, defaults)
+  - BookConfig.from_dict() with site_rules and site_rules_file fields
+  - DynamicExtractor: content/title/author/published selectors with match,
+    no-match fallback, and absent-selector fallback
+  - DynamicExtractor cleanup: single selector, multiple selectors, empty
+    list, selector matching nothing
+  - Colusa._match_site_rule(): first-match, no-match, no-rules cases
+  - Colusa rule loading: JSON file, YAML file, inline+file merge
+  - Priority: dynamic rules bypass create_extractor() plugin registry
+
+* Local content support for HTML and AsciiDoc files (#231) [Huu Hoa NGUYEN]
+
+  * chg: add local content support for HTML and AsciiDoc files
+
+  Allow urls/parts[].urls entries to be local file paths (as plain strings
+  or dicts with path + optional title/author/published overrides). Local
+  .adoc/.asciidoc files are copied to output_dir and included directly
+  without HTML extraction. Local HTML files go through the normal
+  extractor/transformer pipeline with optional metadata overrides applied
+  after parsing.
+
+### Changes
+
+* Bump version to 0.16.0 (#234) [Huu Hoa NGUYEN]
+
+* Add extractor for federicopereiro.com and update CLAUDE.md (#230) [Huu Hoa NGUYEN]
+
+  * chg: add extractor for federicopereiro.com and fix element removal
+
+  - Add site-specific extractor for federicopereiro.com
+  - Fix Extractor.remove_tag to use decompose() instead of extract(),
+    and correct the None guard logic
+
+  Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
+
+  * chg: note git workflow in CLAUDE.md
+
+  Document that direct push to main is not allowed and PRs must be
+  merged with squash option.
+
+* Cache the content download from hbr.org (#227) [Huu Hoa NGUYEN]
+
+  So that we don't have to redownload everytime we rebuild our content
+
+* Add some new extractors (#226) [Huu Hoa NGUYEN]
+
+  * chg: add some new extractors
+  + seths.blog
+  + stratechery.com
+  + newsweek.com
+  + rework on hbr.org
+
+* Refactor code to introduce type safety (#225) [Huu Hoa NGUYEN]
+
+  + Add type hints
+  + Use `dataclasses` for configuration objects
+  + Update integration tests + golden test files
+
+### Other
+
+* Docs: update README with dynamic site rules and modern install (#233) [Huu Hoa NGUYEN]
+
+  - Replace deprecated `setup.py install` with `pip install colusa`
+  - Add "Supporting Unsupported Websites" section documenting site_rules
+    and site_rules_file config fields with examples for JSON and YAML
+  - Add field reference table for all site rule options
+  - Update supported websites section to link to the dynamic rules section
+
+* Add CLAUDE.md with architecture guide for Claude Code (#229) [Huu Hoa NGUYEN]
+
+  Documents build/test commands, the extract-transform-render pipeline,
+  plugin registration conventions, and how to add support for new websites.
+
+
+## v0.15 (2025-12-07)
+
+### Other
+
+* Upgrade project settings (using pyproject.toml) (#224) [Huu Hoa NGUYEN]
+
+  * chg: change project build tool from setup.py to pyproject.toml
+  * Bump version: 0.14.0 -> 0.15.0
+
+
+## v0.14 (2025-12-07)
+
+### Other
+
+* Feature/release 2025 (#223) [Huu Hoa NGUYEN]
+
+  * Bump version: 0.12.0 → 0.14.0
+
+
+## v0.14.0 (2025-12-07)
+
+### Changes
+
+* Bump dependencies. [Huu Hoa NGUYEN]
+
+
+## v0.13.0 (2025-12-07)
+
+### Changes
+
+* Support download local file (#219) [Huu Hoa NGUYEN]
+
+  Support download local file instead of from URL
+  This is for the case we want to create a book from mix set of sources, both local and remote ones.
+
+* Allow external configuration for extractors, transformers (#202) [Huu Hoa NGUYEN]
+
+  This change allows end-user to specify which extractor/transformer to be used for given url.
+  Previously, the url patterns are hard code into plugin (extractor/transformer). Which make it
+  very hard to adapt to multiple blog sites, such as blogs from substack.
+
+* Support multi urls in extractor, transformer (#201) [Huu Hoa NGUYEN]
+
+* Ability to name the generated book instead of default index.asciidoc (#200) [Huu Hoa NGUYEN]
+
+  Add new setting `book_file_name`, default value is `index.asciidoc` to specify file name of generated book
+
+  Requires:
+
+  * book_file_name ending with `.asciidoc`
+
+  If `book_file_name` is different from `index.asciidoc` then the generated Makefile will be `basename{book_file_name}_Makefile`
+  and to generate book, run command `make -f newmakefile pdf`
+
+* Heading level for output asciidoc (#184) [Huu Hoa NGUYEN]
+
+* Refactor package structure and introduce Fetch for extending fetchers (#182) [Huu Hoa NGUYEN]
+
+  Refactor:
+  + Move Colusa class to separate module colusa, previously within __init__.py
+  + Move download_url and download_image from utils to fetch
+
+  New Extension Point:
+  + Introduce Fetch class which replicate the requests methods and allow inheritance
+  so that plugins can implement extended functionalities if needed
+
+### Other
+
+* Fix setup. [Huu Hoa NGUYEN]
+
+* Create codeql.yml (#203) [Huu Hoa NGUYEN]
+
+* Feature/pragmatic engineer (#183) [Huu Hoa NGUYEN]
+
+  * chg(plugins): update PragmaticEngineer
+
+  Produce more clean document
+  Support loading existing cookies to by pass paywall
+
+* Feature/pragmatic engineer (#181) [Huu Hoa NGUYEN]
+
+  * chg(asciidoc_visitor): fix parsing srcset
+  * chg(etr): change in Transformer to make it easier to extent
+  * chg(plugins): add support for new site newsletter.pragmaticengineer.com
+  * chg: add custom target parameters for Makefile
+  * chg(plugins): remove warning from PEAsciidoctorVisitor
+
+* Add: post processing workers (#170) [Huu Hoa NGUYEN]
+
+  Allow to do post processing on entire chapter content.
+  Post processing can be:
+  + Search and replace using regex
+
+* Add: support lethain.com (#149) [Huu Hoa NGUYEN]
+
+  Cleanup article's header to make final output more clean
+
+
 ## v0.12.0 (2022-07-24)
 
 ### New
@@ -16,6 +306,11 @@
 * Add support for new websites. [Nguyen Huu Hoa]
 
 ### Other
+
+* Release new version 0.12.0 (#103) [Huu Hoa NGUYEN]
+
+  * @minor: prepare to release 0.12.0
+  * Bump version: 0.11.0 → 0.12.0
 
 * Merge branch 'main' of github.com:huuhoa/colusa. [Nguyen Huu Hoa]
 
