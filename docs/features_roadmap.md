@@ -33,7 +33,7 @@ Add a `--refresh` flag (or `max_age_days` config field) to re-download URLs whos
 **7. Markdown output**
 Add a `MarkdownVisitor` alongside `AsciidocVisitor`. Many users prefer Markdown for Obsidian/Notion/static-site imports. The visitor pattern already makes this a clean addition.
 
-**8. Direct EPUB/HTML output**
+**8. ~~Direct EPUB/HTML output~~ ✅ Implemented**
 Shell out to `asciidoctor` if it's on PATH (or use a Python library like `ebooklib`) so users get a finished `.epub` without a separate build step.
 
 ---

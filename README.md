@@ -95,6 +95,29 @@ $ colusa generate new_ebook.json
 
 By invoking above command, `colusa` will download webpages (specified in `urls`), parse, transform them to asciidoc format, and save them to `output_dir`. `colusa` also create a neccessary information for ebook compilating at later steps.
 
+### Compile directly from colusa
+
+If asciidoctor tools are installed, you can compile the ebook in one step:
+
+```bash
+# Generate AsciiDoc and immediately compile to EPUB
+$ colusa generate new_ebook.json --build epub
+
+# Build multiple formats at once
+$ colusa generate new_ebook.json --build epub --build html
+
+# Compile an already-generated book (without re-downloading)
+$ colusa build new_ebook.json --format epub
+$ colusa build new_ebook.json           # builds html, epub, and pdf
+```
+
+colusa uses `asciidoctor`, `asciidoctor-epub3`, and `asciidoctor-pdf`. Install them from:
+- HTML: https://asciidoctor.org
+- EPUB: https://asciidoctor.org/docs/asciidoctor-epub3/
+- PDF: https://asciidoctor.org/docs/asciidoctor-pdf/
+
+### Preview before generating
+
 Use `--dry-run` to preview which extractor and transformer would be selected for each URL, without downloading anything or writing any files:
 
 ```bash

@@ -30,6 +30,17 @@ def parse_args() -> argparse.Namespace:
                                                          'File extension should be either json or yml')
     generate_parser.add_argument('--dry-run', action='store_true',
                                  help='Print what would be done without downloading or writing any files')
+    generate_parser.add_argument('--build', action='append', dest='build_formats',
+                                 metavar='FORMAT', choices=['html', 'epub', 'pdf'],
+                                 help='Compile to FORMAT after generating (html, epub, pdf). May be repeated.')
+
+    build_parser = commands.add_parser('build',
+                        help='Compile an already-generated book using asciidoctor tools')
+    build_parser.set_defaults(func=build)
+    build_parser.add_argument('input', type=str, help='Config file (JSON or YAML)')
+    build_parser.add_argument('--format', action='append', dest='build_formats',
+                              metavar='FORMAT', choices=['html', 'epub', 'pdf'],
+                              help='Format to build (html, epub, pdf). May be repeated. Defaults to all.')
 
     crawler_parse = commands.add_parser('crawl',
                         help='Crawl an URL to generate list of URLs')
@@ -67,8 +78,18 @@ def generate(args: argparse.Namespace) -> None:
             Colusa.dry_run_book(args.input)
         else:
             Colusa.generate_book(args.input)
+            if args.build_formats:
+                Colusa.build_book(args.input, formats=args.build_formats)
     except ConfigurationError as e:
         logs.error(e)
+
+
+def build(args: argparse.Namespace) -> None:
+    try:
+        Colusa.build_book(args.input, formats=args.build_formats)
+    except ConfigurationError as e:
+        logs.error(e)
+        raise SystemExit(1)
 
 
 def add_url(args: argparse.Namespace) -> None:
