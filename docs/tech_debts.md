@@ -1,22 +1,23 @@
 # Technical Debt Assessment — colusa
 
 > Assessed: 2026-02-18
+> Last updated: 2026-02-18 (after PR #235 — fix high-severity technical debts)
 
 ## Summary
 
 | Category | High | Medium | Low | Total |
 |----------|:----:|:------:|:---:|:-----:|
-| Type Safety | 3 | 2 | 0 | 5 |
-| Error Handling | 3 | 2 | 0 | 5 |
+| Type Safety | ~~3~~ 0 | 2 | 0 | 2 |
+| Error Handling | ~~3~~ 0 | 2 | 0 | 2 |
 | Code Quality / Duplication | 0 | 4 | 3 | 7 |
 | Architecture / Coupling | 0 | 4 | 2 | 6 |
 | Naming / Clarity | 0 | 4 | 2 | 6 |
 | Late / Deferred Imports | 0 | 4 | 0 | 4 |
-| Test Coverage | 4 | 2 | 0 | 6 |
+| Test Coverage | ~~4~~ 2 | 2 | 0 | 4 |
 | Documentation | 0 | 4 | 0 | 4 |
 | Dependencies / Packaging | 0 | 3 | 0 | 3 |
 | Miscellaneous | 0 | 4 | 1 | 5 |
-| **Total** | **10** | **33** | **8** | **51** |
+| **Total** | **~~10~~ 2** | **33** | **8** | **43** |
 
 ---
 
@@ -24,28 +25,32 @@
 
 ### Type Safety
 
-| File | Lines | Issue |
-|------|-------|-------|
-| `src/colusa/etr.py` | 145–146 | `self.url_path: str = None` and `self.cached_path: str = None` violate their own type hints. Should be `Optional[str] = None`. |
-| `src/colusa/etr.py` | 83 | `extractor: Extractor = None` is annotated as non-optional `Extractor` but initialised to `None`. |
-| `src/colusa/fetch.py` | — | `def __init__(self, config: dict[str, Any] = {})` uses a mutable default argument — risk of shared state across instances. |
+> All three high-severity type-safety issues were resolved in PR #235.
+
+| File | Lines | Issue | Status |
+|------|-------|-------|--------|
+| `src/colusa/etr.py` | 145–146 | `self.url_path: str = None` and `self.cached_path: str = None` violate their own type hints. | ✅ Fixed — changed to `Optional[str] = None` |
+| `src/colusa/etr.py` | 83 | `extractor: Extractor = None` annotated as non-optional but initialised to `None`. | ✅ Fixed — changed to `Optional[Extractor] = None` |
+| `src/colusa/fetch.py` | 17, 177 | `def __init__(self, config: dict[str, Any] = {})` mutable default argument in both `Fetch` and `Downloader`. | ✅ Fixed — changed to `Optional[dict] = None` with safe init |
 
 ### Error Handling
 
-| File | Lines | Issue |
-|------|-------|-------|
-| `src/colusa/colusa.py` | 214–215 | `except Exception: pass` silently swallows all errors when reading an AsciiDoc title line. Real I/O or encoding errors are hidden. |
-| `src/colusa/colusa.py` | 260–262 | `ContentNotFoundError` is caught and logged, but `raise e` is commented out. The book silently skips broken URLs with no visible feedback beyond a log line. |
-| `src/colusa/fetch.py` | — | `except Exception as ex:` in `download_image()` is overly broad and hides unexpected failures. |
+> All three high-severity error-handling issues were resolved in PR #235.
+
+| File | Lines | Issue | Status |
+|------|-------|-------|--------|
+| `src/colusa/colusa.py` | 214–215 | `except Exception: pass` silently swallows all errors when reading an AsciiDoc title. | ✅ Fixed — narrowed to `(OSError, UnicodeDecodeError)` with `logs.warn()` |
+| `src/colusa/colusa.py` | 260–262 | `ContentNotFoundError` caught and logged but `raise e` was commented out — broken URLs silently skipped. | ✅ Fixed — failures collected in `_failed_urls`; summary printed and `SystemExit(1)` raised after all URLs processed |
+| `src/colusa/fetch.py` | 248 | `except Exception as ex:` in `download_image()` overly broad. | ✅ Fixed — narrowed to `(requests.exceptions.RequestException, OSError)` |
 
 ### Test Coverage
 
-| Area | Issue |
-|------|-------|
-| Plugin files | 37 plugin files exist under `src/colusa/plugins/` but none have any tests — registration, pattern matching, or AsciiDoc output. |
-| Plugin registry | `create_extractor()` and `create_transformer()` fallback logic is untested. |
-| Download failures | HTTP errors, connection timeouts, and file I/O errors have zero test coverage. |
-| Post-processing | `PostProcessor` base class and `create_postprocessor()` are never tested. |
+| Area | Issue | Status |
+|------|-------|--------|
+| Plugin files | 37 plugin files under `src/colusa/plugins/` have no tests for extraction logic or AsciiDoc output. | ⚠️ Partially addressed — smoke tests added in PR #235 verify registration shape and dispatch; per-plugin extraction logic remains untested |
+| Plugin registry | `create_extractor()` and `create_transformer()` fallback logic untested. | ✅ Fixed — dispatch and fallback covered in `tests/test_plugin_registry.py` |
+| Download failures | HTTP errors, connection timeouts, and file I/O errors have zero test coverage. | ❌ Still open |
+| Post-processing | `PostProcessor` base class and `create_postprocessor()` are never tested. | ❌ Still open |
 
 ---
 
@@ -136,11 +141,11 @@
 
 ## Recommended Priorities
 
-1. **Fix `Optional[str]` annotations** in `Extractor.__init__` — low risk, immediate correctness improvement.
-2. **Decide on `ContentNotFoundError` propagation** — either re-raise or surface it clearly; silent skip is dangerous.
-3. **Drop or make `torpy` optional** — it should not be a mandatory install dependency.
-4. **Fix the Python version floor** — bump `requires-python` to `>=3.9` or add `from __future__ import annotations`.
-5. **Remove debug `print` statement** in `asciidoc_visitor.py`.
-6. **Fix `BookConfig.to_dict()`** to properly serialise `UrlEntry` and `SiteRule` objects.
-7. **Add plugin-level tests** — at least smoke tests that each plugin registers and produces output for a sample HTML fixture.
+1. **Add per-plugin extraction tests** — smoke tests exist for registration; fixture-based tests for each plugin's HTML-to-AsciiDoc output are still missing.
+2. **Test download failure paths** — HTTP errors, timeouts, and I/O errors have no coverage.
+3. **Test post-processing** — `PostProcessor` base class and `create_postprocessor()` are untested.
+4. **Drop or make `torpy` optional** — it should not be a mandatory install dependency.
+5. **Fix the Python version floor** — bump `requires-python` to `>=3.9` or add `from __future__ import annotations`.
+6. **Remove debug `print` statement** in `asciidoc_visitor.py`.
+7. **Fix `BookConfig.to_dict()`** to properly serialise `UrlEntry` and `SiteRule` objects.
 8. **Thread-safety for plugin registries** — or explicitly document that colusa is single-threaded only.
