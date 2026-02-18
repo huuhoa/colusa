@@ -1,9 +1,35 @@
 # Changelog
 
 
-## Unreleased
+## v0.17.0 (2026-02-18)
+
+### Changes
+
+* Bump version to 0.17.0. [Huu Hoa NGUYEN]
+
+* Regenerate changelog for unreleased changes (#239) [Huu Hoa NGUYEN]
+
+  Includes PRs #235–#238: high-severity debt fixes, cleanup, test
+  coverage expansion, and tech debt assessment updates.
 
 ### Fix
+
+* Suppress UNKNOWN Node Type warning for HTML comment nodes (#240) [Huu Hoa NGUYEN]
+
+  BeautifulSoup represents HTML comments as Comment objects, which are
+  NavigableString subclasses. The visitor's get_visitor() used an exact
+  type check (type(node) is NavigableString), so Comment fell through to
+  visit_unknown() and produced a spurious [WARN] UNKNOWN Node Type: Comment
+  on every HTML comment encountered during extraction.
+
+  Add an isinstance(node, NavigableString) branch between the exact-type
+  check and the Tag branch to silently return an empty string for all
+  non-text NavigableString subclasses (Comment, Script, Stylesheet, CData,
+  Doctype, etc.). Plain NavigableString text nodes are unaffected because
+  the exact-type check runs first.
+
+  Add tests/test_visitor.py to verify comment nodes produce no output and
+  no UNKNOWN Node Type warning.
 
 * PR A debt cleanup — prints, dead code, torpy, Python floor, to_dict (#236) [Huu Hoa NGUYEN]
 
