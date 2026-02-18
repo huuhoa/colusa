@@ -5,7 +5,13 @@ Render website to ebook to make it easier to read on devices.
 ## Installation
 
 ```sh
-python3 setup.py install
+pip install colusa
+```
+
+For development:
+
+```sh
+pip install -e ".[all]"
 ```
 
 ## Usage
@@ -72,12 +78,73 @@ $ colusa generate new_ebook.json
 
 By invoking above command, `colusa` will download webpages (specified in `urls`), parse, transform them to asciidoc format, and save them to `output_dir`. `colusa` also create a neccessary information for ebook compilating at later steps.
 
+## Supporting Unsupported Websites
+
+If a website is not in the supported list, you can define CSS-selector-based parsing rules directly in your book config without touching colusa's code. Dynamic rules are evaluated before built-in plugins; the first matching rule wins.
+
+Add a `site_rules` list to your config:
+
+```json
+{
+    "title": "My Ebook",
+    "author": "Me",
+    "version": "v1.0",
+    "homepage": "https://example.com",
+    "output_dir": "my_ebook",
+    "site_rules": [
+        {
+            "pattern": "//example.com",
+            "content": "article.post-body",
+            "title": "h1.article-title",
+            "author": ".author-name",
+            "published": "time.publish-date",
+            "cleanup": ["div.ads", "nav.sidebar"]
+        }
+    ],
+    "urls": [
+        "https://example.com/some-article"
+    ]
+}
+```
+
+| Field | Description |
+|-------|-------------|
+| `pattern` | Regex matched against the full URL (e.g. `//example.com`) |
+| `content` | CSS selector for the article body. Falls back to built-in detection if omitted or not found |
+| `title` | CSS selector for the article title. Falls back to built-in defaults if omitted or not found |
+| `author` | CSS selector for the author name. Falls back to built-in defaults if omitted or not found |
+| `published` | CSS selector for the publish date. Falls back to built-in defaults if omitted or not found |
+| `cleanup` | List of CSS selectors — matching elements are removed from the extracted content |
+
+### External rules file
+
+Rules can also be kept in a separate YAML or JSON file and shared across multiple book configs:
+
+```json
+{
+    "site_rules_file": "./my-sites.yml"
+}
+```
+
+`my-sites.yml`:
+
+```yaml
+- pattern: "//example.com"
+  content: article.post-body
+  title: h1.article-title
+  cleanup:
+    - div.ads
+    - nav.sidebar
+```
+
+Inline `site_rules` and `site_rules_file` are merged; inline rules are checked first. Relative paths in `site_rules_file` are resolved from the directory containing the config file.
+
 ## Compile ebook for consuming purpose
 
 ### Prerequisites
 Before generating ebook, we need to install asciidoctor tools. Follow install guideline on following websites:
 
-* for generating html: https://asciidoctor.org 
+* for generating html: https://asciidoctor.org
 * for generating epub: https://asciidoctor.org/docs/asciidoctor-epub3/
 * for generating pdf: https://asciidoctor.org/docs/asciidoctor-pdf/
 
@@ -106,9 +173,9 @@ drwxr-xr-x  10 320B images
 -rw-r--r--@  1 694K index.pdf
 ```
 
-## List of Supported Website
+## List of Supported Websites
 
-Currently `colusa` supports only limited number of websites. The following list all support websites:
+Currently `colusa` has built-in support for the following websites. Any other site can be handled using [dynamic site rules](#supporting-unsupported-websites).
 
 * https://untools.co
 * https://unintendedconsequenc.es
@@ -127,5 +194,3 @@ Currently `colusa` supports only limited number of websites. The following list 
 ## Contribution
 
 Contribution is welcome. You can open issues to request for supporting more websites, open PR to help with those issues, or anything else like documentation, code contribution.
-
-
