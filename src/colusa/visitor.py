@@ -35,6 +35,9 @@ class NodeVisitor:
         """
         if type(node) is NavigableString:
             method = "visit_text"
+        elif isinstance(node, NavigableString):
+            # Comment, CData, Doctype, etc. — non-content NavigableString subclasses
+            return lambda *a, **kw: ''
         elif type(node) is Tag:
             method = f"visit_tag_{node.name}"
         elif type(node) is BeautifulSoup:
