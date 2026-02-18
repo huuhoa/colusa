@@ -37,6 +37,7 @@ class Colusa:
         populate_extractor_config(self.config.extractors)
         populate_transformer_config(self.config.transformers)
         self.site_rules: list[SiteRule] = self._load_site_rules(config_file_dir)
+        self._failed_urls: list[str] = []
 
     @classmethod
     def generate_new_configuration(cls, file_path: str) -> None:
@@ -211,8 +212,8 @@ class Colusa:
                         if line.startswith('= '):
                             title = line[2:].strip()
                             break
-            except Exception:
-                pass
+            except (OSError, UnicodeDecodeError) as e:
+                logs.warn(f'could not read title from {src_path}: {e}')
 
         self.book_maker.render_asciidoc_passthrough(file_name, title)
 
@@ -259,7 +260,7 @@ class Colusa:
                 pcls.run()
         except etr.ContentNotFoundError as e:
             logs.error(e, url_path)
-            # raise e
+            self._failed_urls.append(url_path)
 
     def generate(self) -> None:
         os.makedirs(os.path.join(self.output_dir, ".cached"), exist_ok=True)
@@ -272,6 +273,12 @@ class Colusa:
             self._generate_book_single_part()
 
         self.book_maker.ebook_generate_master_file()
+
+        if self._failed_urls:
+            print(f'\n[colusa] WARNING: content extraction failed for {len(self._failed_urls)} URL(s):')
+            for url in self._failed_urls:
+                print(f'  - {url}')
+            raise SystemExit(1)
 
     def _generate_book_single_part(self) -> None:
         entries = self.config.urls

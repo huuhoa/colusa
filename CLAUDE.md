@@ -19,33 +19,35 @@ gh pr merge <number> --squash
 
 ## Development Setup
 
-```sh
-# Install in development mode with test dependencies
-pip install -e ".[test]"
+The project uses a local virtual environment at `.venv/`.
 
-# Or with all dev dependencies
-pip install -e ".[all]"
+```sh
+# Create venv and install in development mode with all dev dependencies
+python -m venv .venv
+.venv/bin/pip install -e ".[all]"
 ```
 
 ## Commands
 
+Always use the local venv binaries:
+
 ```sh
 # Run all tests
-pytest
+.venv/bin/pytest
 
 # Run a single test file
-pytest tests/test_transformer.py
+.venv/bin/pytest tests/test_transformer.py
 
 # Run a single test
-pytest tests/test_transformer.py::TransformerTestCase::test_tag_p_1
+.venv/bin/pytest tests/test_transformer.py::TransformerTestCase::test_tag_p_1
 
 # Run tests without coverage (faster)
-pytest --no-cov
+.venv/bin/pytest --no-cov
 
 # Run colusa CLI
-colusa init new_ebook.json       # generate a config template
-colusa generate new_ebook.json   # process URLs and generate AsciiDoc
-colusa crawl --url <URL>         # crawl a URL to discover article links
+.venv/bin/colusa init new_ebook.json       # generate a config template
+.venv/bin/colusa generate new_ebook.json   # process URLs and generate AsciiDoc
+.venv/bin/colusa crawl --url <URL>         # crawl a URL to discover article links
 ```
 
 ## Architecture
