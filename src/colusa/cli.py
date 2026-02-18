@@ -36,6 +36,19 @@ def parse_args() -> argparse.Namespace:
     crawler_parse.add_argument('--output_dir', '-d', type=str, help='Output folder to store cached')
     crawler_parse.add_argument('--output', '-o', type=argparse.FileType('w'), default=sys.stdout, help='Output file (default: standard output)')
 
+    add_url_parser = commands.add_parser('add-url',
+                        help='Append a URL to an existing config file')
+    add_url_parser.set_defaults(func=add_url)
+    add_url_parser.add_argument('input', type=str, help='Config file (JSON or YAML)')
+    add_url_parser.add_argument('url', type=str, help='URL or local file path to add')
+    add_url_parser.add_argument('--title', type=str, default=None, help='Override title')
+    add_url_parser.add_argument('--author', type=str, default=None, help='Override author')
+    add_url_parser.add_argument('--published', type=str, default=None, help='Override published date')
+    add_url_parser.add_argument('--part', type=str, default=None,
+                                help='Part title to add to (multi-part books only)')
+    add_url_parser.add_argument('--fetch-title', action='store_true',
+                                help='Download the page and extract the title automatically')
+
     return parser.parse_args()
 
 
@@ -51,6 +64,22 @@ def generate(args: argparse.Namespace) -> None:
         Colusa.generate_book(args.input)
     except ConfigurationError as e:
         logs.error(e)
+
+
+def add_url(args: argparse.Namespace) -> None:
+    try:
+        Colusa.add_url(
+            config_path=args.input,
+            url=args.url,
+            title=args.title,
+            author=args.author,
+            published=args.published,
+            part=args.part,
+            fetch_title=args.fetch_title,
+        )
+    except ConfigurationError as e:
+        logs.error(e)
+        raise SystemExit(1)
 
 
 def crawl_url(args: argparse.Namespace) -> None:

@@ -43,7 +43,24 @@ We have to modify the configuration file to fill up valid information.
 
 ### Add content to ebook
 
-After generating the configuration file, all we need to do is adding (blog posts, articles, webs)' urls to `urls` field in the configuration file.
+You can add URLs to the config manually, or use the `add-url` command to append them from the terminal:
+
+```bash
+# Append a plain URL
+$ colusa add-url new_ebook.json https://fs.blog/2018/04/first-principles/
+
+# Auto-fetch the page title
+$ colusa add-url new_ebook.json https://fs.blog/2018/04/first-principles/ --fetch-title
+
+# Supply metadata explicitly
+$ colusa add-url new_ebook.json https://fs.blog/2018/04/first-principles/ \
+    --title "First Principles" --author "Farnam Street" --published "2018-04-01"
+
+# For multi-part books, specify the target part
+$ colusa add-url new_ebook.json https://fs.blog/2018/04/first-principles/ --part "Part 1"
+```
+
+Alternatively, edit the config file directly and add URLs to the `urls` field.
 
 Example for final configuration:
 

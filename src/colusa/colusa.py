@@ -295,3 +295,122 @@ class Colusa:
             self.book_maker.render_book_part(part.title, part.description)
             for entry in part.urls:
                 self.ebook_generate_content(entry)
+
+    @staticmethod
+    def add_url(
+        config_path: str,
+        url: str,
+        title: Optional[str] = None,
+        author: Optional[str] = None,
+        published: Optional[str] = None,
+        part: Optional[str] = None,
+        fetch_title: bool = False,
+    ) -> None:
+        """Append a URL to an existing config file.
+
+        Args:
+            config_path: Path to an existing JSON or YAML config file.
+            url: URL or local file path to add.
+            title: Optional title override.
+            author: Optional author override.
+            published: Optional published date override.
+            part: For multi-part books, the title of the part to add the URL to.
+            fetch_title: If True, download the page and auto-extract the title.
+        """
+        path = pathlib.Path(config_path)
+        if not path.exists():
+            raise ConfigurationError(f'Config file not found: {config_path}')
+
+        ext = path.suffix.lower()
+        if ext == '.json':
+            data = json.loads(path.read_text(encoding='utf-8'))
+        elif ext in ('.yml', '.yaml'):
+            data = yaml.safe_load(path.read_text(encoding='utf-8'))
+        else:
+            raise ConfigurationError(
+                f'Unsupported config format: {ext}. Use .json, .yml, or .yaml'
+            )
+
+        # Duplicate check across all urls and parts[].urls
+        existing: set[str] = set()
+        for entry in data.get('urls', []):
+            existing.add(entry if isinstance(entry, str) else entry.get('path', ''))
+        for p in data.get('parts', []):
+            for entry in p.get('urls', []):
+                existing.add(entry if isinstance(entry, str) else entry.get('path', ''))
+
+        if url in existing:
+            logs.warn(f'URL already exists in config: {url}')
+            return
+
+        # Optional: fetch title from the live page
+        if fetch_title:
+            try:
+                import tempfile
+                from bs4 import BeautifulSoup as _BS
+                output_dir = data.get('output_dir') or tempfile.mkdtemp()
+                downloader = fetch.Downloader()
+                cached = (
+                    pathlib.Path(output_dir) / '.cached'
+                    / f'{utils.get_hexdigest(url)}.html'
+                )
+                if not cached.exists():
+                    downloader.download_url(url, str(cached))
+                html = cached.read_text(encoding='utf-8', errors='replace')
+                soup = _BS(html, 'html.parser')
+                fetched_title = None
+                og = soup.find('meta', property='og:title')
+                if og and og.get('content'):
+                    fetched_title = og['content'].strip()
+                elif soup.title and soup.title.string:
+                    fetched_title = soup.title.string.strip()
+                elif soup.find('h1'):
+                    fetched_title = soup.find('h1').get_text(strip=True)
+                if fetched_title:
+                    logs.info(f'Fetched title: "{fetched_title}"')
+                    title = title or fetched_title  # explicit --title takes precedence
+            except Exception as e:
+                logs.warn(f'Could not fetch title for {url}: {e}')
+
+        # Build the new entry — plain string when no metadata, dict otherwise
+        if title or author or published:
+            new_entry: Any = {'path': url}
+            if title:
+                new_entry['title'] = title
+            if author:
+                new_entry['author'] = author
+            if published:
+                new_entry['published'] = published
+        else:
+            new_entry = url
+
+        # Append to the correct list
+        if not data.get('multi_part'):
+            data.setdefault('urls', []).append(new_entry)
+            logs.info(f'Added: {url}')
+        else:
+            parts = data.get('parts', [])
+            if not part:
+                part_titles = ', '.join(f'"{p["title"]}"' for p in parts)
+                raise ConfigurationError(
+                    f'This is a multi-part book. Use --part <title> to specify a part. '
+                    f'Available parts: {part_titles}'
+                )
+            matched = next(
+                (p for p in parts if p.get('title', '').lower() == part.lower()), None
+            )
+            if matched is None:
+                part_titles = ', '.join(f'"{p["title"]}"' for p in parts)
+                raise ConfigurationError(
+                    f'Part not found: "{part}". Available parts: {part_titles}'
+                )
+            matched.setdefault('urls', []).append(new_entry)
+            logs.info(f'Added to part "{matched["title"]}": {url}')
+
+        # Write back preserving the original format
+        with path.open('w', encoding='utf-8') as f:
+            if ext == '.json':
+                json.dump(data, f, indent=4, ensure_ascii=False)
+                f.write('\n')
+            else:
+                yaml.dump(data, f, default_flow_style=False, allow_unicode=True)

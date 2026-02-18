@@ -10,7 +10,7 @@
 **2. `--dry-run` flag for `generate`**
 Print which URLs would be fetched and which extractor/transformer would be selected, without downloading anything. Useful for debugging configs.
 
-**3. `colusa add-url <config> <url>`**
+**3. ~~`colusa add-url <config> <url>`~~ ✅ Implemented**
 CLI command to append a URL to an existing config file, optionally fetching the page title automatically. Faster than hand-editing JSON/YAML.
 
 ---
