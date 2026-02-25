@@ -1,7 +1,18 @@
 # Changelog
 
 
-## Unreleased
+## v0.19.0 (2026-02-25)
+
+### Fix
+
+* Create temp tag before gitchangelog in release skill (#251) [Huu Hoa NGUYEN]
+
+  gitchangelog needs the tag to exist to group commits under the new
+  version. Create a local tag before running it, then delete it so it
+  can be re-created on the correct squash-merge commit on main.
+
+
+## v0.18.0 (2026-02-25)
 
 ### New
 
@@ -51,7 +62,9 @@
 
 ### Other
 
-* Improve: enhance CLI help text and exit code consistency for AI invocation. [Huu Hoa NGUYEN]
+* Release: v0.18.0 (#250) [Huu Hoa NGUYEN]
+
+  * improve: enhance CLI help text and exit code consistency for AI invocation
 
   - Add top-level description and workflow epilog to main parser
   - Add per-subcommand descriptions and examples to all subcommands
