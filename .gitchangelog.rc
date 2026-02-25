@@ -146,7 +146,8 @@ body_process = ReSub(r'((^|\n)[A-Z]\w+(-\w+)*: .*(\n\s+.*)*)+$', r'') | strip
 ## Available constructs are those listed in ``body_process`` doc.
 subject_process = (strip |
     ReSub(r'^([cC]hg|[fF]ix|[nN]ew|[fF]eat)\s*:\s*((dev|use?r|pkg|test|doc)\s*:\s*)?([^\n@]*)(@[a-z]+\s+)*$', r'\4') |
-    SetIfEmpty("No commit message.") | ucfirst | final_dot)
+    SetIfEmpty("No commit message.") | ucfirst | final_dot |
+    ReSub(r'\(#(\d+)\)', r'[#\1](https://github.com/huuhoa/colusa/pull/\1)'))
 
 
 ## ``tag_filter_regexp`` is a regexp
