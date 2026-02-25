@@ -1,11 +1,75 @@
 # Changelog
 
 
+## Unreleased
+
+### New
+
+* Add feature research report for web-to-ebook tools (#249) [Huu Hoa NGUYEN]
+
+  Top 10 features ranked by cross-source frequency across Calibre,
+  percollate, wallabag, Shiori, newspaper3k and community discussions.
+  Includes sequencing recommendations and detailed colusa-specific evidence.
+
+* Add direct epub/html/pdf output via asciidoctor (#247) [Huu Hoa NGUYEN]
+
+  Adds --build flag to generate and a standalone build subcommand that
+  shell out to asciidoctor, asciidoctor-epub3, and asciidoctor-pdf.
+  Tool presence checked via shutil.which with helpful install URLs on
+  error. All formats attempted before failing; extra make params from
+  config passed through as-is.
+
+* Add spec and plan docs for add-url and dry-run features (#246) [Huu Hoa NGUYEN]
+
+* Add --dry-run flag to colusa generate (#245) [Huu Hoa NGUYEN]
+
+  Adds `colusa generate <config> --dry-run` that prints a per-URL dispatch
+  summary (extractor, transformer, dynamic rule, local file type, metadata
+  overrides) without downloading, writing, or creating any files.
+
+* Add colusa add-url command (#244) [Huu Hoa NGUYEN]
+
+  Adds `colusa add-url <config> <url>` CLI subcommand that appends a URL
+  to an existing JSON or YAML config file. Supports:
+  - Auto title fetching via --fetch-title (og:title, <title>, <h1>)
+  - Explicit metadata overrides (--title, --author, --published)
+  - Multi-part books via --part <title> (case-insensitive)
+  - Duplicate detection with warning
+  - Plain string entry when no metadata, dict entry when metadata present
+
+* Add features roadmap (#243) [Huu Hoa NGUYEN]
+
+* Add release-next-version Claude Code command (#242) [Huu Hoa NGUYEN]
+
+### Fix
+
+* Use shlex.split for extra build params to handle quoted values (#248) [Huu Hoa NGUYEN]
+
+  Simple .split() broke params containing quoted strings with spaces,
+  e.g. pdf-page-margin="[0.15in, 0.17in, 0.40in, 0.17in]". shlex.split
+  handles shell quoting correctly, keeping such values as single tokens.
+
+### Other
+
+* Improve: enhance CLI help text and exit code consistency for AI invocation. [Huu Hoa NGUYEN]
+
+  - Add top-level description and workflow epilog to main parser
+  - Add per-subcommand descriptions and examples to all subcommands
+  - Use RawDescriptionHelpFormatter for clean multi-line help rendering
+  - Change crawl url from --url flag to positional argument
+  - Rename --output_dir to --output-dir for CLI convention consistency
+  - Fix exit codes: init, generate, crawl now raise SystemExit(1) on error
+
+
 ## v0.17.0 (2026-02-18)
 
 ### Changes
 
-* Bump version to 0.17.0. [Huu Hoa NGUYEN]
+* Bump version to 0.17.0 and update changelog (#241) [Huu Hoa NGUYEN]
+
+  * chg: bump version to 0.17.0
+
+  * chg: doc: update changelog for v0.17.0
 
 * Regenerate changelog for unreleased changes (#239) [Huu Hoa NGUYEN]
 
