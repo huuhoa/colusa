@@ -14,8 +14,14 @@ Edit these files, replacing the current version with `NEW_VERSION`:
 
 ## Step 3 — Generate changelog
 
+Create a temporary local tag so gitchangelog groups commits under the new version,
+generate the changelog, then delete the local tag (the squash merge will change the
+commit hash, so the tag must be re-created on main after the merge):
+
 ```sh
+git tag vNEW_VERSION
 .venv/bin/gitchangelog > CHANGELOG.md
+git tag -d vNEW_VERSION
 ```
 
 ## Step 4 — Commit, open PR, and squash-merge
@@ -32,7 +38,7 @@ git pull --rebase
 
 ## Step 5 — Tag the release on main
 
-After the squash merge has landed, create and push the tag:
+After the squash merge has landed, create and push the tag on the actual merge commit:
 
 ```sh
 git tag vNEW_VERSION
