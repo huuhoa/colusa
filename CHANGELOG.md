@@ -1,11 +1,26 @@
 # Changelog
 
 
-## v0.19.0 (2026-02-25)
+## v0.19.1 (2026-02-25)
 
 ### Fix
 
-* Create temp tag before gitchangelog in release skill (#251) [Huu Hoa NGUYEN]
+* Convert PR references to explicit Markdown links in changelog [#253](https://github.com/huuhoa/colusa/pull/253) [Huu Hoa NGUYEN]
+
+  Adds a ReSub to subject_process that rewrites (#N) to
+  [#N](https://github.com/huuhoa/colusa/pull/N) so PR links are
+  explicit hyperlinks rather than relying on GitHub auto-linking.
+
+
+## v0.19.0 (2026-02-25)
+
+### Changes
+
+* Bump version to 0.19.0 [#252](https://github.com/huuhoa/colusa/pull/252) [Huu Hoa NGUYEN]
+
+### Fix
+
+* Create temp tag before gitchangelog in release skill [#251](https://github.com/huuhoa/colusa/pull/251) [Huu Hoa NGUYEN]
 
   gitchangelog needs the tag to exist to group commits under the new
   version. Create a local tag before running it, then delete it so it
@@ -16,13 +31,13 @@
 
 ### New
 
-* Add feature research report for web-to-ebook tools (#249) [Huu Hoa NGUYEN]
+* Add feature research report for web-to-ebook tools [#249](https://github.com/huuhoa/colusa/pull/249) [Huu Hoa NGUYEN]
 
   Top 10 features ranked by cross-source frequency across Calibre,
   percollate, wallabag, Shiori, newspaper3k and community discussions.
   Includes sequencing recommendations and detailed colusa-specific evidence.
 
-* Add direct epub/html/pdf output via asciidoctor (#247) [Huu Hoa NGUYEN]
+* Add direct epub/html/pdf output via asciidoctor [#247](https://github.com/huuhoa/colusa/pull/247) [Huu Hoa NGUYEN]
 
   Adds --build flag to generate and a standalone build subcommand that
   shell out to asciidoctor, asciidoctor-epub3, and asciidoctor-pdf.
@@ -30,15 +45,15 @@
   error. All formats attempted before failing; extra make params from
   config passed through as-is.
 
-* Add spec and plan docs for add-url and dry-run features (#246) [Huu Hoa NGUYEN]
+* Add spec and plan docs for add-url and dry-run features [#246](https://github.com/huuhoa/colusa/pull/246) [Huu Hoa NGUYEN]
 
-* Add --dry-run flag to colusa generate (#245) [Huu Hoa NGUYEN]
+* Add --dry-run flag to colusa generate [#245](https://github.com/huuhoa/colusa/pull/245) [Huu Hoa NGUYEN]
 
   Adds `colusa generate <config> --dry-run` that prints a per-URL dispatch
   summary (extractor, transformer, dynamic rule, local file type, metadata
   overrides) without downloading, writing, or creating any files.
 
-* Add colusa add-url command (#244) [Huu Hoa NGUYEN]
+* Add colusa add-url command [#244](https://github.com/huuhoa/colusa/pull/244) [Huu Hoa NGUYEN]
 
   Adds `colusa add-url <config> <url>` CLI subcommand that appends a URL
   to an existing JSON or YAML config file. Supports:
@@ -48,13 +63,13 @@
   - Duplicate detection with warning
   - Plain string entry when no metadata, dict entry when metadata present
 
-* Add features roadmap (#243) [Huu Hoa NGUYEN]
+* Add features roadmap [#243](https://github.com/huuhoa/colusa/pull/243) [Huu Hoa NGUYEN]
 
-* Add release-next-version Claude Code command (#242) [Huu Hoa NGUYEN]
+* Add release-next-version Claude Code command [#242](https://github.com/huuhoa/colusa/pull/242) [Huu Hoa NGUYEN]
 
 ### Fix
 
-* Use shlex.split for extra build params to handle quoted values (#248) [Huu Hoa NGUYEN]
+* Use shlex.split for extra build params to handle quoted values [#248](https://github.com/huuhoa/colusa/pull/248) [Huu Hoa NGUYEN]
 
   Simple .split() broke params containing quoted strings with spaces,
   e.g. pdf-page-margin="[0.15in, 0.17in, 0.40in, 0.17in]". shlex.split
@@ -62,7 +77,7 @@
 
 ### Other
 
-* Release: v0.18.0 (#250) [Huu Hoa NGUYEN]
+* Release: v0.18.0 [#250](https://github.com/huuhoa/colusa/pull/250) [Huu Hoa NGUYEN]
 
   * improve: enhance CLI help text and exit code consistency for AI invocation
 
@@ -78,20 +93,20 @@
 
 ### Changes
 
-* Bump version to 0.17.0 and update changelog (#241) [Huu Hoa NGUYEN]
+* Bump version to 0.17.0 and update changelog [#241](https://github.com/huuhoa/colusa/pull/241) [Huu Hoa NGUYEN]
 
   * chg: bump version to 0.17.0
 
   * chg: doc: update changelog for v0.17.0
 
-* Regenerate changelog for unreleased changes (#239) [Huu Hoa NGUYEN]
+* Regenerate changelog for unreleased changes [#239](https://github.com/huuhoa/colusa/pull/239) [Huu Hoa NGUYEN]
 
   Includes PRs #235–#238: high-severity debt fixes, cleanup, test
   coverage expansion, and tech debt assessment updates.
 
 ### Fix
 
-* Suppress UNKNOWN Node Type warning for HTML comment nodes (#240) [Huu Hoa NGUYEN]
+* Suppress UNKNOWN Node Type warning for HTML comment nodes [#240](https://github.com/huuhoa/colusa/pull/240) [Huu Hoa NGUYEN]
 
   BeautifulSoup represents HTML comments as Comment objects, which are
   NavigableString subclasses. The visitor's get_visitor() used an exact
@@ -108,7 +123,7 @@
   Add tests/test_visitor.py to verify comment nodes produce no output and
   no UNKNOWN Node Type warning.
 
-* PR A debt cleanup — prints, dead code, torpy, Python floor, to_dict (#236) [Huu Hoa NGUYEN]
+* PR A debt cleanup — prints, dead code, torpy, Python floor, to_dict [#236](https://github.com/huuhoa/colusa/pull/236) [Huu Hoa NGUYEN]
 
   * docs: update tech debt assessment after PR #235
 
@@ -140,7 +155,7 @@
     bump requires-python to >=3.9 (code uses 3.9+ syntax throughout);
     remove Python 3.8 classifier
 
-* Resolve all high-severity technical debts (#235) [Huu Hoa NGUYEN]
+* Resolve all high-severity technical debts [#235](https://github.com/huuhoa/colusa/pull/235) [Huu Hoa NGUYEN]
 
   * docs: add technical debt assessment
 
@@ -160,7 +175,7 @@
 
 ### Other
 
-* Docs: update tech debt assessment after PRs #236 and #237 (#238) [Huu Hoa NGUYEN]
+* Docs: update tech debt assessment after PRs #236 and #237 [#238](https://github.com/huuhoa/colusa/pull/238) [Huu Hoa NGUYEN]
 
   PR #236 (cleanup): mark debug prints, dead code, DownloaderConfig,
   BookConfig.to_dict(), torpy, Python floor all as resolved.
@@ -172,7 +187,7 @@
   Summary: HIGH 2→0, MEDIUM 33→23, LOW 8→5, total 43→28.
   Reprioritise remaining work.
 
-* Test: PR B — download failures, post-processor, plugin extraction (#237) [Huu Hoa NGUYEN]
+* Test: PR B — download failures, post-processor, plugin extraction [#237](https://github.com/huuhoa/colusa/pull/237) [Huu Hoa NGUYEN]
 
   Close remaining HIGH test-coverage gaps identified in tech_debts.md:
 
@@ -201,7 +216,7 @@
 
 ### New
 
-* Dynamic site parsing rules via CSS selectors (#232) [Huu Hoa NGUYEN]
+* Dynamic site parsing rules via CSS selectors [#232](https://github.com/huuhoa/colusa/pull/232) [Huu Hoa NGUYEN]
 
   * feat: dynamic site parsing rules via CSS selectors in book config
 
@@ -232,7 +247,7 @@
   - Colusa rule loading: JSON file, YAML file, inline+file merge
   - Priority: dynamic rules bypass create_extractor() plugin registry
 
-* Local content support for HTML and AsciiDoc files (#231) [Huu Hoa NGUYEN]
+* Local content support for HTML and AsciiDoc files [#231](https://github.com/huuhoa/colusa/pull/231) [Huu Hoa NGUYEN]
 
   * chg: add local content support for HTML and AsciiDoc files
 
@@ -245,9 +260,9 @@
 
 ### Changes
 
-* Bump version to 0.16.0 (#234) [Huu Hoa NGUYEN]
+* Bump version to 0.16.0 [#234](https://github.com/huuhoa/colusa/pull/234) [Huu Hoa NGUYEN]
 
-* Add extractor for federicopereiro.com and update CLAUDE.md (#230) [Huu Hoa NGUYEN]
+* Add extractor for federicopereiro.com and update CLAUDE.md [#230](https://github.com/huuhoa/colusa/pull/230) [Huu Hoa NGUYEN]
 
   * chg: add extractor for federicopereiro.com and fix element removal
 
@@ -262,11 +277,11 @@
   Document that direct push to main is not allowed and PRs must be
   merged with squash option.
 
-* Cache the content download from hbr.org (#227) [Huu Hoa NGUYEN]
+* Cache the content download from hbr.org [#227](https://github.com/huuhoa/colusa/pull/227) [Huu Hoa NGUYEN]
 
   So that we don't have to redownload everytime we rebuild our content
 
-* Add some new extractors (#226) [Huu Hoa NGUYEN]
+* Add some new extractors [#226](https://github.com/huuhoa/colusa/pull/226) [Huu Hoa NGUYEN]
 
   * chg: add some new extractors
   + seths.blog
@@ -274,7 +289,7 @@
   + newsweek.com
   + rework on hbr.org
 
-* Refactor code to introduce type safety (#225) [Huu Hoa NGUYEN]
+* Refactor code to introduce type safety [#225](https://github.com/huuhoa/colusa/pull/225) [Huu Hoa NGUYEN]
 
   + Add type hints
   + Use `dataclasses` for configuration objects
@@ -282,7 +297,7 @@
 
 ### Other
 
-* Docs: update README with dynamic site rules and modern install (#233) [Huu Hoa NGUYEN]
+* Docs: update README with dynamic site rules and modern install [#233](https://github.com/huuhoa/colusa/pull/233) [Huu Hoa NGUYEN]
 
   - Replace deprecated `setup.py install` with `pip install colusa`
   - Add "Supporting Unsupported Websites" section documenting site_rules
@@ -290,7 +305,7 @@
   - Add field reference table for all site rule options
   - Update supported websites section to link to the dynamic rules section
 
-* Add CLAUDE.md with architecture guide for Claude Code (#229) [Huu Hoa NGUYEN]
+* Add CLAUDE.md with architecture guide for Claude Code [#229](https://github.com/huuhoa/colusa/pull/229) [Huu Hoa NGUYEN]
 
   Documents build/test commands, the extract-transform-render pipeline,
   plugin registration conventions, and how to add support for new websites.
@@ -300,7 +315,7 @@
 
 ### Other
 
-* Upgrade project settings (using pyproject.toml) (#224) [Huu Hoa NGUYEN]
+* Upgrade project settings (using pyproject.toml) [#224](https://github.com/huuhoa/colusa/pull/224) [Huu Hoa NGUYEN]
 
   * chg: change project build tool from setup.py to pyproject.toml
   * Bump version: 0.14.0 -> 0.15.0
@@ -310,7 +325,7 @@
 
 ### Other
 
-* Feature/release 2025 (#223) [Huu Hoa NGUYEN]
+* Feature/release 2025 [#223](https://github.com/huuhoa/colusa/pull/223) [Huu Hoa NGUYEN]
 
   * Bump version: 0.12.0 → 0.14.0
 
@@ -326,20 +341,20 @@
 
 ### Changes
 
-* Support download local file (#219) [Huu Hoa NGUYEN]
+* Support download local file [#219](https://github.com/huuhoa/colusa/pull/219) [Huu Hoa NGUYEN]
 
   Support download local file instead of from URL
   This is for the case we want to create a book from mix set of sources, both local and remote ones.
 
-* Allow external configuration for extractors, transformers (#202) [Huu Hoa NGUYEN]
+* Allow external configuration for extractors, transformers [#202](https://github.com/huuhoa/colusa/pull/202) [Huu Hoa NGUYEN]
 
   This change allows end-user to specify which extractor/transformer to be used for given url.
   Previously, the url patterns are hard code into plugin (extractor/transformer). Which make it
   very hard to adapt to multiple blog sites, such as blogs from substack.
 
-* Support multi urls in extractor, transformer (#201) [Huu Hoa NGUYEN]
+* Support multi urls in extractor, transformer [#201](https://github.com/huuhoa/colusa/pull/201) [Huu Hoa NGUYEN]
 
-* Ability to name the generated book instead of default index.asciidoc (#200) [Huu Hoa NGUYEN]
+* Ability to name the generated book instead of default index.asciidoc [#200](https://github.com/huuhoa/colusa/pull/200) [Huu Hoa NGUYEN]
 
   Add new setting `book_file_name`, default value is `index.asciidoc` to specify file name of generated book
 
@@ -350,9 +365,9 @@
   If `book_file_name` is different from `index.asciidoc` then the generated Makefile will be `basename{book_file_name}_Makefile`
   and to generate book, run command `make -f newmakefile pdf`
 
-* Heading level for output asciidoc (#184) [Huu Hoa NGUYEN]
+* Heading level for output asciidoc [#184](https://github.com/huuhoa/colusa/pull/184) [Huu Hoa NGUYEN]
 
-* Refactor package structure and introduce Fetch for extending fetchers (#182) [Huu Hoa NGUYEN]
+* Refactor package structure and introduce Fetch for extending fetchers [#182](https://github.com/huuhoa/colusa/pull/182) [Huu Hoa NGUYEN]
 
   Refactor:
   + Move Colusa class to separate module colusa, previously within __init__.py
@@ -366,16 +381,16 @@
 
 * Fix setup. [Huu Hoa NGUYEN]
 
-* Create codeql.yml (#203) [Huu Hoa NGUYEN]
+* Create codeql.yml [#203](https://github.com/huuhoa/colusa/pull/203) [Huu Hoa NGUYEN]
 
-* Feature/pragmatic engineer (#183) [Huu Hoa NGUYEN]
+* Feature/pragmatic engineer [#183](https://github.com/huuhoa/colusa/pull/183) [Huu Hoa NGUYEN]
 
   * chg(plugins): update PragmaticEngineer
 
   Produce more clean document
   Support loading existing cookies to by pass paywall
 
-* Feature/pragmatic engineer (#181) [Huu Hoa NGUYEN]
+* Feature/pragmatic engineer [#181](https://github.com/huuhoa/colusa/pull/181) [Huu Hoa NGUYEN]
 
   * chg(asciidoc_visitor): fix parsing srcset
   * chg(etr): change in Transformer to make it easier to extent
@@ -383,13 +398,13 @@
   * chg: add custom target parameters for Makefile
   * chg(plugins): remove warning from PEAsciidoctorVisitor
 
-* Add: post processing workers (#170) [Huu Hoa NGUYEN]
+* Add: post processing workers [#170](https://github.com/huuhoa/colusa/pull/170) [Huu Hoa NGUYEN]
 
   Allow to do post processing on entire chapter content.
   Post processing can be:
   + Search and replace using regex
 
-* Add: support lethain.com (#149) [Huu Hoa NGUYEN]
+* Add: support lethain.com [#149](https://github.com/huuhoa/colusa/pull/149) [Huu Hoa NGUYEN]
 
   Cleanup article's header to make final output more clean
 
@@ -410,7 +425,7 @@
 
 ### Other
 
-* Release new version 0.12.0 (#103) [Huu Hoa NGUYEN]
+* Release new version 0.12.0 [#103](https://github.com/huuhoa/colusa/pull/103) [Huu Hoa NGUYEN]
 
   * @minor: prepare to release 0.12.0
   * Bump version: 0.11.0 → 0.12.0
@@ -426,7 +441,7 @@
 
 ### Changes
 
-* Support for tangthuvien (#72) [Huu Hoa NGUYEN]
+* Support for tangthuvien [#72](https://github.com/huuhoa/colusa/pull/72) [Huu Hoa NGUYEN]
 
 ### Fix
 
@@ -439,7 +454,7 @@
 
 * Update dev requirements. [Nguyen Huu Hoa]
 
-* Improve code coverage (#21) [Huu Hoa NGUYEN]
+* Improve code coverage [#21](https://github.com/huuhoa/colusa/pull/21) [Huu Hoa NGUYEN]
 
   Mock up two functions download_image and download_content
 
@@ -449,7 +464,7 @@
 
 ### Other
 
-* Add: support for techtarget.com (#32) [Huu Hoa NGUYEN]
+* Add: support for techtarget.com [#32](https://github.com/huuhoa/colusa/pull/32) [Huu Hoa NGUYEN]
 
   * chg(asciidoc_visitor): support parsing datasrc and data-srcset for img
   * add(web): support for techtarget.com
@@ -459,12 +474,12 @@
 
 ### New
 
-* Integration tests (#20) [Huu Hoa NGUYEN]
+* Integration tests [#20](https://github.com/huuhoa/colusa/pull/20) [Huu Hoa NGUYEN]
 
   * chg: add tox.ini for running tox
   * chg(colusa): move colusa source to src folder
 
-* Support parsing site xp123.com (#18) [Huu Hoa NGUYEN]
+* Support parsing site xp123.com [#18](https://github.com/huuhoa/colusa/pull/18) [Huu Hoa NGUYEN]
 
 ### Other
 
@@ -472,7 +487,7 @@
 
 * Prepare for next release. [Nguyen Huu Hoa]
 
-* Refactor(etr): Rework on Extractor (#19) [Huu Hoa NGUYEN]
+* Refactor(etr): Rework on Extractor [#19](https://github.com/huuhoa/colusa/pull/19) [Huu Hoa NGUYEN]
 
   * refactor(etr): move _parse_yoast from a plugin extract to base Extractor
   * refactor(etr): rename methods for clarification
@@ -493,7 +508,7 @@
 
 ### New
 
-* Support rendering additional book properties (#16) [Huu Hoa NGUYEN]
+* Support rendering additional book properties [#16](https://github.com/huuhoa/colusa/pull/16) [Huu Hoa NGUYEN]
 
   In the book configuration file, add new array `book_properties`
   with content is list of strings. Those strings will be render as
@@ -519,7 +534,7 @@
 
 ### Changes
 
-* Render html table as native asciidoc table (#17) [Huu Hoa NGUYEN]
+* Render html table as native asciidoc table [#17](https://github.com/huuhoa/colusa/pull/17) [Huu Hoa NGUYEN]
 
 ### Other
 
@@ -532,12 +547,12 @@
 
 ### Changes
 
-* Improve article parsing (#15) [Huu Hoa NGUYEN]
+* Improve article parsing [#15](https://github.com/huuhoa/colusa/pull/15) [Huu Hoa NGUYEN]
 
   * add: agilethought support to get article's author
   * add: support website tech.trivago.com
 
-* Metadata rendering (#14) [Huu Hoa NGUYEN]
+* Metadata rendering [#14](https://github.com/huuhoa/colusa/pull/14) [Huu Hoa NGUYEN]
 
   render metadata in a more clean way, the format should be
 
@@ -560,11 +575,11 @@
 
 ### New
 
-* Support new website https://agilethought.com (#11) [Huu Hoa NGUYEN]
+* Support new website https://agilethought.com [#11](https://github.com/huuhoa/colusa/pull/11) [Huu Hoa NGUYEN]
 
 ### Changes
 
-* Etr: improve metadata rendering for generated articles (#10) [Huu Hoa NGUYEN]
+* Etr: improve metadata rendering for generated articles [#10](https://github.com/huuhoa/colusa/pull/10) [Huu Hoa NGUYEN]
 
 
 ## v0.5.1 (2021-08-14)
@@ -639,7 +654,7 @@
 
 * Support new website https://www.infoq.com. [Nguyen Huu Hoa]
 
-* Yaml configuration (#9) [Huu Hoa NGUYEN]
+* Yaml configuration [#9](https://github.com/huuhoa/colusa/pull/9) [Huu Hoa NGUYEN]
 
   * feat: support configuration file in YAML format
   + Configuration file format is determined by extension, i.e json or yml
@@ -668,7 +683,7 @@
 
 ### Changes
 
-* Update meta information for pypi.org package (#8) [Huu Hoa NGUYEN]
+* Update meta information for pypi.org package [#8](https://github.com/huuhoa/colusa/pull/8) [Huu Hoa NGUYEN]
 
   + Add long description
   + Add classifiers
@@ -701,7 +716,7 @@
 
 ### Changes
 
-* Rename project from symphony to colusa (#7) [Huu Hoa NGUYEN]
+* Rename project from symphony to colusa [#7](https://github.com/huuhoa/colusa/pull/7) [Huu Hoa NGUYEN]
 
   Colusa is not yet existed on pypi.org, so I rename the project
   in order to be able to upload it to pypi.org
@@ -716,7 +731,7 @@
 
 * Support to render `code` tag in asciidoc_visitor. [Nguyen Huu Hoa]
 
-* Implement Visitor pattern for saving document to asciidoc (#6) [Huu Hoa NGUYEN]
+* Implement Visitor pattern for saving document to asciidoc [#6](https://github.com/huuhoa/colusa/pull/6) [Huu Hoa NGUYEN]
 
   + implement visitor pattern for writing asciidoc file format
   + implement visit methods for various tags
@@ -734,7 +749,7 @@
 
 * Add setup.py for easier installation. [Nguyen Huu Hoa]
 
-* Implement plugin archiecture for Extractor, Transformer (#4) [Huu Hoa NGUYEN]
+* Implement plugin archiecture for Extractor, Transformer [#4](https://github.com/huuhoa/colusa/pull/4) [Huu Hoa NGUYEN]
 
 * Update requirements.txt. [Nguyen Huu Hoa]
 
@@ -811,7 +826,7 @@
 
 * Wip: new way to transform html content to asciidoc format. [Nguyen Huu Hoa]
 
-* Update README.md (#1) [Anh Le (Andy)]
+* Update README.md [#1](https://github.com/huuhoa/colusa/pull/1) [Anh Le (Andy)]
 
   Add installation script
 
